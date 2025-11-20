@@ -442,6 +442,132 @@ body {
     }
 }
 
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 40px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.footer p {
+    margin: 8px 0;
+}
+
+.footer-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-link:hover {
+    color: #1565C0;
+    text-decoration: underline;
+}
+
+/* Cookie Consent Banner */
+.cookie-consent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(33, 33, 33, 0.98);
+    color: white;
+    padding: 20px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    display: none;
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.cookie-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.cookie-text {
+    flex: 1;
+}
+
+.cookie-text strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.cookie-text p {
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.cookie-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.cookie-btn.accept {
+    background: var(--success-color);
+    color: white;
+}
+
+.cookie-btn.accept:hover {
+    background: #2E7D32;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(56, 142, 60, 0.4);
+}
+
+.cookie-btn.reject {
+    background: var(--text-secondary);
+    color: white;
+}
+
+.cookie-btn.reject:hover {
+    background: #616161;
+}
+
+.cookie-link {
+    color: white;
+    text-decoration: underline;
+    font-size: 14px;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.cookie-link:hover {
+    opacity: 1;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
     .container {
@@ -481,5 +607,20 @@ body {
     .route-arrow {
         transform: rotate(90deg);
         padding: 10px 0;
+    }
+    
+    /* Cookie Banner Responsive */
+    .cookie-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .cookie-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .cookie-btn {
+        width: 100%;
     }
 }
