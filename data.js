@@ -345,13 +345,7 @@ const MALLS_DATA = {
         // Piano 1 - Mini Isole (3 negozi separati)
         { id: 'gr_p1_mini_1', name: 'I Baccanali', floor: 1, zone: 'ISLAND_MINI', position: 1 },
         { id: 'gr_p1_mini_2', name: 'Capatoast Toasteria', floor: 1, zone: 'ISLAND_MINI', position: 2 },
-        { id: 'gr_p1_mini_3', name: 'Equivalenza', floor: 1, zone: 'ISLAND_MINI', position: 3 },
-
-        // Scale Mobili
-        { id: 'gr_stairs_sx_p0', name: '🔼 Scala Mobile SX (Piano 0→1)', floor: 0, zone: 'STAIRS', position: 1 },
-        { id: 'gr_stairs_sx_p1', name: '🔽 Scala Mobile SX (Piano 1→0)', floor: 1, zone: 'STAIRS', position: 1 },
-        { id: 'gr_stairs_dx_p0', name: '🔼 Scala Mobile DX (Piano 0→1)', floor: 0, zone: 'STAIRS', position: 2 },
-        { id: 'gr_stairs_dx_p1', name: '🔽 Scala Mobile DX (Piano 1→0)', floor: 1, zone: 'STAIRS', position: 2 }
+        { id: 'gr_p1_mini_3', name: 'Equivalenza', floor: 1, zone: 'ISLAND_MINI', position: 3 }
     ]
 };
 
