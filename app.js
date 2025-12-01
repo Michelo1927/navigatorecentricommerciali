@@ -236,10 +236,10 @@ function initializeMallSelection() {
         </div>
     `).join('');
 
-    // Aggiungi event listeners
-    document.querySelectorAll('.btn-select-mall').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const card = e.target.closest('.mall-card');
+    // Aggiungi event listeners - rendi cliccabile l'intera card
+    document.querySelectorAll('.mall-card:not(.coming-soon)').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
             const mallId = card.dataset.mallId;
             selectMall(mallId);
         });
@@ -279,7 +279,7 @@ function selectMall(mallId) {
 function updateStats(mall) {
     const statsGrid = document.getElementById('statsGrid');
     statsGrid.innerHTML = `
-        <div class="stat-card">
+        <div class="stat-card clickable" id="shopsStatCard">
             <div class="stat-number">${mall.totalShops}</div>
             <div class="stat-label">Negozi</div>
         </div>
@@ -292,6 +292,9 @@ function updateStats(mall) {
             <div class="stat-label">Scale Mobili</div>
         </div>
     `;
+    
+    // Aggiungi event listener per aprire il modale
+    document.getElementById('shopsStatCard').addEventListener('click', openShopsModal);
 }
 
 // Bottone per cambiare centro commerciale
@@ -332,6 +335,149 @@ function init() {
     }
     checkCanCalculate();
 }
+
+// === GESTIONE MODALE LISTA NEGOZI ===
+const shopsModal = document.getElementById('shopsModal');
+const closeShopsModal = document.getElementById('closeShopsModal');
+const shopsSearchInput = document.getElementById('shopsSearchInput');
+const shopsList = document.getElementById('shopsList');
+const floorFilters = document.getElementById('floorFilters');
+
+let currentFloorFilter = 'all';
+
+function openShopsModal() {
+    if (!SHOPS_DATA || SHOPS_DATA.length === 0) return;
+    
+    // Genera pulsanti filtro per piani
+    generateFloorFilters();
+    
+    // Popola la lista
+    renderShopsList(getFilteredShops());
+    
+    // Mostra il modale
+    shopsModal.classList.add('show');
+    
+    // Focus sulla ricerca
+    setTimeout(() => shopsSearchInput.focus(), 100);
+}
+
+function generateFloorFilters() {
+    // Trova tutti i piani unici
+    const floors = [...new Set(SHOPS_DATA.map(shop => shop.floor))].sort((a, b) => a - b);
+    
+    // Genera pulsanti
+    floorFilters.innerHTML = `
+        <button class="filter-btn ${currentFloorFilter === 'all' ? 'active' : ''}" data-floor="all">
+            Tutti (${SHOPS_DATA.length})
+        </button>
+        ${floors.map(floor => {
+            const count = SHOPS_DATA.filter(s => s.floor === floor).length;
+            return `<button class="filter-btn ${currentFloorFilter === floor ? 'active' : ''}" data-floor="${floor}">
+                Piano ${floor} (${count})
+            </button>`;
+        }).join('')}
+    `;
+    
+    // Aggiungi event listeners
+    floorFilters.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const floor = btn.dataset.floor;
+            currentFloorFilter = floor === 'all' ? 'all' : parseInt(floor);
+            
+            // Aggiorna UI
+            floorFilters.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Re-render lista
+            renderShopsList(getFilteredShops());
+        });
+    });
+}
+
+function getFilteredShops() {
+    const query = shopsSearchInput.value.trim().toLowerCase();
+    
+    let filtered = SHOPS_DATA;
+    
+    // Filtra per piano
+    if (currentFloorFilter !== 'all') {
+        filtered = filtered.filter(shop => shop.floor === currentFloorFilter);
+    }
+    
+    // Filtra per ricerca
+    if (query) {
+        filtered = filtered.filter(shop => shop.name.toLowerCase().includes(query));
+    }
+    
+    return filtered;
+}
+
+function renderShopsList(shops) {
+    // Ordina alfabeticamente
+    const sortedShops = [...shops].sort((a, b) => a.name.localeCompare(b.name));
+    
+    shopsList.innerHTML = sortedShops.map(shop => `
+        <div class="shop-item" data-shop-name="${shop.name}">
+            <div class="shop-item-name">${shop.name}</div>
+            <div class="shop-item-details">
+                <span class="shop-item-floor">Piano ${shop.floor}</span>
+                <span>${getZoneLabel(shop.zone)}</span>
+                <span>•</span>
+                <span>Pos. ${shop.position}</span>
+            </div>
+        </div>
+    `).join('');
+    
+    // Aggiungi click per chiudere e pre-compilare il form
+    shopsList.querySelectorAll('.shop-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const shopName = item.dataset.shopName;
+            const shop = SHOPS_DATA.find(s => s.name === shopName);
+            if (shop) {
+                // Pre-compila il campo di partenza se vuoto
+                if (!selectedStartShop) {
+                    startShopInput.value = shop.name;
+                    selectedStartShop = shop;
+                    startShopInput.focus();
+                } else if (!selectedEndShop) {
+                    // Altrimenti pre-compila destinazione
+                    endShopInput.value = shop.name;
+                    selectedEndShop = shop;
+                }
+                checkCanCalculate();
+                closeShopsModalHandler();
+            }
+        });
+    });
+}
+
+function closeShopsModalHandler() {
+    shopsModal.classList.remove('show');
+    shopsSearchInput.value = '';
+    currentFloorFilter = 'all';
+}
+
+// Event listeners modale
+closeShopsModal.addEventListener('click', closeShopsModalHandler);
+
+// Chiudi cliccando fuori dal modale
+shopsModal.addEventListener('click', (e) => {
+    if (e.target === shopsModal) {
+        closeShopsModalHandler();
+    }
+});
+
+// Chiudi con ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && shopsModal.classList.contains('show')) {
+        closeShopsModalHandler();
+    }
+});
+
+// Ricerca negozi in tempo reale
+shopsSearchInput.addEventListener('input', () => {
+    renderShopsList(getFilteredShops());
+});
 
 // Avvia l'app
 init();
