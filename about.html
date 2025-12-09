@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi Siamo | Mall Nav - La Tua Guida Allo Shopping</title>
-    <meta name="description" content="Scopri come Mall Nav rivoluziona l'esperienza di shopping nei grandi mall italiani. La nostra missione è rendere lo shopping più facile e piacevole.">
+    <meta name="description" content="La missione di Mall Nav: rendere lo shopping nei centri commerciali più facile e piacevole. Scopri chi siamo, i nostri valori e la roadmap futura con nuovi centri e funzionalità.">
     <link rel="canonical" href="https://mallnav.netlify.app/about.html">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2">
     <link rel="shortcut icon" href="favicon.png?v=2">
@@ -14,6 +14,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            margin-top: 80px;
         }
         .about-hero {
             background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
@@ -152,6 +153,28 @@
     </style>
 </head>
 <body>
+    <!-- Top Navigation Header -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">🗺️ <strong>Mall Nav</strong></a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Navigatore</a></li>
+                <li><a href="come-funziona.html" class="nav-link">Come Funziona</a></li>
+                <li><a href="guida-shopping.html" class="nav-link">Guida Shopping</a></li>
+                <li><a href="blog.html" class="nav-link">Articoli</a></li>
+                <li><a href="faq.html" class="nav-link">Domande Frequenti</a></li>
+                <li><a href="about.html" class="nav-link active">Chi Siamo</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="about-container">
         <a href="index.html" class="back-btn">← Torna al Navigatore</a>
         
@@ -491,6 +514,7 @@
         </div>
     </div>
 
+    <script src="nav-menu.js"></script>
     <script src="cookie-consent.js"></script>
 </body>
 </html>
