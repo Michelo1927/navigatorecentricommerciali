@@ -158,6 +158,12 @@ function showRoute(result) {
             stepsContainer.appendChild(createStairCard(step.instruction, step.isGoingUp));
         }
     });
+
+    // Show feedback banner
+    const feedbackBanner = document.getElementById('feedbackBanner');
+    if (feedbackBanner) {
+        feedbackBanner.style.display = 'flex';
+    }
 }
 
 function createShopStepCard(shop, stepNumber, isStart, isEnd) {
@@ -213,6 +219,12 @@ backBtn.addEventListener('click', () => {
     selectedEndShop = null;
     errorMessage.classList.remove('show');
     checkCanCalculate();
+    
+    // Hide feedback banner
+    const feedbackBanner = document.getElementById('feedbackBanner');
+    if (feedbackBanner) {
+        feedbackBanner.style.display = 'none';
+    }
 });
 
 // === GESTIONE SELEZIONE MALL ===
