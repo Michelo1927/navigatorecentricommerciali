@@ -2,11 +2,11 @@
 class NavigationService {
     constructor(shops) {
         this.shops = shops;
-        this.WEIGHT_SAME_RING = 1;
-        this.WEIGHT_ISLAND_RING = 1; // Stesso peso per isole (può essere conveniente)
-        this.WEIGHT_CROSS_ISLAND = 3; // Peso per entrare/uscire dall'isola
-        this.WEIGHT_TO_STAIRS = 2;
-        this.WEIGHT_STAIRS = 10;
+        this.WEIGHT_SAME_RING = 4;
+        this.WEIGHT_ISLAND_RING = 2; // Stesso peso per isole (può essere conveniente)
+        this.WEIGHT_CROSS_ISLAND = 2; // Peso per entrare/uscire dall'isola
+        this.WEIGHT_TO_STAIRS = 1;
+        this.WEIGHT_STAIRS = 2;
     }
 
     buildGraph() {
@@ -446,6 +446,85 @@ class NavigationService {
                     const isGoingUp = prevShop?.floor === 0 && nextShop?.floor === 1;
                     const stairType = id.includes('left') ? 'Scale Mobili SINISTRA' : 'Scale Mobili DESTRA';
                     const instruction = isGoingUp 
+                        ? `🔼 Sali con le ${stairType} verso il Piano 1`
+                        : `🔽 Scendi con le ${stairType} verso il Piano 0`;
+
+                    steps.push({
+                        type: 'stair',
+                        instruction,
+                        isGoingUp
+                    });
+
+                    skipNextStair = true;
+                } else {
+                    skipNextStair = false;
+                }
+            } else {
+                const shop = this.shops.find(s => s.id === id);
+                if (shop) {
+                    steps.push({
+                        type: 'shop',
+                        shop
+                    });
+                }
+            }
+        }
+
+        return {
+            success: true,
+            startShop,
+            endShop,
+            steps,
+            stepsCount: steps.length - 1
+        };
+    }
+
+    // Variante per usare direttamente gli ID (utile per calcoli multi-leg)
+    findShortestPathById(startId, endId) {
+        const startShop = this.shops.find(s => s.id === startId);
+        const endShop = this.shops.find(s => s.id === endId);
+
+        if (!startShop) {
+            return { error: `Negozio di partenza non trovato: ${startId}` };
+        }
+        if (!endShop) {
+            return { error: `Negozio di destinazione non trovato: ${endId}` };
+        }
+        if (startShop.id === endShop.id) {
+            return { error: 'Sei già alla destinazione!' };
+        }
+
+        const graph = this.buildGraph();
+        const path = this.dijkstra(startShop.id, endShop.id, graph);
+
+        if (!path) {
+            return { error: 'Nessun percorso trovato tra i due negozi' };
+        }
+
+        // Converti il percorso in steps con istruzioni (stesso comportamento di findShortestPath)
+        const steps = [];
+        let skipNextStair = false;
+
+        for (let i = 0; i < path.length; i++) {
+            const id = path[i];
+
+            if (id.startsWith('stairs_')) {
+                if (!skipNextStair) {
+                    const prevShop = i > 0 && !path[i - 1].startsWith('stairs_')
+                        ? this.shops.find(s => s.id === path[i - 1])
+                        : null;
+
+                    let nextShop = null;
+                    for (let j = i + 1; j < path.length; j++) {
+                        if (!path[j].startsWith('stairs_')) {
+                            nextShop = this.shops.find(s => s.id === path[j]);
+                            break;
+                        }
+                    }
+
+                    const isGoingUp = prevShop?.floor === 0 && nextShop?.floor === 1;
+                    const stairType = id.includes('left') ? 'Scale Mobili SINISTRA' : 'Scale Mobili DESTRA';
+                    const instruction = isGoingUp
                         ? `🔼 Sali con le ${stairType} verso il Piano 1`
                         : `🔽 Scendi con le ${stairType} verso il Piano 0`;
 

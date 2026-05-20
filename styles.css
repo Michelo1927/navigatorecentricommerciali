@@ -545,17 +545,28 @@ body {
 .route-shops {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
     margin-bottom: 16px;
 }
 
 .route-shop {
-    flex: 1;
+    flex: 1 1 220px;
     text-align: center;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .route-shop.start {
     text-align: left;
+}
+
+.route-shop.mid {
+    border-style: dashed;
 }
 
 .route-shop.end {
@@ -582,6 +593,166 @@ body {
     font-size: 24px;
     color: var(--primary-color);
     padding: 0 20px;
+    flex: 0 0 auto;
+}
+
+.route-mode-btn {
+    width: auto;
+    min-width: 0;
+    padding: 8px 14px;
+    text-align: center;
+    margin: 8px auto 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    border-radius: 999px;
+    box-shadow: none;
+}
+
+.route-mode-wrap {
+    display: flex;
+    justify-content: center;
+}
+
+.route-builder-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 14px 0 8px;
+}
+
+.route-builder-empty {
+    padding: 12px 14px;
+    border: 1px dashed var(--border-color);
+    border-radius: 14px;
+    text-align: center;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.route-builder-arrow {
+    align-self: center;
+    color: var(--primary-color);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.route-builder-stop {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+}
+
+.route-builder-stop-meta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.route-builder-start {
+    border-left: 4px solid var(--secondary-color);
+}
+
+.route-builder-mid {
+    border-left: 4px solid var(--primary-color);
+}
+
+.route-builder-end {
+    border-left: 4px solid var(--tertiary-color);
+}
+
+.route-builder-stop .shop-icon {
+    margin-right: 0;
+}
+
+.route-builder-stop .shop-name {
+    font-size: 16px;
+}
+
+.route-builder-stop .shop-floor {
+    font-size: 13px;
+}
+
+.route-builder-remove {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 999px;
+    background: #F5F5F5;
+    color: #616161;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.route-builder-remove:hover {
+    background: #FFEBEE;
+    color: #C62828;
+}
+
+.route-mode-btn.active {
+    background: #1976D2;
+    color: white;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
+}
+
+.route-mode-btn:not(.active) {
+    background: #F1F5F9;
+    color: #455A64;
+    border: 1px solid #CBD5E1;
+}
+
+.waypoints-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.waypoint-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+}
+
+.waypoint-meta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.waypoint-item .shop-icon {
+    margin-right: 0;
+}
+
+.btn-remove-waypoint {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 999px;
+    background: #F5F5F5;
+    color: #616161;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.btn-remove-waypoint:hover {
+    background: #FFEBEE;
+    color: #C62828;
 }
 
 .route-stats {
@@ -589,6 +760,62 @@ body {
     padding: 12px;
     background: var(--background);
     border-radius: 8px;
+}
+
+.route-middle {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1 1 100%;
+    min-width: 240px;
+}
+
+.route-stop {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: var(--background);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.route-stop-start {
+    flex: 1 1 240px;
+    align-items: flex-start;
+}
+
+.route-stop-end {
+    flex: 1 1 240px;
+    align-items: flex-end;
+}
+
+.route-stop-mid {
+    border-style: dashed;
+    align-items: center;
+    text-align: center;
+}
+
+.route-empty-mid {
+    padding: 12px 16px;
+    text-align: center;
+    color: var(--text-secondary);
+    border: 1px dashed var(--border-color);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.route-stop .shop-icon {
+    margin-right: 0;
+}
+
+.route-stop .shop-name {
+    font-size: 18px;
+}
+
+.route-stop .shop-floor {
+    font-size: 13px;
 }
 
 .route-stat {

@@ -9,6 +9,12 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2">
     <link rel="shortcut icon" href="favicon.png?v=2">
     <link rel="stylesheet" href="styles.css?v=2">
+    <script>
+        // Forza il landing sulla pagina principale con il navigatore
+        if (window.location.pathname && window.location.pathname.endsWith('come-funziona.html')) {
+            window.location.replace('index.html');
+        }
+    </script>
     <style>
         .how-container {
             max-width: 1200px;

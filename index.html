@@ -133,6 +133,25 @@
                     <div id="endSuggestions" class="suggestions"></div>
                 </div>
 
+                <div id="routeBuilderPreview" class="route-builder-preview"></div>
+
+                <div class="input-group">
+                    <label for="waypointInput">➕ Aggiungi tappa intermedia</label>
+                    <input
+                        type="text"
+                        id="waypointInput"
+                        placeholder="Cerca una tappa da aggiungere..."
+                        autocomplete="off"
+                    >
+                    <div id="waypointSuggestions" class="suggestions"></div>
+                </div>
+
+                <div class="route-mode-wrap">
+                    <button id="efficientRouteBtn" class="btn-secondary route-mode-btn" type="button" aria-pressed="false">
+                        Percorso efficiente: OFF
+                    </button>
+                </div>
+
                 <button id="calculateBtn" class="btn-primary">
                     Calcola Percorso
                 </button>
@@ -159,19 +178,7 @@
                     ← Nuova Ricerca
                 </button>
                 <div class="route-info">
-                    <div class="route-shops">
-                        <div class="route-shop start">
-                            <span class="shop-icon">🏁</span>
-                            <span id="routeStartShop" class="shop-name"></span>
-                            <span id="routeStartFloor" class="shop-floor"></span>
-                        </div>
-                        <div class="route-arrow">→</div>
-                        <div class="route-shop end">
-                            <span class="shop-icon">🎯</span>
-                            <span id="routeEndShop" class="shop-name"></span>
-                            <span id="routeEndFloor" class="shop-floor"></span>
-                        </div>
-                    </div>
+                    <div class="route-shops" id="routeStops"></div>
                     <div class="route-stats">
                         <span id="routeSteps" class="route-stat"></span>
                     </div>

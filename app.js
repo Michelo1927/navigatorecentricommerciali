@@ -14,19 +14,41 @@ const startShopInput = document.getElementById('startShop');
 const endShopInput = document.getElementById('endShop');
 const startSuggestions = document.getElementById('startSuggestions');
 const endSuggestions = document.getElementById('endSuggestions');
+const waypointInput = document.getElementById('waypointInput');
+const waypointSuggestions = document.getElementById('waypointSuggestions');
+const routeBuilderPreview = document.getElementById('routeBuilderPreview');
 const calculateBtn = document.getElementById('calculateBtn');
+const efficientRouteBtn = document.getElementById('efficientRouteBtn');
 const errorMessage = document.getElementById('errorMessage');
 const backBtn = document.getElementById('backBtn');
 
-const routeStartShop = document.getElementById('routeStartShop');
-const routeEndShop = document.getElementById('routeEndShop');
-const routeStartFloor = document.getElementById('routeStartFloor');
-const routeEndFloor = document.getElementById('routeEndFloor');
+const routeStops = document.getElementById('routeStops');
 const routeSteps = document.getElementById('routeSteps');
 const stepsContainer = document.getElementById('stepsContainer');
 
 let selectedStartShop = null;
 let selectedEndShop = null;
+let waypoints = []; // array of shop objects in order
+let efficientRouteEnabled = false;
+
+function updateEfficientRouteButton() {
+    if (!efficientRouteBtn) return;
+    efficientRouteBtn.textContent = efficientRouteEnabled
+        ? 'Percorso efficiente: ON'
+        : 'Percorso efficiente: OFF';
+    efficientRouteBtn.classList.toggle('active', efficientRouteEnabled);
+    if (typeof efficientRouteBtn.setAttribute === 'function') {
+        efficientRouteBtn.setAttribute('aria-pressed', String(efficientRouteEnabled));
+    }
+}
+
+if (efficientRouteBtn) {
+    updateEfficientRouteButton();
+    efficientRouteBtn.addEventListener('click', () => {
+        efficientRouteEnabled = !efficientRouteEnabled;
+        updateEfficientRouteButton();
+    });
+}
 
 // Gestione autocomplete
 function setupAutocomplete(input, suggestionsDiv, onSelect) {
@@ -93,21 +115,222 @@ function getZoneLabel(zone) {
 // Setup autocomplete per entrambi i campi
 setupAutocomplete(startShopInput, startSuggestions, (shop) => {
     selectedStartShop = shop;
+    renderRouteBuilderPreview();
     checkCanCalculate();
 });
 
 setupAutocomplete(endShopInput, endSuggestions, (shop) => {
     selectedEndShop = shop;
+    renderRouteBuilderPreview();
     checkCanCalculate();
 });
 
+// Autocomplete per aggiungere waypoint
+if (waypointInput && waypointSuggestions) {
+    setupAutocomplete(waypointInput, waypointSuggestions, (shop) => {
+        // Aggiungi alla lista di waypoint
+        addWaypoint(shop);
+        waypointInput.value = '';
+        waypointSuggestions.classList.remove('show');
+    });
+}
+
+function addWaypoint(shop) {
+    if (!shop) return;
+    if ((selectedStartShop && selectedStartShop.id === shop.id) || (selectedEndShop && selectedEndShop.id === shop.id)) {
+        showError('Questa tappa coincide con partenza o arrivo');
+        return;
+    }
+    // evita duplicati consecutivi
+    const last = waypoints[waypoints.length - 1];
+    if (last && last.id === shop.id) return;
+    waypoints.push(shop);
+    renderRouteBuilderPreview();
+    checkCanCalculate();
+}
+
+function removeWaypoint(index) {
+    if (index < 0 || index >= waypoints.length) return;
+    waypoints.splice(index, 1);
+    renderRouteBuilderPreview();
+    checkCanCalculate();
+}
+
+function renderRouteBuilderPreview() {
+    if (!routeBuilderPreview) return;
+
+    const previewStops = [];
+
+    if (selectedStartShop) {
+        previewStops.push({ shop: selectedStartShop, label: 'PARTENZA', icon: '🏁', type: 'start' });
+    }
+
+    waypoints.forEach((shop, index) => {
+        previewStops.push({ shop: null, separator: true });
+        previewStops.push({ shop, label: `TAPPA ${index + 1}`, icon: '🧭', type: 'mid', index });
+    });
+
+    if (selectedEndShop) {
+        if (previewStops.length > 0) {
+            previewStops.push({ shop: null, separator: true });
+        }
+        previewStops.push({ shop: selectedEndShop, label: 'ARRIVO', icon: '🎯', type: 'end' });
+    }
+
+    if (previewStops.length === 0) {
+        routeBuilderPreview.innerHTML = '<div class="route-builder-empty">Scegli partenza, tappe e arrivo per costruire il percorso</div>';
+        return;
+    }
+
+    routeBuilderPreview.innerHTML = previewStops.map(item => {
+        if (item.separator) {
+            return '<div class="route-builder-arrow">→</div>';
+        }
+
+        return `
+            <div class="route-builder-stop route-builder-${item.type}">
+                <span class="shop-icon">${item.icon}</span>
+                <div class="route-builder-stop-meta">
+                    <span class="shop-name">${item.shop.name}</span>
+                    <span class="shop-floor">${item.label} • Piano ${item.shop.floor}</span>
+                </div>
+                ${item.type === 'mid' ? `<button class="route-builder-remove" data-index="${item.index}" aria-label="Rimuovi tappa">×</button>` : ''}
+            </div>
+        `;
+    }).join('');
+
+    routeBuilderPreview.querySelectorAll('.route-builder-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.index, 10);
+            removeWaypoint(idx);
+        });
+    });
+}
+
 function checkCanCalculate() {
-    calculateBtn.disabled = !selectedStartShop || !selectedEndShop;
+    // Abilita quando partenza e arrivo sono entrambi selezionati
+    calculateBtn.disabled = !(selectedStartShop && selectedEndShop);
+}
+
+function getRouteStops() {
+    if (!selectedStartShop || !selectedEndShop) return [];
+
+    const intermediateStops = waypoints.slice();
+    const orderedWaypoints = efficientRouteEnabled
+        ? optimizeWaypoints(selectedStartShop, intermediateStops, selectedEndShop)
+        : intermediateStops;
+
+    return [selectedStartShop, ...orderedWaypoints, selectedEndShop];
+}
+
+function getLegKey(startId, endId) {
+    return `${startId}=>${endId}`;
+}
+
+function getLegResult(startShop, endShop, cache) {
+    const key = getLegKey(startShop.id, endShop.id);
+    if (cache.has(key)) return cache.get(key);
+
+    const result = navigationService.findShortestPathById(startShop.id, endShop.id);
+    cache.set(key, result);
+    return result;
+}
+
+function optimizeWaypoints(startShop, intermediateStops, endShop) {
+    if (intermediateStops.length <= 1) return intermediateStops;
+
+    // Per pochi waypoint cerchiamo la sequenza migliore esatta; altrimenti usiamo un greedy semplice.
+    if (intermediateStops.length <= 7) {
+        const cache = new Map();
+        let bestOrder = intermediateStops.slice();
+        let bestCost = Infinity;
+        const used = new Array(intermediateStops.length).fill(false);
+        const current = [];
+
+        const evaluateCurrent = () => {
+            let cost = 0;
+            let previous = startShop;
+
+            for (const stop of current) {
+                const leg = getLegResult(previous, stop, cache);
+                if (leg.error) return;
+                cost += leg.stepsCount;
+                previous = stop;
+            }
+
+            const finalLeg = getLegResult(previous, endShop, cache);
+            if (finalLeg.error) return;
+            cost += finalLeg.stepsCount;
+
+            if (cost < bestCost) {
+                bestCost = cost;
+                bestOrder = current.slice();
+            }
+        };
+
+        const backtrack = () => {
+            if (current.length === intermediateStops.length) {
+                evaluateCurrent();
+                return;
+            }
+
+            for (let i = 0; i < intermediateStops.length; i++) {
+                if (used[i]) continue;
+                used[i] = true;
+                current.push(intermediateStops[i]);
+                backtrack();
+                current.pop();
+                used[i] = false;
+            }
+        };
+
+        backtrack();
+        return bestOrder;
+    }
+
+    const cache = new Map();
+    const remaining = intermediateStops.slice();
+    const ordered = [];
+    let current = startShop;
+
+    while (remaining.length > 0) {
+        let bestIndex = 0;
+        let bestScore = Infinity;
+
+        for (let i = 0; i < remaining.length; i++) {
+            const leg = getLegResult(current, remaining[i], cache);
+            if (leg.error) continue;
+            if (leg.stepsCount < bestScore) {
+                bestScore = leg.stepsCount;
+                bestIndex = i;
+            }
+        }
+
+        const [chosen] = remaining.splice(bestIndex, 1);
+        ordered.push(chosen);
+        current = chosen;
+    }
+
+    return ordered;
 }
 
 // Calcola percorso
 calculateBtn.addEventListener('click', () => {
-    if (!selectedStartShop || !selectedEndShop) return;
+    // Determina lista di leg da calcolare
+    if (!navigationService) {
+        showError('Servizio di navigazione non inizializzato');
+        return;
+    }
+
+    const routeStopsSequence = getRouteStops();
+    if (routeStopsSequence.length < 2) {
+        return;
+    }
+
+    const legs = [];
+    for (let i = 0; i < routeStopsSequence.length - 1; i++) {
+        legs.push({ start: routeStopsSequence[i], end: routeStopsSequence[i + 1] });
+    }
 
     // Mostra loading
     searchSection.style.display = 'none';
@@ -116,19 +339,54 @@ calculateBtn.addEventListener('click', () => {
 
     // Simula un piccolo delay per UX
     setTimeout(() => {
-        const result = navigationService.findShortestPath(
-            selectedStartShop.name,
-            selectedEndShop.name
-        );
+        const combined = {
+            success: true,
+            startShop: null,
+            endShop: null,
+            steps: [],
+            stepsCount: 0
+        };
 
-        if (result.error) {
-            showError(result.error);
+        for (let i = 0; i < legs.length; i++) {
+            const leg = legs[i];
+            const res = getLegResult(leg.start, leg.end, new Map());
+            if (res.error) {
+                showError(res.error);
+                loadingSection.style.display = 'none';
+                searchSection.style.display = 'block';
+                return;
+            }
+
+            if (i === 0) {
+                combined.startShop = res.startShop;
+            }
+
+            // Evita duplicare lo shop di transizione
+            if (combined.steps.length > 0 && res.steps.length > 0) {
+                const firstStep = res.steps[0];
+                const lastCombinedStep = combined.steps[combined.steps.length - 1];
+                if (firstStep.type === 'shop' && lastCombinedStep.type === 'shop' && firstStep.shop.id === lastCombinedStep.shop.id) {
+                    // skip first step
+                    combined.steps = combined.steps.concat(res.steps.slice(1));
+                } else {
+                    combined.steps = combined.steps.concat(res.steps);
+                }
+            } else {
+                combined.steps = combined.steps.concat(res.steps);
+            }
+
+            combined.endShop = res.endShop;
+            combined.stepsCount += res.stepsCount;
+        }
+
+        if (combined.steps.length === 0) {
+            showError('Nessun percorso trovato');
             loadingSection.style.display = 'none';
             searchSection.style.display = 'block';
             return;
         }
 
-        showRoute(result);
+        showRoute(combined, routeStopsSequence);
         loadingSection.style.display = 'none';
         routeSection.style.display = 'block';
     }, 500);
@@ -139,12 +397,8 @@ function showError(message) {
     errorMessage.classList.add('show');
 }
 
-function showRoute(result) {
-    // Header info
-    routeStartShop.textContent = result.startShop.name;
-    routeEndShop.textContent = result.endShop.name;
-    routeStartFloor.textContent = `Piano ${result.startShop.floor}`;
-    routeEndFloor.textContent = `Piano ${result.endShop.floor}`;
+function showRoute(result, routeStopsSequence) {
+    renderRouteStops(routeStopsSequence);
     routeSteps.textContent = `${result.stepsCount} passaggi`;
 
     // Steps
@@ -164,6 +418,43 @@ function showRoute(result) {
     if (feedbackBanner) {
         feedbackBanner.style.display = 'flex';
     }
+}
+
+function renderRouteStops(routeStopsSequence) {
+    if (!routeStops) return;
+
+    const startShop = routeStopsSequence[0];
+    const endShop = routeStopsSequence[routeStopsSequence.length - 1];
+    const intermediateStops = routeStopsSequence.slice(1, -1);
+    const stopsMarkup = [
+        `
+        <div class="route-shop route-stop-start">
+            <span class="shop-icon">🏁</span>
+            <span class="shop-name">${startShop.name}</span>
+            <span class="shop-floor">PARTENZA • Piano ${startShop.floor}</span>
+        </div>
+        `,
+        ...intermediateStops.flatMap((stop, index) => [
+            '<div class="route-arrow">→</div>',
+            `
+            <div class="route-shop route-stop-mid">
+                <span class="shop-icon">🧭</span>
+                <span class="shop-name">${stop.name}</span>
+                <span class="shop-floor">TAPPA ${index + 1} • Piano ${stop.floor}</span>
+            </div>
+            `
+        ]),
+        intermediateStops.length > 0 ? '<div class="route-arrow">→</div>' : '',
+        `
+        <div class="route-shop route-stop-end">
+            <span class="shop-icon">🎯</span>
+            <span class="shop-name">${endShop.name}</span>
+            <span class="shop-floor">ARRIVO • Piano ${endShop.floor}</span>
+        </div>
+        `
+    ].join('');
+
+    routeStops.innerHTML = stopsMarkup;
 }
 
 function createShopStepCard(shop, stepNumber, isStart, isEnd) {
@@ -215,8 +506,13 @@ backBtn.addEventListener('click', () => {
     // Reset form
     startShopInput.value = '';
     endShopInput.value = '';
+    waypointInput && (waypointInput.value = '');
     selectedStartShop = null;
     selectedEndShop = null;
+    waypoints = [];
+    renderRouteBuilderPreview();
+    efficientRouteEnabled = false;
+    updateEfficientRouteButton();
     errorMessage.classList.remove('show');
     checkCanCalculate();
     
@@ -267,7 +563,7 @@ function selectMall(mallId) {
     SHOPS_DATA = MALLS_DATA[mallId] || [];
     
     // Salva in localStorage
-    localStorage.setItem('selectedMall', mallId);
+    sessionStorage.setItem('selectedMall', mallId);
 
     // Inizializza il servizio di navigazione
     navigationService = new NavigationService(SHOPS_DATA);
@@ -321,10 +617,14 @@ changeMallBtn.addEventListener('click', () => {
     endShopInput.value = '';
     selectedStartShop = null;
     selectedEndShop = null;
+    waypoints = [];
+    renderRouteBuilderPreview();
+    efficientRouteEnabled = false;
+    updateEfficientRouteButton();
     errorMessage.classList.remove('show');
     
     // Rimuovi selezione salvata
-    localStorage.removeItem('selectedMall');
+    sessionStorage.removeItem('selectedMall');
     
     // Rigenera le card dei centri commerciali
     initializeMallSelection();
@@ -339,12 +639,13 @@ changeMallBtn.addEventListener('click', () => {
 // Inizializzazione
 function init() {
     // Controlla se c'è un mall salvato
-    const savedMallId = localStorage.getItem('selectedMall');
+    const savedMallId = sessionStorage.getItem('selectedMall');
     if (savedMallId && MALLS_DATA[savedMallId]) {
         selectMall(savedMallId);
     } else {
         initializeMallSelection();
     }
+    renderRouteBuilderPreview();
     checkCanCalculate();
 }
 
@@ -451,10 +752,13 @@ function renderShopsList(shops) {
                     startShopInput.value = shop.name;
                     selectedStartShop = shop;
                     startShopInput.focus();
-                } else if (!selectedEndShop) {
-                    // Altrimenti pre-compila destinazione
+                } else if (!selectedEndShop && waypoints.length === 0) {
+                    // Altrimenti pre-compila destinazione solo se non stiamo usando waypoint
                     endShopInput.value = shop.name;
                     selectedEndShop = shop;
+                } else {
+                    // Se abbiamo waypoint attivi, aggiungi questa scelta come tappa
+                    addWaypoint(shop);
                 }
                 checkCanCalculate();
                 closeShopsModalHandler();
@@ -493,3 +797,29 @@ shopsSearchInput.addEventListener('input', () => {
 
 // Avvia l'app
 init();
+
+const mallNavDebug = {
+    setRouteState({ startShop = null, endShop = null, intermediateWaypoints = [], efficient = false } = {}) {
+        selectedStartShop = startShop;
+        selectedEndShop = endShop;
+        waypoints = intermediateWaypoints.slice();
+        efficientRouteEnabled = efficient;
+        if (startShop && typeof MALLS_DATA !== 'undefined') {
+            const isGranRoma = startShop.id && startShop.id.startsWith('gr_');
+            const mallKey = isGranRoma ? 'granroma' : 'porta_di_roma';
+            navigationService = new NavigationService(MALLS_DATA[mallKey] || []);
+        }
+        updateEfficientRouteButton();
+        renderRouteBuilderPreview();
+    },
+    getRouteStops,
+    optimizeWaypoints
+};
+
+if (typeof window !== 'undefined') {
+    window.__mallNavDebug = mallNavDebug;
+}
+
+if (typeof globalThis !== 'undefined') {
+    globalThis.__mallNavDebug = mallNavDebug;
+}
