@@ -21,6 +21,12 @@ const calculateBtn = document.getElementById('calculateBtn');
 const efficientRouteBtn = document.getElementById('efficientRouteBtn');
 const errorMessage = document.getElementById('errorMessage');
 const backBtn = document.getElementById('backBtn');
+const startCategoryFilterBtn = document.getElementById('startCategoryFilterBtn');
+const startCategoryFilterMenu = document.getElementById('startCategoryFilterMenu');
+const endCategoryFilterBtn = document.getElementById('endCategoryFilterBtn');
+const endCategoryFilterMenu = document.getElementById('endCategoryFilterMenu');
+const waypointCategoryFilterBtn = document.getElementById('waypointCategoryFilterBtn');
+const waypointCategoryFilterMenu = document.getElementById('waypointCategoryFilterMenu');
 
 const routeStops = document.getElementById('routeStops');
 const routeSteps = document.getElementById('routeSteps');
@@ -30,12 +36,12 @@ let selectedStartShop = null;
 let selectedEndShop = null;
 let waypoints = []; // array of shop objects in order
 let efficientRouteEnabled = false;
+let activeStartCategoryFilter = 'Tutto';
+let activeEndCategoryFilter = 'Tutto';
+let activeWaypointCategoryFilter = 'Tutto';
 
 function updateEfficientRouteButton() {
     if (!efficientRouteBtn) return;
-    efficientRouteBtn.textContent = efficientRouteEnabled
-        ? 'Percorso efficiente: ON'
-        : 'Percorso efficiente: OFF';
     efficientRouteBtn.classList.toggle('active', efficientRouteEnabled);
     if (typeof efficientRouteBtn.setAttribute === 'function') {
         efficientRouteBtn.setAttribute('aria-pressed', String(efficientRouteEnabled));
@@ -51,19 +57,26 @@ if (efficientRouteBtn) {
 }
 
 // Gestione autocomplete
-function setupAutocomplete(input, suggestionsDiv, onSelect) {
-    input.addEventListener('input', () => {
-        const query = input.value.trim().toLowerCase();
-        
-        if (query.length < 2) {
+function setupAutocomplete(input, suggestionsDiv, onSelect, getCategoryFilter) {
+    const buildMatches = (query, showAll) => {
+        const activeFilter = typeof getCategoryFilter === 'function' ? getCategoryFilter() : 'Tutto';
+        const normalizedQuery = query.trim().toLowerCase();
+        const matches = SHOPS_DATA.filter(shop => {
+            if (activeFilter !== 'Tutto' && shop.type !== activeFilter) return false;
+            if (!normalizedQuery) return true;
+            return shop.name.toLowerCase().includes(normalizedQuery);
+        }).sort((a, b) => a.name.localeCompare(b.name));
+
+        return showAll ? matches : matches.slice(0, 10);
+    };
+
+    const renderSuggestions = (query, showAll) => {
+        if (!showAll && query.trim().length < 2) {
             suggestionsDiv.classList.remove('show');
             return;
         }
 
-        const matches = SHOPS_DATA.filter(shop => 
-            shop.name.toLowerCase().includes(query)
-        ).slice(0, 10);
-
+        const matches = buildMatches(query, showAll);
         if (matches.length === 0) {
             suggestionsDiv.classList.remove('show');
             return;
@@ -92,6 +105,16 @@ function setupAutocomplete(input, suggestionsDiv, onSelect) {
                 }
             });
         });
+    };
+
+    input.addEventListener('input', () => {
+        renderSuggestions(input.value, false);
+    });
+
+    input.addEventListener('focus', () => {
+        if (!input.value.trim()) {
+            renderSuggestions('', true);
+        }
     });
 
     // Chiudi suggerimenti quando si clicca fuori
@@ -112,18 +135,116 @@ function getZoneLabel(zone) {
     return labels[zone] || zone;
 }
 
+function handleShopSelection(shop) {
+    if (!shop) return;
+
+    if (!selectedStartShop) {
+        startShopInput.value = shop.name;
+        selectedStartShop = shop;
+        startShopInput.focus();
+    } else if (!selectedEndShop && waypoints.length === 0) {
+        endShopInput.value = shop.name;
+        selectedEndShop = shop;
+    } else {
+        addWaypoint(shop);
+    }
+
+    renderRouteBuilderPreview();
+    checkCanCalculate();
+}
+
+function getCategoryList() {
+    const categories = SHOPS_DATA
+        .map(shop => shop.type)
+        .filter(Boolean);
+    return Array.from(new Set(categories)).sort((a, b) => a.localeCompare(b));
+}
+
+function renderCategoryFilterMenu(button, menu, activeCategory) {
+    if (!button || !menu) return;
+
+    const categories = ['Tutto', ...getCategoryList()];
+    menu.innerHTML = categories.map(category => {
+        const active = category === activeCategory;
+        return `
+            <div class="filter-option ${active ? 'active' : ''}" role="option" aria-selected="${active}" data-category="${category}">
+                <span>${category}</span>
+                <span class="filter-check">✓</span>
+            </div>
+        `;
+    }).join('');
+
+    menu.querySelectorAll('.filter-option').forEach(option => {
+        option.addEventListener('click', () => {
+            const category = option.dataset.category;
+            if (menu === startCategoryFilterMenu) {
+                setActiveStartCategoryFilter(category);
+                closeCategoryMenu(startCategoryFilterBtn, startCategoryFilterMenu);
+            } else if (menu === endCategoryFilterMenu) {
+                setActiveEndCategoryFilter(category);
+                closeCategoryMenu(endCategoryFilterBtn, endCategoryFilterMenu);
+            } else {
+                setActiveWaypointCategoryFilter(category);
+                closeCategoryMenu(waypointCategoryFilterBtn, waypointCategoryFilterMenu);
+            }
+        });
+    });
+}
+
+function setActiveStartCategoryFilter(category) {
+    activeStartCategoryFilter = category;
+    if (startCategoryFilterBtn) {
+        startCategoryFilterBtn.textContent = category;
+    }
+    renderCategoryFilterMenu(startCategoryFilterBtn, startCategoryFilterMenu, activeStartCategoryFilter);
+}
+
+function setActiveEndCategoryFilter(category) {
+    activeEndCategoryFilter = category;
+    if (endCategoryFilterBtn) {
+        endCategoryFilterBtn.textContent = category;
+    }
+    renderCategoryFilterMenu(endCategoryFilterBtn, endCategoryFilterMenu, activeEndCategoryFilter);
+}
+
+function setActiveWaypointCategoryFilter(category) {
+    activeWaypointCategoryFilter = category;
+    if (waypointCategoryFilterBtn) {
+        waypointCategoryFilterBtn.textContent = category;
+    }
+    renderCategoryFilterMenu(waypointCategoryFilterBtn, waypointCategoryFilterMenu, activeWaypointCategoryFilter);
+}
+
+function toggleCategoryMenu(button, menu) {
+    if (!menu || !button) return;
+    const isOpen = menu.classList.toggle('show');
+    button.setAttribute('aria-expanded', String(isOpen));
+}
+
+function closeCategoryMenu(button, menu) {
+    if (!menu || !button) return;
+    menu.classList.remove('show');
+    button.setAttribute('aria-expanded', 'false');
+}
+
+function refreshCategoryFilters() {
+    renderCategoryFilterMenu(startCategoryFilterBtn, startCategoryFilterMenu, activeStartCategoryFilter);
+    renderCategoryFilterMenu(endCategoryFilterBtn, endCategoryFilterMenu, activeEndCategoryFilter);
+    renderCategoryFilterMenu(waypointCategoryFilterBtn, waypointCategoryFilterMenu, activeWaypointCategoryFilter);
+}
+
 // Setup autocomplete per entrambi i campi
 setupAutocomplete(startShopInput, startSuggestions, (shop) => {
     selectedStartShop = shop;
     renderRouteBuilderPreview();
     checkCanCalculate();
-});
+}, () => activeStartCategoryFilter);
 
 setupAutocomplete(endShopInput, endSuggestions, (shop) => {
     selectedEndShop = shop;
     renderRouteBuilderPreview();
     checkCanCalculate();
-});
+}, () => activeEndCategoryFilter);
 
 // Autocomplete per aggiungere waypoint
 if (waypointInput && waypointSuggestions) {
@@ -132,8 +253,44 @@ if (waypointInput && waypointSuggestions) {
         addWaypoint(shop);
         waypointInput.value = '';
         waypointSuggestions.classList.remove('show');
+    }, () => activeWaypointCategoryFilter);
+}
+
+if (startCategoryFilterBtn && startCategoryFilterMenu) {
+    startCategoryFilterBtn.addEventListener('click', () => {
+        toggleCategoryMenu(startCategoryFilterBtn, startCategoryFilterMenu);
     });
 }
+
+if (endCategoryFilterBtn && endCategoryFilterMenu) {
+    endCategoryFilterBtn.addEventListener('click', () => {
+        toggleCategoryMenu(endCategoryFilterBtn, endCategoryFilterMenu);
+    });
+}
+
+if (waypointCategoryFilterBtn && waypointCategoryFilterMenu) {
+    waypointCategoryFilterBtn.addEventListener('click', () => {
+        toggleCategoryMenu(waypointCategoryFilterBtn, waypointCategoryFilterMenu);
+    });
+}
+
+document.addEventListener('click', (e) => {
+    if (startCategoryFilterBtn && startCategoryFilterMenu) {
+        if (!startCategoryFilterBtn.contains(e.target) && !startCategoryFilterMenu.contains(e.target)) {
+            closeCategoryMenu(startCategoryFilterBtn, startCategoryFilterMenu);
+        }
+    }
+    if (endCategoryFilterBtn && endCategoryFilterMenu) {
+        if (!endCategoryFilterBtn.contains(e.target) && !endCategoryFilterMenu.contains(e.target)) {
+            closeCategoryMenu(endCategoryFilterBtn, endCategoryFilterMenu);
+        }
+    }
+    if (waypointCategoryFilterBtn && waypointCategoryFilterMenu) {
+        if (!waypointCategoryFilterBtn.contains(e.target) && !waypointCategoryFilterMenu.contains(e.target)) {
+            closeCategoryMenu(waypointCategoryFilterBtn, waypointCategoryFilterMenu);
+        }
+    }
+});
 
 function addWaypoint(shop) {
     if (!shop) return;
@@ -567,6 +724,10 @@ function selectMall(mallId) {
 
     // Inizializza il servizio di navigazione
     navigationService = new NavigationService(SHOPS_DATA);
+    activeStartCategoryFilter = 'Tutto';
+    activeEndCategoryFilter = 'Tutto';
+    activeWaypointCategoryFilter = 'Tutto';
+    refreshCategoryFilters();
 
     // Aggiorna UI
     document.getElementById('mallTitle').innerHTML = `${mall.logo} Navigatore ${mall.name}`;
@@ -647,6 +808,7 @@ function init() {
     }
     renderRouteBuilderPreview();
     checkCanCalculate();
+    refreshCategoryFilters();
 }
 
 // === GESTIONE MODALE LISTA NEGOZI ===
@@ -747,20 +909,7 @@ function renderShopsList(shops) {
             const shopName = item.dataset.shopName;
             const shop = SHOPS_DATA.find(s => s.name === shopName);
             if (shop) {
-                // Pre-compila il campo di partenza se vuoto
-                if (!selectedStartShop) {
-                    startShopInput.value = shop.name;
-                    selectedStartShop = shop;
-                    startShopInput.focus();
-                } else if (!selectedEndShop && waypoints.length === 0) {
-                    // Altrimenti pre-compila destinazione solo se non stiamo usando waypoint
-                    endShopInput.value = shop.name;
-                    selectedEndShop = shop;
-                } else {
-                    // Se abbiamo waypoint attivi, aggiungi questa scelta come tappa
-                    addWaypoint(shop);
-                }
-                checkCanCalculate();
+                handleShopSelection(shop);
                 closeShopsModalHandler();
             }
         });

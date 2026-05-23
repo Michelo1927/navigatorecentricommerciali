@@ -113,23 +113,39 @@
                 
                 <div class="input-group">
                     <label for="startShop">🏁 Partenza</label>
-                    <input 
-                        type="text" 
-                        id="startShop" 
-                        placeholder="Cerca negozio di partenza..."
-                        autocomplete="off"
-                    >
+                    <div class="input-with-filter">
+                        <input 
+                            type="text" 
+                            id="startShop" 
+                            placeholder="Cerca negozio di partenza..."
+                            autocomplete="off"
+                        >
+                        <div class="filter-dropdown">
+                            <button id="startCategoryFilterBtn" class="filter-toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                Tutto
+                            </button>
+                            <div id="startCategoryFilterMenu" class="filter-menu" role="listbox" aria-label="Filtri per categoria"></div>
+                        </div>
+                    </div>
                     <div id="startSuggestions" class="suggestions"></div>
                 </div>
 
                 <div class="input-group">
                     <label for="endShop">🎯 Destinazione</label>
-                    <input 
-                        type="text" 
-                        id="endShop" 
-                        placeholder="Cerca negozio di destinazione..."
-                        autocomplete="off"
-                    >
+                    <div class="input-with-filter">
+                        <input 
+                            type="text" 
+                            id="endShop" 
+                            placeholder="Cerca negozio di destinazione..."
+                            autocomplete="off"
+                        >
+                        <div class="filter-dropdown">
+                            <button id="endCategoryFilterBtn" class="filter-toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                Tutto
+                            </button>
+                            <div id="endCategoryFilterMenu" class="filter-menu" role="listbox" aria-label="Filtri per categoria"></div>
+                        </div>
+                    </div>
                     <div id="endSuggestions" class="suggestions"></div>
                 </div>
 
@@ -137,24 +153,37 @@
 
                 <div class="input-group">
                     <label for="waypointInput">➕ Aggiungi tappa intermedia</label>
-                    <input
-                        type="text"
-                        id="waypointInput"
-                        placeholder="Cerca una tappa da aggiungere..."
-                        autocomplete="off"
-                    >
+                    <div class="input-with-filter">
+                        <input
+                            type="text"
+                            id="waypointInput"
+                            placeholder="Aggiungi una tappa..."
+                            autocomplete="off"
+                        >
+                        <div class="filter-dropdown">
+                            <button id="waypointCategoryFilterBtn" class="filter-toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                Tutto
+                            </button>
+                            <div id="waypointCategoryFilterMenu" class="filter-menu" role="listbox" aria-label="Filtri per categoria"></div>
+                        </div>
+                    </div>
                     <div id="waypointSuggestions" class="suggestions"></div>
                 </div>
 
-                <div class="route-mode-wrap">
-                    <button id="efficientRouteBtn" class="btn-secondary route-mode-btn" type="button" aria-pressed="false">
-                        Percorso efficiente: OFF
-                    </button>
+                <div class="route-options">
+                    <div class="route-options-header">
+                        <span class="route-options-title">Opzioni percorso</span>
+                        <button id="efficientRouteBtn" class="btn-secondary route-mode-btn" type="button" aria-pressed="false">
+                            Percorso Efficiente
+                        </button>
+                    </div>
+                    <div class="route-options-divider" aria-hidden="true"></div>
+                    <div class="route-options-action">
+                        <button id="calculateBtn" class="btn-primary">
+                            Calcola Percorso
+                        </button>
+                    </div>
                 </div>
-
-                <button id="calculateBtn" class="btn-primary">
-                    Calcola Percorso
-                </button>
 
                 <div id="errorMessage" class="error-message"></div>
             </div>

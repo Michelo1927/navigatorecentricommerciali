@@ -210,7 +210,7 @@ class NavigationService {
             { islandShop: 'Original Marines', outerShops: ['H&M'] },
             { islandShop: 'Parfois', outerShops: ['H&M'] },
             { islandShop: 'Lovable', outerShops: ['H&M'] },
-            { islandShop: 'Bluespirit', outerShops: ['H&M'] },
+            { islandShop: 'Bluespirit', outerShops: ['H&M', 'Just Design'] },
             { islandShop: 'Fielmann', outerShops: ['Lego'] },
             { islandShop: 'Vestopazzo', outerShops: ['Lego', 'Tezenis'] },
 
