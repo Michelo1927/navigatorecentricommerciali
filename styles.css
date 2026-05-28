@@ -748,6 +748,25 @@ body {
     gap: 12px;
 }
 
+.route-options-toggles {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.route-options-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px;
+    background: #F5F7FA;
+    border: 1px solid #E6ECF1;
+    border-radius: 12px;
+}
+
 .route-options-title {
     color: #2d3a40;
     font-size: 14px;
@@ -760,9 +779,21 @@ body {
     margin: 12px 0 14px;
 }
 
+.route-options-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 .route-options-action .btn-primary {
-    width: 100%;
+    flex: 1 1 220px;
     min-height: 48px;
+    width: auto;
+}
+
+.route-options-action .route-mode-btn {
+    flex: 0 1 240px;
 }
 
 .route-options .route-mode-btn {
@@ -787,6 +818,25 @@ body {
     right: 30px;
     width: 12px;
     height: 12px;
+}
+
+.route-options-toggles .route-mode-btn {
+    min-height: 40px;
+    padding: 10px 66px 10px 14px;
+    font-size: 14px;
+    border-radius: 12px;
+}
+
+.route-options-toggles .route-mode-btn::before {
+    right: 14px;
+    width: 38px;
+    height: 20px;
+}
+
+.route-options-toggles .route-mode-btn::after {
+    right: 34px;
+    width: 14px;
+    height: 14px;
 }
 
 .route-options .route-mode-btn.active {

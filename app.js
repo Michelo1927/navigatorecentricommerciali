@@ -19,6 +19,7 @@ const waypointSuggestions = document.getElementById('waypointSuggestions');
 const routeBuilderPreview = document.getElementById('routeBuilderPreview');
 const calculateBtn = document.getElementById('calculateBtn');
 const efficientRouteBtn = document.getElementById('efficientRouteBtn');
+const bathroomQuickToggle = document.getElementById('bathroomQuickToggle');
 const errorMessage = document.getElementById('errorMessage');
 const backBtn = document.getElementById('backBtn');
 const startCategoryFilterBtn = document.getElementById('startCategoryFilterBtn');
@@ -28,6 +29,9 @@ const endCategoryFilterMenu = document.getElementById('endCategoryFilterMenu');
 const waypointCategoryFilterBtn = document.getElementById('waypointCategoryFilterBtn');
 const waypointCategoryFilterMenu = document.getElementById('waypointCategoryFilterMenu');
 
+const endShopDefaultPlaceholder = endShopInput ? endShopInput.placeholder : '';
+const waypointDefaultPlaceholder = waypointInput ? waypointInput.placeholder : '';
+
 const routeStops = document.getElementById('routeStops');
 const routeSteps = document.getElementById('routeSteps');
 const stepsContainer = document.getElementById('stepsContainer');
@@ -36,6 +40,7 @@ let selectedStartShop = null;
 let selectedEndShop = null;
 let waypoints = []; // array of shop objects in order
 let efficientRouteEnabled = false;
+let bathroomQuickEnabled = false;
 let activeStartCategoryFilter = 'Tutto';
 let activeEndCategoryFilter = 'Tutto';
 let activeWaypointCategoryFilter = 'Tutto';
@@ -48,11 +53,68 @@ function updateEfficientRouteButton() {
     }
 }
 
+function updateBathroomQuickToggle() {
+    if (!bathroomQuickToggle) return;
+
+    bathroomQuickToggle.classList.toggle('active', bathroomQuickEnabled);
+    bathroomQuickToggle.setAttribute('aria-pressed', String(bathroomQuickEnabled));
+
+    if (bathroomQuickEnabled) {
+        selectedEndShop = null;
+        waypoints = [];
+    }
+
+    if (endShopInput) {
+        endShopInput.disabled = bathroomQuickEnabled;
+        endShopInput.value = bathroomQuickEnabled ? '' : (selectedEndShop ? selectedEndShop.name : '');
+        endShopInput.placeholder = bathroomQuickEnabled
+            ? 'Bagno piu vicino (automatico)'
+            : endShopDefaultPlaceholder;
+    }
+
+    if (endCategoryFilterBtn) {
+        endCategoryFilterBtn.disabled = bathroomQuickEnabled;
+        endCategoryFilterBtn.setAttribute('aria-disabled', String(bathroomQuickEnabled));
+    }
+
+    if (waypointInput) {
+        waypointInput.disabled = bathroomQuickEnabled;
+        waypointInput.value = bathroomQuickEnabled ? '' : waypointInput.value;
+        waypointInput.placeholder = bathroomQuickEnabled
+            ? 'Tappe disabilitate in modalita bagno'
+            : waypointDefaultPlaceholder;
+    }
+
+    if (waypointCategoryFilterBtn) {
+        waypointCategoryFilterBtn.disabled = bathroomQuickEnabled;
+        waypointCategoryFilterBtn.setAttribute('aria-disabled', String(bathroomQuickEnabled));
+    }
+
+    if (endSuggestions) {
+        endSuggestions.classList.remove('show');
+    }
+
+    if (waypointSuggestions) {
+        waypointSuggestions.classList.remove('show');
+    }
+
+    renderRouteBuilderPreview();
+    checkCanCalculate();
+}
+
 if (efficientRouteBtn) {
     updateEfficientRouteButton();
     efficientRouteBtn.addEventListener('click', () => {
         efficientRouteEnabled = !efficientRouteEnabled;
         updateEfficientRouteButton();
+    });
+}
+
+if (bathroomQuickToggle) {
+    updateBathroomQuickToggle();
+    bathroomQuickToggle.addEventListener('click', () => {
+        bathroomQuickEnabled = !bathroomQuickEnabled;
+        updateBathroomQuickToggle();
     });
 }
 
@@ -295,7 +357,7 @@ document.addEventListener('click', (e) => {
 function addWaypoint(shop) {
     if (!shop) return;
     if ((selectedStartShop && selectedStartShop.id === shop.id) || (selectedEndShop && selectedEndShop.id === shop.id)) {
-        showError('Questa tappa coincide con partenza o arrivo');
+        showError('Le tappe di partenza e arrivo sono uguali');
         return;
     }
     // evita duplicati consecutivi
@@ -327,7 +389,18 @@ function renderRouteBuilderPreview() {
         previewStops.push({ shop, label: `TAPPA ${index + 1}`, icon: '🧭', type: 'mid', index });
     });
 
-    if (selectedEndShop) {
+    if (bathroomQuickEnabled) {
+        if (previewStops.length > 0) {
+            previewStops.push({ shop: null, separator: true });
+        }
+        previewStops.push({
+            shop: { name: 'Bagno piu vicino' },
+            label: 'ARRIVO',
+            icon: '🚻',
+            type: 'end',
+            quickDestination: true
+        });
+    } else if (selectedEndShop) {
         if (previewStops.length > 0) {
             previewStops.push({ shop: null, separator: true });
         }
@@ -344,12 +417,16 @@ function renderRouteBuilderPreview() {
             return '<div class="route-builder-arrow">→</div>';
         }
 
+        const details = item.quickDestination
+            ? `${item.label} • ${item.shop.name}`
+            : `${item.label} • Piano ${item.shop.floor}`;
+
         return `
             <div class="route-builder-stop route-builder-${item.type}">
                 <span class="shop-icon">${item.icon}</span>
                 <div class="route-builder-stop-meta">
                     <span class="shop-name">${item.shop.name}</span>
-                    <span class="shop-floor">${item.label} • Piano ${item.shop.floor}</span>
+                    <span class="shop-floor">${details}</span>
                 </div>
                 ${item.type === 'mid' ? `<button class="route-builder-remove" data-index="${item.index}" aria-label="Rimuovi tappa">×</button>` : ''}
             </div>
@@ -366,18 +443,19 @@ function renderRouteBuilderPreview() {
 
 function checkCanCalculate() {
     // Abilita quando partenza e arrivo sono entrambi selezionati
-    calculateBtn.disabled = !(selectedStartShop && selectedEndShop);
+    calculateBtn.disabled = !(selectedStartShop && (selectedEndShop || bathroomQuickEnabled));
 }
 
-function getRouteStops() {
-    if (!selectedStartShop || !selectedEndShop) return [];
+function getRouteStops(endOverride = null) {
+    const endShop = endOverride || selectedEndShop;
+    if (!selectedStartShop || !endShop) return [];
 
     const intermediateStops = waypoints.slice();
     const orderedWaypoints = efficientRouteEnabled
-        ? optimizeWaypoints(selectedStartShop, intermediateStops, selectedEndShop)
+        ? optimizeWaypoints(selectedStartShop, intermediateStops, endShop)
         : intermediateStops;
 
-    return [selectedStartShop, ...orderedWaypoints, selectedEndShop];
+    return [selectedStartShop, ...orderedWaypoints, endShop];
 }
 
 function getLegKey(startId, endId) {
@@ -391,6 +469,26 @@ function getLegResult(startShop, endShop, cache) {
     const result = navigationService.findShortestPathById(startShop.id, endShop.id);
     cache.set(key, result);
     return result;
+}
+
+function findNearestBathroom(startShop) {
+    if (!startShop) return null;
+
+    const bathrooms = SHOPS_DATA.filter(shop => shop.type === 'Bagni' && shop.id !== startShop.id);
+    if (bathrooms.length === 0) return null;
+
+    const cache = new Map();
+    let best = null;
+
+    bathrooms.forEach(bathroom => {
+        const result = getLegResult(startShop, bathroom, cache);
+        if (result.error) return;
+        if (!best || result.stepsCount < best.stepsCount) {
+            best = { shop: bathroom, stepsCount: result.stepsCount };
+        }
+    });
+
+    return best ? best.shop : null;
 }
 
 function optimizeWaypoints(startShop, intermediateStops, endShop) {
@@ -479,7 +577,25 @@ calculateBtn.addEventListener('click', () => {
         return;
     }
 
-    const routeStopsSequence = getRouteStops();
+    let quickDestination = null;
+    if (bathroomQuickEnabled) {
+        if (!selectedStartShop) {
+            showError('Seleziona una partenza per trovare il bagno piu vicino');
+            return;
+        }
+
+        quickDestination = findNearestBathroom(selectedStartShop);
+        if (!quickDestination) {
+            showError('Nessun bagno trovato nel centro commerciale');
+            return;
+        }
+
+        if (endShopInput) {
+            endShopInput.value = quickDestination.name;
+        }
+    }
+
+    const routeStopsSequence = getRouteStops(quickDestination);
     if (routeStopsSequence.length < 2) {
         return;
     }
