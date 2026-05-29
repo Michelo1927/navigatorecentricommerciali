@@ -2,9 +2,9 @@
 class NavigationService {
     constructor(shops) {
         this.shops = shops;
-        this.WEIGHT_SAME_RING = 4;
+        this.WEIGHT_SAME_RING = 2;
         this.WEIGHT_ISLAND_RING = 2; // Stesso peso per isole (può essere conveniente)
-        this.WEIGHT_CROSS_ISLAND = 2; // Peso per entrare/uscire dall'isola
+        this.WEIGHT_CROSS_ISLAND = 3; // Peso per entrare/uscire dall'isola
         this.WEIGHT_TO_STAIRS = 1;
         this.WEIGHT_STAIRS = 2;
         this.graph = this.buildGraph();

@@ -662,6 +662,7 @@ calculateBtn.addEventListener('click', () => {
         showRoute(combined, routeStopsSequence);
         loadingSection.style.display = 'none';
         routeSection.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 500);
 });
 
@@ -696,38 +697,35 @@ function showRoute(result, routeStopsSequence) {
 function renderRouteStops(routeStopsSequence) {
     if (!routeStops) return;
 
-    const startShop = routeStopsSequence[0];
-    const endShop = routeStopsSequence[routeStopsSequence.length - 1];
-    const intermediateStops = routeStopsSequence.slice(1, -1);
-    const stopsMarkup = [
-        `
-        <div class="route-shop route-stop-start">
-            <span class="shop-icon">🏁</span>
-            <span class="shop-name">${startShop.name}</span>
-            <span class="shop-floor">PARTENZA • Piano ${startShop.floor}</span>
-        </div>
-        `,
-        ...intermediateStops.flatMap((stop, index) => [
-            '<div class="route-arrow">→</div>',
-            `
-            <div class="route-shop route-stop-mid">
-                <span class="shop-icon">🧭</span>
-                <span class="shop-name">${stop.name}</span>
-                <span class="shop-floor">TAPPA ${index + 1} • Piano ${stop.floor}</span>
-            </div>
-            `
-        ]),
-        intermediateStops.length > 0 ? '<div class="route-arrow">→</div>' : '',
-        `
-        <div class="route-shop route-stop-end">
-            <span class="shop-icon">🎯</span>
-            <span class="shop-name">${endShop.name}</span>
-            <span class="shop-floor">ARRIVO • Piano ${endShop.floor}</span>
-        </div>
-        `
-    ].join('');
+    const stops = routeStopsSequence;
+    let markup = '<div class="route-timeline">';
 
-    routeStops.innerHTML = stopsMarkup;
+    stops.forEach((stop, index) => {
+        const isFirst = index === 0;
+        const isLast = index === stops.length - 1;
+        const isOnly = stops.length === 1;
+
+        let typeClass, label;
+        if (isFirst) { typeClass = 'tl-start'; label = 'PARTENZA'; }
+        else if (isLast) { typeClass = 'tl-end'; label = 'ARRIVO'; }
+        else { typeClass = 'tl-mid'; label = `TAPPA ${index}`; }
+
+        markup += `
+        <div class="tl-stop ${typeClass}">
+            <div class="tl-marker">
+                <div class="tl-dot"></div>
+                ${(!isLast && !isOnly) ? '<div class="tl-line"></div>' : ''}
+            </div>
+            <div class="tl-info">
+                <span class="tl-label">${label}</span>
+                <span class="tl-name">${stop.name}</span>
+                <span class="tl-floor">Piano ${stop.floor}</span>
+            </div>
+        </div>`;
+    });
+
+    markup += '</div>';
+    routeStops.innerHTML = markup;
 }
 
 function createShopStepCard(shop, stepNumber, isStart, isEnd) {

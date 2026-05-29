@@ -637,12 +637,89 @@ body {
 }
 
 .route-shops {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 12px;
     margin-bottom: 16px;
+}
+
+/* Timeline route stops */
+.route-timeline {
+    display: flex;
+    flex-direction: column;
+}
+
+.tl-stop {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.tl-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 16px;
+    padding-top: 3px;
+}
+
+.tl-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: var(--text-secondary);
+}
+
+.tl-start .tl-dot {
+    background: var(--secondary-color);
+}
+
+.tl-end .tl-dot {
+    background: #E53935;
+}
+
+.tl-mid .tl-dot {
+    background: var(--primary-color);
+}
+
+.tl-line {
+    width: 2px;
+    flex: 1;
+    min-height: 32px;
+    background: var(--border-color);
+    margin-top: 4px;
+}
+
+.tl-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding-bottom: 20px;
+    min-width: 0;
+    flex: 1;
+}
+
+.tl-stop:last-child .tl-info {
+    padding-bottom: 0;
+}
+
+.tl-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.tl-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: #212121;
+    line-height: 1.3;
+}
+
+.tl-floor {
+    font-size: 13px;
+    color: var(--text-secondary);
 }
 
 .route-shop {
@@ -1844,20 +1921,6 @@ body {
         font-size: 24px;
     }
     
-    .route-shops {
-        flex-direction: column;
-        gap: 12px;
-    }
-    
-    .route-shop {
-        text-align: center !important;
-    }
-    
-    .route-arrow {
-        transform: rotate(90deg);
-        padding: 10px 0;
-    }
-    
     /* Cookie Banner Responsive */
     .cookie-content {
         flex-direction: column;
@@ -2020,4 +2083,14 @@ body {
     background: #f8f9ff;
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* SEO Static Content */
+.seo-intro {
+    color: #495057;
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 700px;
+    margin: 0 auto 30px;
+    text-align: center;
 }
