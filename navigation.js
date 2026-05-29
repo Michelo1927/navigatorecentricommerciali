@@ -7,6 +7,7 @@ class NavigationService {
         this.WEIGHT_CROSS_ISLAND = 2; // Peso per entrare/uscire dall'isola
         this.WEIGHT_TO_STAIRS = 1;
         this.WEIGHT_STAIRS = 2;
+        this.graph = this.buildGraph();
     }
 
     buildGraph() {
@@ -414,7 +415,7 @@ class NavigationService {
             return { error: 'Sei già alla destinazione!' };
         }
 
-        const graph = this.buildGraph();
+        const graph = this.graph;
         const path = this.dijkstra(startShop.id, endShop.id, graph);
 
         if (!path) {
@@ -494,7 +495,7 @@ class NavigationService {
             return { error: 'Sei già alla destinazione!' };
         }
 
-        const graph = this.buildGraph();
+        const graph = this.graph;
         const path = this.dijkstra(startShop.id, endShop.id, graph);
 
         if (!path) {
