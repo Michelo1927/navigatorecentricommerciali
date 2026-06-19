@@ -51,6 +51,9 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2">
     <link rel="shortcut icon" href="favicon.png?v=2">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
@@ -58,7 +61,7 @@
     <nav class="top-nav">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html">🗺️ <strong>Mall Nav</strong></a>
+                <a href="index.html"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> <strong>Mall Nav</strong></a>
             </div>
             <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
                 <span></span>
@@ -80,7 +83,7 @@
         <section id="mallSelectionSection" class="mall-selection-section">
             <header class="header">
                 <div class="header-content">
-                    <h1>🗺️ Mall Nav</h1>
+                    <h1><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Mall Nav</h1>
                     <p class="subtitle">Scegli il tuo centro commerciale</p>
                 </div>
             </header>
@@ -106,7 +109,7 @@
                 <h2>Seleziona Percorso</h2>
                 
                 <div class="input-group">
-                    <label for="startShop">🏁 Partenza</label>
+                    <label for="startShop"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg> Partenza</label>
                     <div class="input-with-filter">
                         <input 
                             type="text" 
@@ -125,7 +128,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="endShop">🎯 Destinazione</label>
+                    <label for="endShop"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> Destinazione</label>
                     <div class="input-with-filter">
                         <input 
                             type="text" 
@@ -146,7 +149,7 @@
                 <div id="routeBuilderPreview" class="route-builder-preview"></div>
 
                 <div class="input-group">
-                    <label for="waypointInput">➕ Aggiungi tappa intermedia</label>
+                    <label for="waypointInput"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Aggiungi tappa intermedia</label>
                     <div class="input-with-filter">
                         <input
                             type="text"
@@ -169,12 +172,16 @@
                         <span class="route-options-title">Opzioni percorso</span>
                         <div class="route-options-toggles">
                             <div class="route-options-group">
-                                <button id="efficientRouteBtn" class="btn-secondary route-mode-btn" type="button" aria-pressed="false">
-                                    Percorso Efficiente
-                                    <span class="info-hint-btn" id="efficientRouteInfoBtn" tabindex="0" aria-label="Informazioni su Percorso Efficiente">?</span>
+                                <button id="efficientRouteBtn" class="route-mode-btn" type="button" aria-pressed="false">
+                                    <span class="route-btn-label">
+                                        Percorso Efficiente
+                                        <span class="info-hint-btn" id="efficientRouteInfoBtn" tabindex="0" aria-label="Informazioni su Percorso Efficiente">?</span>
+                                    </span>
+                                    <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
                                 </button>
-                                <button id="bathroomQuickToggle" class="btn-secondary route-mode-btn" type="button" aria-pressed="false">
-                                    Destinazione rapida: Bagno
+                                <button id="bathroomQuickToggle" class="route-mode-btn" type="button" aria-pressed="false">
+                                    <span class="route-btn-label">Destinazione rapida: Bagno</span>
+                                    <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
                                 </button>
                             </div>
                         </div>
@@ -237,7 +244,7 @@
             <div class="content-features">
                 <div class="feature-box">
                     <div class="feature-header">
-                        <span class="feature-emoji">🎯</span>
+                        <span class="feature-emoji"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg></span>
                         <h3>Navigazione Intelligente</h3>
                     </div>
                     <p>Trova il percorso più breve tra qualsiasi coppia di negozi. Risparmia tempo ed energie durante il tuo shopping.</p>

@@ -400,7 +400,7 @@ function renderRouteBuilderPreview() {
     const previewStops = [];
 
     if (selectedStartShop) {
-        previewStops.push({ shop: selectedStartShop, label: 'PARTENZA', icon: '🏁', type: 'start' });
+        previewStops.push({ shop: selectedStartShop, label: 'PARTENZA', icon: '<svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>', type: 'start' });
     }
 
     waypoints.forEach((shop, index) => {
@@ -423,7 +423,7 @@ function renderRouteBuilderPreview() {
         if (previewStops.length > 0) {
             previewStops.push({ shop: null, separator: true });
         }
-        previewStops.push({ shop: selectedEndShop, label: 'ARRIVO', icon: '🎯', type: 'end' });
+        previewStops.push({ shop: selectedEndShop, label: 'ARRIVO', icon: '<svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>', type: 'end' });
     }
 
     if (previewStops.length === 0) {
@@ -757,7 +757,7 @@ function createShopStepCard(shop, stepNumber, isStart, isEnd) {
     }
 
     card.innerHTML = `
-        <div class="step-number">${isStart ? '🏁' : isEnd ? '🎯' : stepNumber}</div>
+        <div class="step-number">${isStart ? '<svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>' : isEnd ? '<svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>' : stepNumber}</div>
         <div class="step-content">
             <div class="step-name">${shop.name}</div>
             <div class="step-details">
@@ -1031,8 +1031,6 @@ function renderShopsList(shops) {
             <div class="shop-item-name">${shop.name}</div>
             <div class="shop-item-details">
                 <span class="shop-item-floor">Piano ${shop.floor}</span>
-                <span>${getZoneLabel(shop.zone)}</span>
-
             </div>
         </div>
     `).join('');
