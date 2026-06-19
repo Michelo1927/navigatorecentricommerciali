@@ -13,8 +13,8 @@ class NavigationService {
     buildGraph() {
         const graph = {};
         
-        console.log('🔧 Building graph per:', this.shops.length, 'negozi');
-        console.log('📍 Primo negozio ID:', this.shops[0]?.id);
+        // console.log('🔧 Building graph per:', this.shops.length, 'negozi');
+        // console.log('📍 Primo negozio ID:', this.shops[0]?.id);
 
         // Inizializza tutti i negozi
         this.shops.forEach(shop => {
@@ -91,7 +91,7 @@ class NavigationService {
         if (firstShopId.startsWith('gr_')) {
             // GranRoma - Scale Mobili
             // Scala SX Piano 0 (di fronte a DENTALPRO, BLUESPIRIT 2, LA CASINA DEL CAFFE)
-            const grScalaSxP0 = ['Dentalpro', 'Bluespirit 2', 'La Casina Del Caffe'];
+            const grScalaSxP0 = ['Dentalpro', 'Bluespirit Ingresso', 'La Casina Del Caffe'];
             grScalaSxP0.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 0);
                 if (shop) addConnection('stairs_left_p0', shop.id, this.WEIGHT_TO_STAIRS);
@@ -161,12 +161,12 @@ class NavigationService {
         
         // GranRoma: ID iniziano con 'gr_'
         if (firstShopId.startsWith('gr_')) {
-            console.log('🏬 Usando connessioni GranRoma');
+            // console.log('🏬 Usando connessioni GranRoma');
             return this.getGranRomaConnections();
         }
         // Porta di Roma: ID iniziano con 'p0_' o 'p1_'
         else if (firstShopId.startsWith('p0_') || firstShopId.startsWith('p1_')) {
-            console.log('🏬 Usando connessioni Porta di Roma');
+            // console.log('🏬 Usando connessioni Porta di Roma');
             return this.getPortaDiRomaConnections();
         }
         
@@ -303,7 +303,7 @@ class NavigationService {
             { islandShop: 'Lama Optical', outerShops: ["Deco'"] },
             { islandShop: 'Miniso', outerShops: ['Cisalfa Sport'] },
             { islandShop: 'Parfois', outerShops: ['Cisalfa Sport'] },
-            { islandShop: 'Bluespirit 2', outerShops: ['Kasanova+', 'Cisalfa Sport'] },
+            { islandShop: 'Bluespirit Ingresso', outerShops: ['Kasanova+', 'Cisalfa Sport'] },
             { islandShop: 'Mondovista', outerShops: ['Mayoral'] },
             { islandShop: 'Omai', outerShops: ['Mango'] },
             { islandShop: 'Talco', outerShops: ['Mango'] },
@@ -311,9 +311,9 @@ class NavigationService {
             { islandShop: 'Grandvision', outerShops: ['Flying Tiger Copenhagen'] },
             { islandShop: 'Calzedonia', outerShops: ['Zara', 'Jdsports', 'Gelateria Cremilla'] },
             { islandShop: 'Bluespirit', outerShops: ['Zara'] },
-            { islandShop: 'Satur', outerShops: ['Tramas'] },
-            { islandShop: 'Bata', outerShops: ['Tramas'] },
-            { islandShop: 'Awlab', outerShops: ['Amorestore'] },
+            //{ islandShop: 'Satur', outerShops: ['Tramas'] },
+            //{ islandShop: 'Bata', outerShops: ['Tramas'] },
+            //{ islandShop: 'Awlab', outerShops: ['Amorestore'] },
             { islandShop: 'Intimissimi', outerShops: ['Ovs', 'Tezenis'] },
             { islandShop: 'Vodafone', outerShops: ['Punt Roma', 'Sorbino'] },
             { islandShop: 'Originalmarines', outerShops: ['Sorbino', 'Primadonna Collection'] },
@@ -422,54 +422,7 @@ class NavigationService {
             return { error: 'Nessun percorso trovato tra i due negozi' };
         }
 
-        // Converti il percorso in steps con istruzioni
-        const steps = [];
-        let skipNextStair = false;
-
-        for (let i = 0; i < path.length; i++) {
-            const id = path[i];
-
-            if (id.startsWith('stairs_')) {
-                if (!skipNextStair) {
-                    // Trova negozi prima e dopo le scale
-                    const prevShop = i > 0 && !path[i - 1].startsWith('stairs_') 
-                        ? this.shops.find(s => s.id === path[i - 1])
-                        : null;
-
-                    let nextShop = null;
-                    for (let j = i + 1; j < path.length; j++) {
-                        if (!path[j].startsWith('stairs_')) {
-                            nextShop = this.shops.find(s => s.id === path[j]);
-                            break;
-                        }
-                    }
-
-                    const isGoingUp = prevShop?.floor === 0 && nextShop?.floor === 1;
-                    const stairType = id.includes('left') ? 'Scale Mobili SINISTRA' : 'Scale Mobili DESTRA';
-                    const instruction = isGoingUp 
-                        ? `🔼 Sali con le ${stairType} verso il Piano 1`
-                        : `🔽 Scendi con le ${stairType} verso il Piano 0`;
-
-                    steps.push({
-                        type: 'stair',
-                        instruction,
-                        isGoingUp
-                    });
-
-                    skipNextStair = true;
-                } else {
-                    skipNextStair = false;
-                }
-            } else {
-                const shop = this.shops.find(s => s.id === id);
-                if (shop) {
-                    steps.push({
-                        type: 'shop',
-                        shop
-                    });
-                }
-            }
-        }
+        const steps = this._pathToSteps(path);
 
         return {
             success: true,
@@ -480,29 +433,7 @@ class NavigationService {
         };
     }
 
-    // Variante per usare direttamente gli ID (utile per calcoli multi-leg)
-    findShortestPathById(startId, endId) {
-        const startShop = this.shops.find(s => s.id === startId);
-        const endShop = this.shops.find(s => s.id === endId);
-
-        if (!startShop) {
-            return { error: `Negozio di partenza non trovato: ${startId}` };
-        }
-        if (!endShop) {
-            return { error: `Negozio di destinazione non trovato: ${endId}` };
-        }
-        if (startShop.id === endShop.id) {
-            return { error: 'Sei già alla destinazione!' };
-        }
-
-        const graph = this.graph;
-        const path = this.dijkstra(startShop.id, endShop.id, graph);
-
-        if (!path) {
-            return { error: 'Nessun percorso trovato tra i due negozi' };
-        }
-
-        // Converti il percorso in steps con istruzioni (stesso comportamento di findShortestPath)
+    _pathToSteps(path) {
         const steps = [];
         let skipNextStair = false;
 
@@ -529,26 +460,43 @@ class NavigationService {
                         ? `🔼 Sali con le ${stairType} verso il Piano 1`
                         : `🔽 Scendi con le ${stairType} verso il Piano 0`;
 
-                    steps.push({
-                        type: 'stair',
-                        instruction,
-                        isGoingUp
-                    });
-
+                    steps.push({ type: 'stair', instruction, isGoingUp });
                     skipNextStair = true;
                 } else {
                     skipNextStair = false;
                 }
             } else {
                 const shop = this.shops.find(s => s.id === id);
-                if (shop) {
-                    steps.push({
-                        type: 'shop',
-                        shop
-                    });
-                }
+                if (shop) steps.push({ type: 'shop', shop });
             }
         }
+
+        return steps;
+    }
+
+    // Variante per usare direttamente gli ID (utile per calcoli multi-leg)
+    findShortestPathById(startId, endId) {
+        const startShop = this.shops.find(s => s.id === startId);
+        const endShop = this.shops.find(s => s.id === endId);
+
+        if (!startShop) {
+            return { error: `Negozio di partenza non trovato: ${startId}` };
+        }
+        if (!endShop) {
+            return { error: `Negozio di destinazione non trovato: ${endId}` };
+        }
+        if (startShop.id === endShop.id) {
+            return { error: 'Sei già alla destinazione!' };
+        }
+
+        const graph = this.graph;
+        const path = this.dijkstra(startShop.id, endShop.id, graph);
+
+        if (!path) {
+            return { error: 'Nessun percorso trovato tra i due negozi' };
+        }
+
+        const steps = this._pathToSteps(path);
 
         return {
             success: true,

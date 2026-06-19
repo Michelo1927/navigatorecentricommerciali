@@ -1,4 +1,4 @@
-// App principale
+// App principale — richiede data.js caricato prima (selectedMall, SHOPS_DATA, MALLS_DATA, MALLS_CONFIG)
 let navigationService = null;
 
 // Elementi DOM
@@ -610,60 +610,56 @@ calculateBtn.addEventListener('click', () => {
     loadingSection.style.display = 'block';
     errorMessage.classList.remove('show');
 
-    // Simula un piccolo delay per UX
-    setTimeout(() => {
-        const combined = {
-            success: true,
-            startShop: null,
-            endShop: null,
-            steps: [],
-            stepsCount: 0
-        };
+    const combined = {
+        success: true,
+        startShop: null,
+        endShop: null,
+        steps: [],
+        stepsCount: 0
+    };
 
-        for (let i = 0; i < legs.length; i++) {
-            const leg = legs[i];
-            const res = getLegResult(leg.start, leg.end, new Map());
-            if (res.error) {
-                showError(res.error);
-                loadingSection.style.display = 'none';
-                searchSection.style.display = 'block';
-                return;
-            }
-
-            if (i === 0) {
-                combined.startShop = res.startShop;
-            }
-
-            // Evita duplicare lo shop di transizione
-            if (combined.steps.length > 0 && res.steps.length > 0) {
-                const firstStep = res.steps[0];
-                const lastCombinedStep = combined.steps[combined.steps.length - 1];
-                if (firstStep.type === 'shop' && lastCombinedStep.type === 'shop' && firstStep.shop.id === lastCombinedStep.shop.id) {
-                    // skip first step
-                    combined.steps = combined.steps.concat(res.steps.slice(1));
-                } else {
-                    combined.steps = combined.steps.concat(res.steps);
-                }
-            } else {
-                combined.steps = combined.steps.concat(res.steps);
-            }
-
-            combined.endShop = res.endShop;
-            combined.stepsCount += res.stepsCount;
-        }
-
-        if (combined.steps.length === 0) {
-            showError('Nessun percorso trovato');
+    for (let i = 0; i < legs.length; i++) {
+        const leg = legs[i];
+        const res = getLegResult(leg.start, leg.end, new Map());
+        if (res.error) {
+            showError(res.error);
             loadingSection.style.display = 'none';
             searchSection.style.display = 'block';
             return;
         }
 
-        showRoute(combined, routeStopsSequence);
+        if (i === 0) {
+            combined.startShop = res.startShop;
+        }
+
+        // Evita duplicare lo shop di transizione
+        if (combined.steps.length > 0 && res.steps.length > 0) {
+            const firstStep = res.steps[0];
+            const lastCombinedStep = combined.steps[combined.steps.length - 1];
+            if (firstStep.type === 'shop' && lastCombinedStep.type === 'shop' && firstStep.shop.id === lastCombinedStep.shop.id) {
+                combined.steps = combined.steps.concat(res.steps.slice(1));
+            } else {
+                combined.steps = combined.steps.concat(res.steps);
+            }
+        } else {
+            combined.steps = combined.steps.concat(res.steps);
+        }
+
+        combined.endShop = res.endShop;
+        combined.stepsCount += res.stepsCount;
+    }
+
+    if (combined.steps.length === 0) {
+        showError('Nessun percorso trovato');
         loadingSection.style.display = 'none';
-        routeSection.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 500);
+        searchSection.style.display = 'block';
+        return;
+    }
+
+    showRoute(combined, routeStopsSequence);
+    loadingSection.style.display = 'none';
+    routeSection.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 function showError(message) {
@@ -784,9 +780,11 @@ backBtn.addEventListener('click', () => {
     renderRouteBuilderPreview();
     efficientRouteEnabled = false;
     updateEfficientRouteButton();
+    bathroomQuickEnabled = false;
+    updateBathroomQuickToggle();
     errorMessage.classList.remove('show');
     checkCanCalculate();
-    
+
     // Hide feedback banner
     const feedbackBanner = document.getElementById('feedbackBanner');
     if (feedbackBanner) {
@@ -855,8 +853,8 @@ function selectMall(mallId) {
     mainHeader.style.display = 'block';
     searchSection.style.display = 'block';
 
-    console.log(`✅ Centro commerciale ${mall.name} selezionato!`);
-    console.log(`📊 ${SHOPS_DATA.length} negozi disponibili`);
+    // console.log(`✅ Centro commerciale ${mall.name} selezionato!`);
+    // console.log(`📊 ${SHOPS_DATA.length} negozi disponibili`);
 }
 
 function updateStats(mall) {
@@ -881,7 +879,7 @@ function updateStats(mall) {
 }
 
 // Bottone per cambiare centro commerciale
-changeMallBtn.addEventListener('click', () => {
+if (changeMallBtn) changeMallBtn.addEventListener('click', () => {
     // Reset
     selectedMall = null;
     SHOPS_DATA = [];
@@ -896,6 +894,8 @@ changeMallBtn.addEventListener('click', () => {
     renderRouteBuilderPreview();
     efficientRouteEnabled = false;
     updateEfficientRouteButton();
+    bathroomQuickEnabled = false;
+    updateBathroomQuickToggle();
     errorMessage.classList.remove('show');
     
     // Rimuovi selezione salvata
@@ -1037,10 +1037,10 @@ function closeShopsModalHandler() {
 }
 
 // Event listeners modale
-closeShopsModal.addEventListener('click', closeShopsModalHandler);
+if (closeShopsModal) closeShopsModal.addEventListener('click', closeShopsModalHandler);
 
 // Chiudi cliccando fuori dal modale
-shopsModal.addEventListener('click', (e) => {
+if (shopsModal) shopsModal.addEventListener('click', (e) => {
     if (e.target === shopsModal) {
         closeShopsModalHandler();
     }
@@ -1048,7 +1048,7 @@ shopsModal.addEventListener('click', (e) => {
 
 // Chiudi con ESC
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && shopsModal.classList.contains('show')) {
+    if (e.key === 'Escape' && shopsModal && shopsModal.classList.contains('show')) {
         closeShopsModalHandler();
     }
 });

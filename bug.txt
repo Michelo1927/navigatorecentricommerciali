@@ -1,0 +1,28 @@
+CRITICO — Bug che causa percorsi sbagliati o stati rotti
+
+3. Douglas DX nelle connessioni Porta di Roma non esiste nel dataset
+In data.js ci sono due negozi chiamati Douglas (riga 108 in ISLAND_SX, riga 136 in ISLAND_DX). In navigation.js:230 c'è una connessione per Douglas DX che non corrisponde a nessun nome — il find() restituisce undefined. Il Douglas in ISLAND_DX non ha quindi connessioni verso l'anello esterno e può risultare irraggiungibile in modo ottimale.
+
+4. Miniso nelle connessioni GranRoma non esiste nel dataset
+navigation.js:304: { islandShop: 'Miniso', outerShops: ['Cisalfa Sport'] }. In data.js GranRoma quella posizione (4) è occupata da Zuiki (data.js:287). Zuiki in GranRoma non compare in nessuna connessione verso l'anello — il negozio è de facto isolato nel grafo (raggiungibile solo da chi gli è adiacente nell'isola).
+
+
+MEDIO — Comportamento imperfetto o manutenibilità ridotta
+9. Wind Tre GranRoma con outerShops: []
+navigation.js:337: { islandShop: 'Wind Tre', outerShops: [] } — la voce esiste ma non aggiunge nessuna connessione. Probabilmente un placeholder dimenticato.
+
+10. Identificazione del mall tramite prefisso ID
+navigation.js:161-175 e navigation.js:91: il mall viene identificato con startsWith('gr_') / startsWith('p0_'). Se un mall futuro usasse un prefisso ID simile, verrebbe riconosciuto erroneamente. L'informazione giusta sarebbe passare il mallId esplicitamente al costruttore di NavigationService.
+
+11. PriorityQueue con splice O(n)
+navigation.js:573 — ogni enqueue fa uno splice che è O(n). Per i dataset attuali (~200 negozi) è trascurabile, ma per mall più grandi diventerebbe un collo di bottiglia reale. Un binary heap porterebbe a O(log n).
+
+12. Nessuna navigazione da tastiera nell'autocomplete
+I suggestion-item div (app.js:147) non hanno tabindex, role="option", né handler per frecce/Enter. Un utente che non usa il mouse non può selezionare un suggerimento.
+
+BASSO — Qualità del codice, minori
+13. innerHTML con nomi negozi non escaped
+In renderSuggestions, renderRouteStops, createShopStepCard — i nomi dei negozi vengono inseriti direttamente in innerHTML senza escape. Attualmente i dati sono statici quindi non è un rischio, ma se i dati venissero da un'API sarebbe un XSS.
+
+14. Variabili globali cross-file
+selectedMall e SHOPS_DATA sono dichiarate in data.js:361-362 e mutate in app.js. L'ordine di caricamento degli script nel HTML è un vincolo implicito non documentato.
