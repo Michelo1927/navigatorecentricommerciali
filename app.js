@@ -1,3 +1,4 @@
+// Copyright (c) 2026 MallNav. All rights reserved. Unauthorized use prohibited.
 // App principale — richiede data.js caricato prima (selectedMall, SHOPS_DATA, MALLS_DATA, MALLS_CONFIG)
 let navigationService = null;
 
@@ -53,6 +54,23 @@ function updateEfficientRouteButton() {
     }
 }
 
+function mallHasBathrooms() {
+    return Array.isArray(SHOPS_DATA) && SHOPS_DATA.some(shop => shop.type === 'Bagni');
+}
+
+function updateBathroomFeatureAvailability() {
+    if (!bathroomQuickToggle) return;
+
+    const available = mallHasBathrooms();
+    bathroomQuickToggle.style.display = available ? '' : 'none';
+
+    // Se il centro non ha bagni, disattiva la modalità eventualmente attiva
+    if (!available && bathroomQuickEnabled) {
+        bathroomQuickEnabled = false;
+        updateBathroomQuickToggle();
+    }
+}
+
 function updateBathroomQuickToggle() {
     if (!bathroomQuickToggle) return;
 
@@ -68,7 +86,7 @@ function updateBathroomQuickToggle() {
         endShopInput.disabled = bathroomQuickEnabled;
         endShopInput.value = bathroomQuickEnabled ? '' : (selectedEndShop ? selectedEndShop.name : '');
         endShopInput.placeholder = bathroomQuickEnabled
-            ? 'Bagno piu vicino (automatico)'
+            ? 'Bagno più vicino (automatico)'
             : endShopDefaultPlaceholder;
     }
 
@@ -81,7 +99,7 @@ function updateBathroomQuickToggle() {
         waypointInput.disabled = bathroomQuickEnabled;
         waypointInput.value = bathroomQuickEnabled ? '' : waypointInput.value;
         waypointInput.placeholder = bathroomQuickEnabled
-            ? 'Tappe disabilitate in modalita bagno'
+            ? 'Tappe disabilitate in modalità bagno'
             : waypointDefaultPlaceholder;
     }
 
@@ -104,7 +122,8 @@ function updateBathroomQuickToggle() {
 
 if (efficientRouteBtn) {
     updateEfficientRouteButton();
-    efficientRouteBtn.addEventListener('click', () => {
+    efficientRouteBtn.addEventListener('click', (e) => {
+        if (e.target.closest('#efficientRouteInfoBtn')) return;
         efficientRouteEnabled = !efficientRouteEnabled;
         updateEfficientRouteButton();
     });
@@ -148,7 +167,7 @@ function setupAutocomplete(input, suggestionsDiv, onSelect, getCategoryFilter) {
             <div class="suggestion-item" data-shop-id="${shop.id}">
                 <div class="suggestion-name">${shop.name}</div>
                 <div class="suggestion-details">
-                    Piano ${shop.floor} • ${getZoneLabel(shop.zone)} • Pos. ${shop.position}
+                    Piano ${shop.floor} • ${getZoneLabel(shop.zone)}
                 </div>
             </div>
         `).join('');
@@ -394,7 +413,7 @@ function renderRouteBuilderPreview() {
             previewStops.push({ shop: null, separator: true });
         }
         previewStops.push({
-            shop: { name: 'Bagno piu vicino' },
+            shop: { name: 'Bagno più vicino' },
             label: 'ARRIVO',
             icon: '🚻',
             type: 'end',
@@ -802,7 +821,7 @@ function initializeMallSelection() {
             <p class="mall-description">${mall.description}</p>
             ${!mall.comingSoon ? `
                 <div class="mall-stats-mini">
-                    <span>${mall.totalShops} negozi</span>
+                    <span>${MALLS_DATA[mall.id].length} negozi</span>
                     <span>•</span>
                     <span>${mall.floors} piani</span>
                 </div>
@@ -841,9 +860,11 @@ function selectMall(mallId) {
     activeWaypointCategoryFilter = 'Tutto';
     refreshCategoryFilters();
 
+    // Mostra il toggle "Bagno" solo se il centro ha bagni mappati
+    updateBathroomFeatureAvailability();
+
     // Aggiorna UI
-    document.getElementById('mallTitle').innerHTML = `${mall.logo} Navigatore ${mall.name}`;
-    document.getElementById('mallSubtitle').textContent = mall.description;
+    document.getElementById('mallTitle').textContent = mall.name;
 
     // Aggiorna stats
     updateStats(mall);
@@ -861,7 +882,7 @@ function updateStats(mall) {
     const statsGrid = document.getElementById('statsGrid');
     statsGrid.innerHTML = `
         <div class="stat-card clickable" id="shopsStatCard">
-            <div class="stat-number">${mall.totalShops}</div>
+            <div class="stat-number">${SHOPS_DATA.length}</div>
             <div class="stat-label">Negozi</div>
         </div>
         <div class="stat-card">
@@ -1011,8 +1032,7 @@ function renderShopsList(shops) {
             <div class="shop-item-details">
                 <span class="shop-item-floor">Piano ${shop.floor}</span>
                 <span>${getZoneLabel(shop.zone)}</span>
-                <span>•</span>
-                <span>Pos. ${shop.position}</span>
+
             </div>
         </div>
     `).join('');
@@ -1078,6 +1098,23 @@ const mallNavDebug = {
     getRouteStops,
     optimizeWaypoints
 };
+
+// Efficient route info modal
+(function () {
+    const infoBtn = document.getElementById('efficientRouteInfoBtn');
+    const modal = document.getElementById('efficientRouteModal');
+    const closeBtn = document.getElementById('closeEfficientRouteModal');
+    if (!infoBtn || !modal) return;
+
+    infoBtn.addEventListener('click', () => modal.classList.add('show'));
+    closeBtn.addEventListener('click', () => modal.classList.remove('show'));
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('show');
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') modal.classList.remove('show');
+    });
+})();
 
 if (typeof window !== 'undefined') {
     window.__mallNavDebug = mallNavDebug;

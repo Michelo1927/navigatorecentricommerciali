@@ -1,3 +1,4 @@
+// Copyright (c) 2026 MallNav. All rights reserved. Unauthorized use prohibited.
 // Algoritmo di navigazione con Dijkstra
 class NavigationService {
     constructor(shops) {
@@ -104,15 +105,15 @@ class NavigationService {
                 if (shop) addConnection('stairs_left_p1', shop.id, this.WEIGHT_TO_STAIRS);
             });
 
-            // Scala DX Piano 0 (di fronte a TRAMAS, AWLAB)
-            const grScalaDxP0 = ['Tramas', 'Awlab'];
+            // Scala DX Piano 0 (di fronte a TRAMAS)
+            const grScalaDxP0 = ['Tramas'];
             grScalaDxP0.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 0);
                 if (shop) addConnection('stairs_right_p0', shop.id, this.WEIGHT_TO_STAIRS);
             });
 
             // Scala DX Piano 1 (di fronte a ZARA, DAN JHON)
-            const grScalaDxP1 = ['Zara', 'Dan Jhon'];
+            const grScalaDxP1 = ['Zara Piano 1', 'Dan Jhon'];
             grScalaDxP1.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 1);
                 if (shop) addConnection('stairs_right_p1', shop.id, this.WEIGHT_TO_STAIRS);
@@ -313,7 +314,6 @@ class NavigationService {
             { islandShop: 'Bluespirit', outerShops: ['Zara'] },
             //{ islandShop: 'Satur', outerShops: ['Tramas'] },
             //{ islandShop: 'Bata', outerShops: ['Tramas'] },
-            //{ islandShop: 'Awlab', outerShops: ['Amorestore'] },
             { islandShop: 'Intimissimi', outerShops: ['Ovs', 'Tezenis'] },
             { islandShop: 'Vodafone', outerShops: ['Punt Roma', 'Sorbino'] },
             { islandShop: 'Originalmarines', outerShops: ['Sorbino', 'Primadonna Collection'] },
@@ -328,7 +328,7 @@ class NavigationService {
             { islandShop: 'Sartoria Italiana', outerShops: ['Odstore'] },
             { islandShop: 'Pink Gioielli', outerShops: ['Jack & Jones'] },
             { islandShop: 'Brend Atelier', outerShops: ['Jack & Jones', 'Stradivarius'] },
-            { islandShop: 'Dan Jhon', outerShops: ['Zara', 'Stradivarius'] },
+            { islandShop: 'Dan Jhon', outerShops: ['Zara Piano 1', 'Stradivarius'] },
             { islandShop: 'Guess', outerShops: ['Muy Mucho'] },
             { islandShop: "D'S Damat", outerShops: ['Pull & Bear', 'Action', 'Bershka'] },
             { islandShop: 'Dly', outerShops: ['Pepco'] },

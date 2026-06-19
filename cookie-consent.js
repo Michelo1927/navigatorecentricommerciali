@@ -1,3 +1,4 @@
+// Copyright (c) 2026 MallNav. All rights reserved. Unauthorized use prohibited.
 (function () {
     var COOKIE_NAME = 'cookieConsent';
     var GA_ID = 'G-YF7Z32YV20';

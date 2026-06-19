@@ -96,8 +96,7 @@
         <header class="header" id="mainHeader" style="display: none;">
             <div class="header-content">
                 <button id="changeMallBtn" class="change-mall-btn">← Cambia Centro</button>
-                <h2 id="mallTitle" style="font-size: 28px; margin-bottom: 8px;">🗺️ Navigatore</h2>
-                <p class="subtitle" id="mallSubtitle">Trova il percorso più breve tra i negozi</p>
+                <h2 id="mallTitle"></h2>
             </div>
         </header>
 
@@ -172,6 +171,7 @@
                             <div class="route-options-group">
                                 <button id="efficientRouteBtn" class="btn-secondary route-mode-btn" type="button" aria-pressed="false">
                                     Percorso Efficiente
+                                    <span class="info-hint-btn" id="efficientRouteInfoBtn" tabindex="0" aria-label="Informazioni su Percorso Efficiente">?</span>
                                 </button>
                                 <button id="bathroomQuickToggle" class="btn-secondary route-mode-btn" type="button" aria-pressed="false">
                                     Destinazione rapida: Bagno
@@ -262,6 +262,21 @@
             </div>
         </section>
 
+        <!-- Efficient Route Info Modal -->
+        <div id="efficientRouteModal" class="info-modal" role="dialog" aria-modal="true" aria-labelledby="efficientRouteModalTitle">
+            <div class="info-modal-content">
+                <div class="info-modal-header">
+                    <h3 id="efficientRouteModalTitle">Percorso Efficiente</h3>
+                    <button class="info-modal-close" id="closeEfficientRouteModal" aria-label="Chiudi">×</button>
+                </div>
+                <div class="info-modal-body">
+                    <p>Con <strong>Percorso Efficiente</strong> attivo, l'ordine delle tappe intermedie viene riorganizzato automaticamente per minimizzare la distanza totale percorsa.</p>
+                    <p>Invece di visitare i negozi nell'ordine in cui li hai inseriti, l'app calcola la sequenza ottimale così cammini di meno e arrivi prima alla destinazione finale.</p>
+                    <p>Utile quando hai più negozi da visitare e non ti interessa l'ordine, ma vuoi il tragitto più breve possibile.</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Shops List Modal -->
         <div id="shopsModal" class="shops-modal">
             <div class="shops-modal-content">
@@ -313,7 +328,7 @@
             <div class="footer-bottom">
                 <p>&copy; 2026 Mall Nav. Tutti i diritti riservati.</p>
                 <p>Rendere lo shopping più facile, un percorso alla volta.</p>
-                <p style="font-size:12px; color:#aaa; margin-top:8px;">Mall Nav è un progetto indipendente e non è affiliato, sponsorizzato o approvato da Porta di Roma, GranRoma o dalle relative società di gestione.</p>
+                <p style="font-size:12px; color:#aaa; margin-top:8px;">Mall Nav è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno dei centri commerciali presenti nell'applicazione né dalle relative società di gestione.</p>
             </div>
         </footer>
     </div>
