@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-7840795594547987">
-    <title>Come Funziona | Mall Nav - Tecnologia e Dettagli del Navigatore</title>
-    <meta name="description" content="Scopri come funziona il navigatore Mall Nav: algoritmo di Dijkstra, mappe dettagliate, tecnologia di calcolo percorsi ottimali. Guida completa passo dopo passo.">
+    <title>Come Funziona | Trovalo - Tecnologia e Dettagli del Navigatore</title>
+    <meta name="description" content="Scopri come funziona il navigatore Trovalo: algoritmo di Dijkstra, mappe dettagliate, tecnologia di calcolo percorsi ottimali. Guida completa passo dopo passo.">
     <link rel="canonical" href="https://mallnav.netlify.app/come-funziona.html">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2">
     <link rel="shortcut icon" href="favicon.png?v=2">
@@ -21,83 +21,115 @@
     </script>
     <style>
         .how-container {
-            max-width: 1200px;
+            max-width: 860px;
             margin: 0 auto;
-            padding: 20px;
-            margin-top: 80px;
+            padding: 16px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 7px 14px;
+            background: var(--card-background);
+            color: var(--primary-color);
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .back-btn:hover {
+            background: var(--background);
+            border-color: var(--primary-color);
         }
         .how-hero {
-            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1565C0 100%);
             color: white;
-            padding: 60px 40px;
-            border-radius: 16px;
-            margin-bottom: 40px;
+            padding: 28px 28px;
+            border-radius: 14px;
+            margin-bottom: 20px;
             text-align: center;
         }
         .how-hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
+            font-size: 26px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .how-hero p {
+            font-size: 15px;
+            opacity: 0.95;
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.5;
         }
         .how-content {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            background: var(--card-background);
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 3px 14px rgba(26, 35, 50, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
         }
         .how-content h2 {
-            color: #1976D2;
-            font-size: 32px;
-            margin-top: 40px;
-            margin-bottom: 20px;
+            color: var(--text-primary);
+            font-size: 20px;
+            margin-top: 26px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .how-content h2:first-child {
+            margin-top: 0;
         }
         .how-content h3 {
-            color: #1976D2;
-            font-size: 24px;
-            margin-top: 30px;
-            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 16px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            font-weight: 600;
         }
         .how-content p {
-            font-size: 16px;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .how-content ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .how-content li {
+            margin-bottom: 6px;
+            line-height: 1.55;
+            font-size: 14px;
+        }
+        .how-content strong {
+            color: var(--text-primary);
         }
         .features-list {
             list-style: none;
             padding-left: 0;
-            margin: 20px 0;
+            margin: 14px 0;
         }
         .features-list li {
-            padding: 12px 0 12px 30px;
+            padding: 8px 0 8px 24px;
             position: relative;
-            line-height: 1.8;
-            font-size: 16px;
+            line-height: 1.6;
+            font-size: 14px;
+            color: var(--text-secondary);
         }
         .cta-box {
-            background: #E3F2FD;
-            padding: 30px;
+            background: var(--background);
+            padding: 20px;
             border-radius: 12px;
-            margin-top: 30px;
-            border-left: 4px solid #1976D2;
+            margin-top: 22px;
+            border-left: 4px solid var(--primary-color);
         }
         .cta-box p {
             margin: 0;
-            font-size: 18px;
-            line-height: 1.8;
-        }
-        .back-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 12px 24px;
-            background: #1976D2;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background 0.3s;
-        }
-        .back-btn:hover {
-            background: #1565C0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-secondary);
         }
     </style>
 </head>
@@ -106,7 +138,7 @@
     <nav class="top-nav">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> <strong>Mall Nav</strong></a>
+                <a href="index.html"><img src="Logo Trovalo.png" alt="Trovalo" style="height: 40px;"></a>
             </div>
             <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
                 <span></span>
@@ -116,7 +148,6 @@
             <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html" class="nav-link">Navigatore</a></li>
                 <li><a href="come-funziona.html" class="nav-link active">Come Funziona</a></li>
-                <li><a href="guida-shopping.html" class="nav-link">Guida Shopping</a></li>
                 <li><a href="faq.html" class="nav-link">Domande Frequenti</a></li>
                 <li><a href="about.html" class="nav-link">Chi Siamo</a></li>
             </ul>
@@ -127,29 +158,28 @@
         <a href="index.html" class="back-btn">← Torna al Navigatore</a>
         
         <div class="how-hero">
-            <h1>🔬 Come Funziona Mall Nav</h1>
+            <h1>🔬 Come Funziona Trovalo</h1>
             <p>Scopri la tecnologia e i dettagli dietro al navigatore intelligente per centri commerciali</p>
         </div>
 
         <div class="how-content">
-            <h2>Come Funziona il Navigatore Mall Nav</h2>
+            <h2>Come Funziona il Navigatore Trovalo</h2>
             <p>
-                Mall Nav è un'applicazione web innovativa che rivoluziona l'esperienza di shopping nei grandi 
+                Trovalo è un'applicazione web innovativa che rivoluziona l'esperienza di shopping nei grandi 
                 centri commerciali italiani. Ti aiuta a trovare rapidamente i negozi e ti mostra il percorso 
                 più veloce per raggiungerli, funzionando proprio come un GPS per la tua auto, ma pensato 
                 specificamente per guidarti all'interno dei complessi commerciali.
             </p>
             
-            <h3><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> Perché Usare Mall Nav?</h3>
+            <h3><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> Perché Usare Trovalo?</h3>
             <p>
                 I moderni centri commerciali sono diventati vere e proprie città coperte, con centinaia di negozi 
                 distribuiti su più livelli, zone diverse e corridoi che sembrano labirinti. Trovare un negozio 
                 specifico e capire come raggiungerlo nel modo più rapido può essere frustrante e far perdere 
-                molto tempo prezioso. Uno studio recente ha dimostrato che in media si perdono 35-45 minuti 
-                per ogni visita al centro commerciale solo cercando negozi e orientandosi.
+                molto tempo prezioso.
             </p>
             <p>
-                Con Mall Nav, questo problema è risolto: l'algoritmo di navigazione intelligente analizza 
+                Con Trovalo, questo problema è risolto: l'algoritmo di navigazione intelligente analizza 
                 istantaneamente tutte le possibili strade e calcola automaticamente il percorso ottimale, 
                 tenendo conto della distanza da percorrere, dei cambi di piano tramite scale mobili e delle 
                 diverse zone del centro commerciale.
@@ -159,89 +189,43 @@
             <p>
                 Usare il nostro navigatore è incredibilmente semplice e intuitivo. Ecco la procedura completa:
             </p>
-            <ul class="features-list">
-                <li>✓ <strong>Scegli il centro commerciale</strong> - Seleziona dalla homepage il centro che vuoi visitare (attualmente Porta di Roma con 199 negozi e GranRoma con 93 negozi)</li>
-                <li>✓ <strong>Indica dove ti trovi</strong> - Digita il nome del negozio o della zona dove ti trovi attualmente. Il sistema ti suggerirà automaticamente le opzioni disponibili mentre scrivi</li>
-                <li>✓ <strong>Indica dove vuoi andare</strong> - Inserisci il negozio di destinazione che vuoi raggiungere usando lo stesso sistema di autocompletamento intelligente</li>
-                <li>✓ <strong>Calcola il percorso</strong> - Clicca sul pulsante "Calcola Percorso" e in meno di un secondo otterrai il tragitto ottimale</li>
-                <li>✓ <strong>Segui le indicazioni</strong> - Riceverai istruzioni chiare e dettagliate passo dopo passo, incluse le indicazioni per eventuali cambi di piano tramite scale mobili</li>
+            <ul >
+                <li>Scegli il centro commerciale</strong></li>
+                <li>Indica dove ti trovi</strong></li>
+                <li>Indica dove vuoi andare</strong></li>
+                <li>Calcola il percorso</strong></li>
+                <li>Segui le indicazioni</strong></li>
             </ul>
 
-            <h3>🔬 La Tecnologia Dietro al Navigatore</h3>
-            <p>
-                Mall Nav utilizza l'algoritmo di Dijkstra, uno degli algoritmi più efficienti per trovare 
-                il percorso più breve in un grafo pesato. Abbiamo mappato ogni centro commerciale come una 
-                rete di nodi (negozi e punti di passaggio) e archi (corridoi e scale mobili), assegnando 
-                a ciascun collegamento un "peso" che rappresenta il tempo necessario per percorrerlo.
-            </p>
-            <p>
-                Quando richiedi un percorso, l'algoritmo:
-            </p>
-            <ol style="margin-left: 30px; margin-bottom: 20px; line-height: 1.8;">
-                <li>Analizza tutti i possibili percorsi dalla tua posizione alla destinazione</li>
-                <li>Considera la distanza fisica da percorrere</li>
-                <li>Valuta il "costo" di attraversare diverse zone (es. passare da un'isola all'anello esterno)</li>
-                <li>Tiene conto dei cambi di piano e delle scale mobili disponibili</li>
-                <li>Restituisce il percorso con il tempo totale minimo</li>
-            </ol>
-            <p>
-                Questo approccio matematico garantisce che il percorso suggerito sia sempre ottimale, 
-                non solo una buona approssimazione.
-            </p>
-
-            <h3>🏬 Centri Commerciali Mappati in Dettaglio</h3>
-            <p>
-                Abbiamo dedicato mesi di lavoro per mappare accuratamente ogni centro commerciale nel sistema:
-            </p>
-            <ul class="features-list">
-                <li><strong>Porta di Roma</strong> - Il più grande centro commerciale di Roma con 199 negozi distribuiti su 2 piani, 4 scale mobili strategicamente posizionate, anello esterno perimetrale e 3 isole interne (2 al piano terra, 1 al piano 1). Ogni negozio è stato geolocalizzato con precisione, includendo informazioni su piano, zona e collegamenti disponibili.</li>
-                <li><strong>GranRoma</strong> - Centro commerciale dell'Est di Roma con 93 negozi su 2 livelli, layout ad anello con isole interne, multiple scale mobili per collegamenti rapidi tra i piani. Mappatura completa di tutti gli spazi commerciali e aree di passaggio.</li>
-            </ul>
 
             <h3>💡 Vantaggi Concreti per gli Utenti</h3>
             <p>
-                Utilizzando Mall Nav regolarmente, gli utenti riportano numerosi benefici tangibili:
+                Utilizzando Trovalo regolarmente, gli utenti riportano numerosi benefici tangibili:
             </p>
-            <ul class="features-list">
-                <li>⏱️ <strong>Risparmio di tempo</strong> - In media 30-45 minuti risparmiati per ogni visita, eliminando giri a vuoto e ricerche inefficienti</li>
-                <li>🚶 <strong>Meno chilometri a piedi</strong> - Percorsi ottimizzati significa camminare meno, importante specialmente quando si trasportano borse pesanti o si hanno bambini</li>
-                <li>😊 <strong>Riduzione dello stress</strong> - Niente più ansia di non trovare un negozio o frustrazione per essere persi in corridoi confusi</li>
-                <li><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> <strong>Shopping più efficiente</strong> - Con più tempo a disposizione, puoi visitare più negozi o dedicare più attenzione a ciascun acquisto</li>
-                <li>💰 <strong>Decisioni migliori</strong> - Meno stanchezza fisica significa migliori decisioni d'acquisto e meno acquisti impulsivi dovuti alla fretta</li>
-                <li>🌍 <strong>Minore impatto ambientale</strong> - Percorsi più brevi significano meno tempo di permanenza nel centro, riducendo consumo di energia per climatizzazione e illuminazione</li>
+            <ul >
+                <li>Risparmio di tempo</strong></li>
+                <li>Meno chilometri a piedi</strong></li>
+                <li>Riduzione dello stress</strong></li>
+                <li>Shopping più efficiente</strong></li>
+                <li>Minore impatto ambientale</strong> </li>
             </ul>
 
             <h3>🔒 Privacy e Sicurezza dei Dati</h3>
             <p>
-                La tua privacy è fondamentale per noi. A differenza di molte app di navigazione, Mall Nav:
+                La tua privacy è fondamentale per noi. A differenza di molte app di navigazione, Trovalo:
             </p>
-            <ul class="features-list">
-                <li>✓ Non traccia la tua posizione GPS in tempo reale</li>
-                <li>✓ Non richiede registrazione o account personali</li>
-                <li>✓ Salva le ricerche solo localmente sul tuo dispositivo, mai sui nostri server</li>
-                <li>✓ È completamente conforme al GDPR europeo e alle normative italiane sulla privacy</li>
-                <li>✓ Utilizza connessione HTTPS crittografata per tutte le comunicazioni</li>
-                <li>✓ Non vende dati a terze parti per scopi commerciali</li>
+            <ul >
+                <li>Non traccia la tua posizione GPS in tempo reale</li>
+                <li>Non richiede registrazione o account personali</li>
+                <li>Salva le ricerche solo localmente sul tuo dispositivo, mai sui nostri server</li>
+                <li>È completamente conforme al GDPR europeo e alle normative italiane sulla privacy</li>
+                <li>Utilizza connessione HTTPS crittografata per tutte le comunicazioni</li>
+                <li>Non vende dati a terze parti per scopi commerciali</li>
             </ul>
             <p>
                 Puoi consultare la nostra <a href="privacy.html" style="color: #1976D2; font-weight: 600;">Privacy Policy completa</a> 
                 per tutti i dettagli su come gestiamo i tuoi dati.
             </p>
-
-            <h3>🚀 Il Futuro di Mall Nav</h3>
-            <p>
-                Siamo costantemente al lavoro per migliorare il servizio e aggiungere nuove funzionalità. 
-                Nel nostro roadmap per i prossimi mesi:
-            </p>
-            <ul class="features-list">
-                <li>📍 Aggiunta di nuovi centri commerciali in tutta Italia (Romest, Euroma2, Cinecittà Due, Porte di Napoli, e molti altri)</li>
-                <li><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Tour multi-negozio per pianificare visite a più destinazioni in sequenza ottimale</li>
-                <li>⭐ Sistema di preferiti per salvare negozi e percorsi frequenti</li>
-                <li>🔔 Notifiche su offerte speciali nei negozi preferiti</li>
-                <li>♿ Percorsi accessibili per persone con mobilità ridotta</li>
-                <li>🌐 Supporto multilingua per turisti stranieri</li>
-                <li>📊 Statistiche personali su risparmio di tempo e distanze percorse</li>
-            </ul>
 
             <h3>📞 Supporto e Feedback</h3>
             <p>
@@ -255,15 +239,44 @@
                 <p>
                     <strong>Inizia subito a risparmiare tempo!</strong><br>
                     Torna alla homepage e seleziona il tuo centro commerciale per scoprire quanto più semplice può essere 
-                    il tuo shopping con Mall Nav. È gratuito, veloce e non richiede installazioni.
+                    il tuo shopping con Trovalo. È gratuito, veloce e non richiede installazioni.
                 </p>
             </div>
             
-            <p style="text-align: center; margin-top: 40px;">
-                <a href="index.html" class="back-btn">← Torna al Navigatore</a>
-                <a href="about.html" class="btn-secondary" style="margin-left: 15px; display: inline-block; padding: 12px 24px; background: #388E3C; color: white; text-decoration: none; border-radius: 8px;">Chi Siamo →</a>
-            </p>
+        
         </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Navigatore</h4>
+                    <ul>
+                        <li><a href="about.html">Chi Siamo</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Risorse</h4>
+                    <ul>
+                        <li><a href="come-funziona.html">Come Funziona</a></li>
+                        <li><a href="index.html">Cerca Negozio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Informazioni</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="privacy.html#cookies">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Trovalo. Tutti i diritti riservati.</p>
+                <p>Rendere lo shopping più facile, un percorso alla volta.</p>
+                <p style="font-size:12px; color:#aaa; margin-top:8px;">Trovalo è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno dei centri commerciali presenti nell'applicazione né dalle relative società di gestione.</p>
+            </div>
+        </footer>
     </div>
 
     <!-- Cookie Consent Banner -->

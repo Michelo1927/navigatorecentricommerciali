@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-7840795594547987">
-    <title>Chi Siamo | Mall Nav - La Tua Guida Allo Shopping</title>
-    <meta name="description" content="La missione di Mall Nav: rendere lo shopping nei centri commerciali più facile e piacevole. Scopri chi siamo, i nostri valori e la roadmap futura con nuovi centri e funzionalità.">
+    <title>Chi Siamo | Trovalo - La Tua Guida Allo Shopping</title>
+    <meta name="description" content="La missione di Trovalo: rendere lo shopping nei centri commerciali più facile e piacevole. Scopri chi siamo, i nostri valori e la roadmap futura con nuovi centri e funzionalità.">
     <link rel="canonical" href="https://mallnav.netlify.app/about.html">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2">
     <link rel="shortcut icon" href="favicon.png?v=2">
@@ -15,144 +15,143 @@
     <link rel="stylesheet" href="styles.css?v=2">
     <style>
         .about-container {
-            max-width: 1200px;
+            max-width: 860px;
             margin: 0 auto;
-            padding: 20px;
-            margin-top: 80px;
-        }
-        .about-hero {
-            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
-            color: white;
-            padding: 60px 40px;
-            border-radius: 16px;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-        .about-hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        .about-hero p {
-            font-size: 20px;
-            opacity: 0.95;
-            max-width: 800px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        .about-content {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        .about-content h2 {
-            color: #1976D2;
-            font-size: 32px;
-            margin-top: 30px;
-            margin-bottom: 20px;
-        }
-        .about-content h3 {
-            color: #1565C0;
-            font-size: 24px;
-            margin-top: 25px;
-            margin-bottom: 15px;
-        }
-        .about-content p {
-            font-size: 16px;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .about-content ul {
-            margin-left: 30px;
-            margin-bottom: 20px;
-        }
-        .about-content li {
-            margin-bottom: 12px;
-            line-height: 1.8;
-            font-size: 16px;
-        }
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-        }
-        .feature-card {
-            background: #F5F5F5;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .feature-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-        }
-        .feature-card h3 {
-            color: #1976D2;
-            margin: 15px 0;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 40px 0;
-        }
-        .stat-card {
-            background: white;
-            color: #333;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            border: 2px solid #1976D2;
-        }
-        .stat-number {
-            font-size: 48px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .stat-label {
-            font-size: 16px;
-            opacity: 0.95;
+            padding: 16px;
         }
         .back-btn {
             display: inline-block;
-            margin-bottom: 20px;
-            padding: 12px 24px;
-            background: #1976D2;
-            color: white;
+            margin-bottom: 14px;
+            padding: 7px 14px;
+            background: var(--card-background);
+            color: var(--primary-color);
             text-decoration: none;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            transition: background 0.3s;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s, border-color 0.2s;
         }
         .back-btn:hover {
-            background: #1565C0;
+            background: var(--background);
+            border-color: var(--primary-color);
         }
-        .timeline {
-            position: relative;
-            padding: 20px 0;
-        }
-        .timeline-item {
-            position: relative;
-            padding-left: 50px;
-            margin-bottom: 30px;
-        }
-        .timeline-item::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 30px;
-            height: 30px;
-            background: #1976D2;
-            border-radius: 50%;
+        .about-hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1565C0 100%);
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+            padding: 28px 28px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .about-hero h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .about-hero p {
+            font-size: 15px;
+            opacity: 0.95;
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        .about-content {
+            background: var(--card-background);
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 3px 14px rgba(26, 35, 50, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        .about-content h2 {
+            color: var(--text-primary);
+            font-size: 20px;
+            margin-top: 26px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .about-content h2:first-child {
+            margin-top: 0;
+        }
+        .about-content h3 {
+            color: var(--primary-color);
+            font-size: 16px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .about-content p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .about-content ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .about-content li {
+            margin-bottom: 6px;
+            line-height: 1.55;
+            font-size: 14px;
+        }
+        .about-content strong {
+            color: var(--text-primary);
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin: 22px 0;
+        }
+        .feature-card {
+            background: var(--background);
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .feature-icon {
+            font-size: 30px;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin: 8px 0 6px;
+            font-size: 15px;
+        }
+        .feature-card p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin: 22px 0;
+        }
+        .stat-card {
+            background: var(--background);
+            color: var(--text-primary);
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .stat-number {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--primary-color);
+        }
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
         }
     </style>
 </head>
@@ -161,7 +160,7 @@
     <nav class="top-nav">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> <strong>Mall Nav</strong></a>
+                <a href="index.html"><img src="Logo Trovalo.png" alt="Trovalo" style="height: 40px;"></a>
             </div>
             <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
                 <span></span>
@@ -171,7 +170,6 @@
             <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html" class="nav-link">Navigatore</a></li>
                 <li><a href="come-funziona.html" class="nav-link">Come Funziona</a></li>
-                <li><a href="guida-shopping.html" class="nav-link">Guida Shopping</a></li>
                 <li><a href="faq.html" class="nav-link">Domande Frequenti</a></li>
                 <li><a href="about.html" class="nav-link active">Chi Siamo</a></li>
             </ul>
@@ -287,49 +285,16 @@
                 </div>
             </div>
 
-            <h2>Tecnologia e Innovazione</h2>
-            <p>
-                Siamo orgogliosi di utilizzare tecnologie web moderne per offrire un servizio veloce, affidabile e sempre 
-                disponibile. Il nostro stack tecnologico include:
-            </p>
-
-            <h3>💻 Frontend Moderno</h3>
-            <ul>
-                <li><strong>HTML5/CSS3</strong> - Interfaccia responsive e accessibile</li>
-                <li><strong>JavaScript ES6+</strong> - Logica applicativa performante</li>
-                <li><strong>Progressive Web App</strong> - Funziona offline dopo il primo caricamento</li>
-                <li><strong>LocalStorage API</strong> - Persistenza dati lato client</li>
-            </ul>
-
-            <h3>🎨 Design e UX</h3>
-            <ul>
-                <li><strong>Material Design</strong> - Principi di design moderni e intuitivi</li>
-                <li><strong>Mobile-First</strong> - Ottimizzato prima per smartphone</li>
-                <li><strong>Accessibility</strong> - Conforme alle linee guida WCAG 2.1</li>
-                <li><strong>Dark Mode Ready</strong> - Supporto per temi scuri</li>
-            </ul>
-
-            <h2>Il Team</h2>
-            <p>
-                Siamo un team di sviluppatori, designer e appassionati di shopping che hanno unito le loro competenze per 
-                creare questo servizio. La nostra esperienza spazia dall'informatica al retail, dal design UX alla gestione 
-                dei centri commerciali.
-            </p>
-            <p>
-                Ogni membro del team porta una prospettiva unica che ci aiuta a migliorare continuamente il servizio e a 
-                comprendere meglio le esigenze degli utenti reali.
-            </p>
-
             <h2>Sviluppo Continuo e Roadmap</h2>
             <p>
-                Mall Nav è un progetto in continua evoluzione. Lavoriamo costantemente su nuove 
+                Trovalo è un progetto in continua evoluzione. Lavoriamo costantemente su nuove 
                 funzionalità e miglioramenti basandoci sul feedback degli utenti e sulle più recenti 
                 tecnologie disponibili:
             </p>
 
             <h3>💼 Benefici per i Commercianti</h3>
             <p>
-                Mall Nav non aiuta solo i clienti, ma offre vantaggi anche ai negozi:
+                Trovalo non aiuta solo i clienti, ma offre vantaggi anche ai negozi:
             </p>
             <ul>
                 <li><strong>Maggiore visibilità</strong> - I negozi meno conosciuti o in posizioni "nascoste" 
@@ -350,19 +315,6 @@
                 <li>Riduzione del tempo di permanenza medio nel centro commerciale</li>
                 <li>Minore consumo energetico per climatizzazione e illuminazione</li>
                 <li>Riduzione dell'impronta di carbonio complessiva dello shopping</li>
-                <li>Incentivo all'uso di mezzi pubblici grazie a visite più efficienti</li>
-            </ul>
-
-            <h2>Trasparenza e Open Source</h2>
-            <p>
-                Crediamo fermamente nella trasparenza e nella condivisione della conoscenza. Per questo motivo:
-            </p>
-            <ul>
-                <li>Il nostro algoritmo di navigazione è documentato pubblicamente</li>
-                <li>I dati di mappatura dei centri commerciali saranno eventualmente resi disponibili come open data 
-                (nel rispetto degli accordi con i gestori)</li>
-                <li>Pubblichiamo regolarmente articoli tecnici su come funziona il sistema</li>
-                <li>Siamo aperti a collaborazioni con sviluppatori e ricercatori</li>
             </ul>
 
             <h2>Contatti e Supporto</h2>
@@ -380,12 +332,39 @@
                 Rispondiamo tipicamente entro 24-48 ore a tutte le richieste.
             </p>
 
-            <p style="text-align: center; margin-top: 50px; padding-top: 30px; border-top: 2px solid #E0E0E0; color: #757575;">
-                <strong>Mall Nav</strong><br>
-                Rendere lo shopping più facile, un percorso alla volta<br>
-                © 2025 - Tutti i diritti riservati
-            </p>
         </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Navigatore</h4>
+                    <ul>
+                        <li><a href="about.html">Chi Siamo</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Risorse</h4>
+                    <ul>
+                        <li><a href="come-funziona.html">Come Funziona</a></li>
+                        <li><a href="index.html">Cerca Negozio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Informazioni</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="privacy.html#cookies">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Trovalo. Tutti i diritti riservati.</p>
+                <p>Rendere lo shopping più facile, un percorso alla volta.</p>
+                <p style="font-size:12px; color:#aaa; margin-top:8px;">Trovalo è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno dei centri commerciali presenti nell'applicazione né dalle relative società di gestione.</p>
+            </div>
+        </footer>
     </div>
 
     <!-- Cookie Consent Banner -->

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-7840795594547987">
-    <title>Privacy Policy | Mall Nav - Protezione Dati e GDPR</title>
-    <meta name="description" content="Politica sulla privacy di Mall Nav: come proteggiamo i tuoi dati, conformità GDPR, gestione cookie, diritti degli utenti. Trasparenza totale sulla raccolta dati.">
+    <title>Privacy Policy | Trovalo - Protezione Dati e GDPR</title>
+    <meta name="description" content="Politica sulla privacy di Trovalo: come proteggiamo i tuoi dati, conformità GDPR, gestione cookie, diritti degli utenti. Trasparenza totale sulla raccolta dati.">
     <link rel="canonical" href="https://mallnav.netlify.app/privacy.html">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2">
     <link rel="shortcut icon" href="favicon.png?v=2">
@@ -15,61 +15,80 @@
     <link rel="stylesheet" href="styles.css?v=2">
     <style>
         .privacy-container {
-            max-width: 900px;
+            max-width: 860px;
             margin: 0 auto;
-            padding: 20px;
-            margin-top: 80px;
-        }
-        .privacy-content {
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .privacy-content h1 {
-            color: #1976D2;
-            margin-bottom: 10px;
-        }
-        .privacy-content h2 {
-            color: #1976D2;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-        .privacy-content h3 {
-            color: #1565C0;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-        .privacy-content p {
-            margin-bottom: 15px;
-            line-height: 1.8;
-        }
-        .privacy-content ul {
-            margin-left: 20px;
-            margin-bottom: 15px;
-        }
-        .privacy-content li {
-            margin-bottom: 10px;
-            line-height: 1.8;
+            padding: 16px;
         }
         .back-btn {
             display: inline-block;
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background: #1976D2;
-            color: white;
+            margin-bottom: 14px;
+            padding: 7px 14px;
+            background: var(--card-background);
+            color: var(--primary-color);
             text-decoration: none;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            transition: background 0.3s;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s, border-color 0.2s;
         }
         .back-btn:hover {
-            background: #1565C0;
+            background: var(--background);
+            border-color: var(--primary-color);
+        }
+        .privacy-content {
+            background: var(--card-background);
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 3px 14px rgba(26, 35, 50, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        .privacy-content h1 {
+            color: var(--text-primary);
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .privacy-content h2 {
+            color: var(--text-primary);
+            margin-top: 26px;
+            margin-bottom: 12px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .privacy-content h3 {
+            color: var(--primary-color);
+            margin-top: 18px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .privacy-content p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .privacy-content ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .privacy-content li {
+            margin-bottom: 6px;
+            line-height: 1.55;
+            font-size: 14px;
+        }
+        .privacy-content strong {
+            color: var(--text-primary);
+        }
+        .privacy-content a {
+            color: var(--primary-color);
         }
         .last-updated {
-            color: #757575;
-            font-size: 14px;
+            color: var(--text-secondary);
+            font-size: 13px;
             font-style: italic;
         }
     </style>
@@ -79,7 +98,7 @@
     <nav class="top-nav">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> <strong>Mall Nav</strong></a>
+                <a href="index.html"><img src="Logo Trovalo.png" alt="Trovalo" style="height: 40px;"></a>
             </div>
             <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
                 <span></span>
@@ -89,7 +108,6 @@
             <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html" class="nav-link">Navigatore</a></li>
                 <li><a href="come-funziona.html" class="nav-link">Come Funziona</a></li>
-                <li><a href="guida-shopping.html" class="nav-link">Guida Shopping</a></li>
                 <li><a href="faq.html" class="nav-link">Domande Frequenti</a></li>
                 <li><a href="about.html" class="nav-link">Chi Siamo</a></li>
             </ul>
@@ -105,19 +123,19 @@
             
             <h2>1. Introduzione</h2>
             <p>
-                Benvenuto su Mall Nav, un progetto indipendente che offre un servizio di navigazione all'interno
+                Benvenuto su Trovalo, un progetto indipendente che offre un servizio di navigazione all'interno
                 dei centri commerciali. La tua privacy è importante per noi.
                 Questa Privacy Policy spiega come raccogliamo, utilizziamo e proteggiamo i tuoi dati personali
                 in conformità con il Regolamento Generale sulla Protezione dei Dati (GDPR) e le normative italiane sulla privacy.
             </p>
             <p>
-                <em>Mall Nav è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno
+                <em>Trovalo è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno
                 dei centri commerciali presenti nell'applicazione né dalle relative società di gestione.</em>
             </p>
 
             <h2>2. Titolare del Trattamento</h2>
             <p>
-                Il Titolare del Trattamento dei dati personali raccolti tramite questo sito è il gestore di Mall Nav,
+                Il Titolare del Trattamento dei dati personali raccolti tramite questo sito è il gestore di Trovalo,
                 contattabile all'indirizzo email: <a href="mailto:fontmic00@gmail.com">fontmic00@gmail.com</a>
             </p>
 
@@ -272,11 +290,11 @@
 
             <h2>9. Diritti dell'Utente</h2>
             <p>
-                Mall Nav è un sito statico che non raccoglie né conserva dati personali identificabili
+                Trovalo è un sito statico che non raccoglie né conserva dati personali identificabili
                 direttamente: non esistono account utente, database o profili personali gestiti dal sito.
                 <br> Per questo motivo, i diritti GDPR che presuppongono la detenzione di dati da parte del
                 titolare (rettifica, portabilità, accesso a profili personali) non sono esercitabili
-                nei confronti di Mall Nav, semplicemente perché tali dati non esistono.
+                nei confronti di Trovalo, semplicemente perché tali dati non esistono.
             </p>
             <p>I diritti che puoi esercitare concretamente sono:</p>
             <ul>
@@ -325,7 +343,7 @@
 
             <h2>12. Minori</h2>
             <p>
-                Mall Nav è un servizio di navigazione all'interno di centri commerciali accessibile a tutti,
+                Trovalo è un servizio di navigazione all'interno di centri commerciali accessibile a tutti,
                 inclusi i minori. Non è richiesta registrazione né la comunicazione di dati personali per
                 utilizzare le funzionalità principali del sito.
             </p>
@@ -362,6 +380,38 @@
             </p>
 
         </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Navigatore</h4>
+                    <ul>
+                        <li><a href="about.html">Chi Siamo</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Risorse</h4>
+                    <ul>
+                        <li><a href="come-funziona.html">Come Funziona</a></li>
+                        <li><a href="index.html">Cerca Negozio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Informazioni</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="privacy.html#cookies">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Trovalo. Tutti i diritti riservati.</p>
+                <p>Rendere lo shopping più facile, un percorso alla volta.</p>
+                <p style="font-size:12px; color:#aaa; margin-top:8px;">Trovalo è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno dei centri commerciali presenti nell'applicazione né dalle relative società di gestione.</p>
+            </div>
+        </footer>
     </div>
 
     <!-- Cookie Consent Banner -->

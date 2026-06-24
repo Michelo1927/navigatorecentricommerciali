@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-adsense-account" content="ca-pub-7840795594547987">
-    <title>FAQ | Domande Frequenti - Mall Nav</title>
-    <meta name="description" content="Domande frequenti su Mall Nav: come funziona il navigatore, costi (gratuito), privacy GDPR, centri coperti, accuratezza delle mappe. Risposte complete e immediate.">
+    <title>FAQ | Domande Frequenti - Trovalo</title>
+    <meta name="description" content="Domande frequenti su Trovalo: come funziona il navigatore, costi (gratuito), privacy GDPR, centri coperti, accuratezza delle mappe. Risposte complete e immediate.">
     <link rel="canonical" href="https://mallnav.netlify.app/faq.html">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=2">
     <link rel="shortcut icon" href="favicon.png?v=2">
@@ -15,82 +15,93 @@
     <link rel="stylesheet" href="styles.css?v=2">
     <style>
         .faq-container {
-            max-width: 1000px;
+            max-width: 860px;
             margin: 0 auto;
-            padding: 20px;
-            margin-top: 80px;
+            padding: 16px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 7px 14px;
+            background: var(--card-background);
+            color: var(--primary-color);
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .back-btn:hover {
+            background: var(--background);
+            border-color: var(--primary-color);
         }
         .faq-hero {
-            background: linear-gradient(135deg, #7B2CBF 0%, #5A189A 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1565C0 100%);
             color: white;
-            padding: 80px 40px;
-            border-radius: 20px;
-            margin-bottom: 50px;
+            padding: 28px 28px;
+            border-radius: 14px;
+            margin-bottom: 20px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(123, 44, 191, 0.3);
         }
         .faq-hero h1 {
-            font-size: 52px;
-            margin-bottom: 15px;
+            font-size: 26px;
+            margin-bottom: 8px;
             font-weight: 700;
         }
         .faq-hero p {
-            font-size: 20px;
+            font-size: 15px;
             opacity: 0.95;
-            font-weight: 300;
+            line-height: 1.5;
         }
         .faq-section {
-            background: white;
-            padding: 50px 45px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            margin-bottom: 35px;
-            border: 1px solid rgba(123, 44, 191, 0.1);
-            transition: box-shadow 0.3s ease;
-        }
-        .faq-section:hover {
-            box-shadow: 0 6px 30px rgba(123, 44, 191, 0.15);
+            background: var(--card-background);
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 3px 14px rgba(26, 35, 50, 0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
         }
         .faq-section h2 {
-            color: #7B2CBF;
-            font-size: 36px;
-            margin-bottom: 35px;
+            color: var(--text-primary);
+            font-size: 20px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             font-weight: 700;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #E9D5FF;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
         }
         .faq-item {
-            padding: 28px 0;
-            border-bottom: 1px solid #F3E8FF;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
         }
         .faq-item:last-child {
             border-bottom: none;
         }
         .faq-question {
-            font-size: 21px;
+            font-size: 15px;
             font-weight: 600;
-            color: #2D1B4E;
+            color: var(--text-primary);
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s ease;
-            padding: 12px 20px;
-            border-radius: 12px;
-            margin: -12px -20px;
+            transition: all 0.2s ease;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin: -10px -14px;
         }
         .faq-question:hover {
-            color: #7B2CBF;
-            background: #FAF5FF;
+            color: var(--primary-color);
+            background: var(--background);
         }
         .faq-question::after {
             content: '+';
-            font-size: 32px;
-            color: #7B2CBF;
-            transition: transform 0.4s ease;
+            font-size: 24px;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
             font-weight: 300;
             line-height: 1;
         }
@@ -101,48 +112,34 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease;
-            padding: 0 20px;
-            font-size: 17px;
-            line-height: 1.9;
-            color: #4A4A4A;
+            padding: 0 14px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-secondary);
         }
         .faq-answer.active {
             max-height: 2000px;
-            padding: 25px 20px 5px 20px;
+            padding: 16px 14px 4px 14px;
         }
         .faq-answer ul {
-            margin-left: 25px;
-            margin-top: 12px;
+            margin-left: 20px;
+            margin-top: 10px;
         }
         .faq-answer li {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+        }
+        .faq-answer strong {
+            color: var(--text-primary);
         }
         .faq-answer a {
-            color: #7B2CBF;
+            color: var(--primary-color);
             font-weight: 600;
             text-decoration: none;
             border-bottom: 2px solid transparent;
             transition: border-color 0.3s;
         }
         .faq-answer a:hover {
-            border-bottom-color: #7B2CBF;
-        }
-        .back-btn {
-            display: inline-block;
-            margin-bottom: 25px;
-            padding: 14px 28px;
-            background: linear-gradient(135deg, #7B2CBF 0%, #5A189A 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(123, 44, 191, 0.3);
-        }
-        .back-btn:hover {
-            background: linear-gradient(135deg, #5A189A 0%, #3C096C 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(123, 44, 191, 0.4);
+            border-bottom-color: var(--primary-color);
         }
     </style>
 </head>
@@ -151,7 +148,7 @@
     <nav class="top-nav">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="index.html"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> <strong>Mall Nav</strong></a>
+                <a href="index.html"><img src="Logo Trovalo.png" alt="Trovalo" style="height: 40px;"></a>
             </div>
             <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
                 <span></span>
@@ -161,7 +158,6 @@
             <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html" class="nav-link">Navigatore</a></li>
                 <li><a href="come-funziona.html" class="nav-link">Come Funziona</a></li>
-                <li><a href="guida-shopping.html" class="nav-link">Guida Shopping</a></li>
                 <li><a href="faq.html" class="nav-link active">Domande Frequenti</a></li>
                 <li><a href="about.html" class="nav-link">Chi Siamo</a></li>
             </ul>
@@ -173,7 +169,7 @@
         
         <div class="faq-hero">
             <h1>❓ Domande Frequenti</h1>
-            <p>Tutto quello che devi sapere sul Mall Nav</p>
+            <p>Tutto quello che devi sapere sul Trovalo</p>
         </div>
 
         <!-- SEZIONE GENERALE -->
@@ -182,11 +178,11 @@
             
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
-                    Cos'è Mall Nav?
+                    Cos'è Trovalo?
                 </div>
                 <div class="faq-answer">
                     <p>
-                        Mall Nav è un'applicazione web gratuita che ti aiuta a trovare il percorso 
+                        Trovalo è un'applicazione web gratuita che ti aiuta a trovare il percorso 
                         più breve tra due negozi all'interno dei grandi centri commerciali italiani. Utilizza algoritmi 
                         avanzati per calcolare il percorso ottimale, considerando scale mobili, 
                         piani diversi e zone multiple.
@@ -393,7 +389,7 @@
                 </div>
                 <div class="faq-answer">
                     <p>
-                        Mall Nav funziona su praticamente qualsiasi dispositivo moderno:
+                        Trovalo funziona su praticamente qualsiasi dispositivo moderno:
                     </p>
                     <ul>
                         <li>📱 <strong>Smartphone</strong> - iOS (Safari) e Android (Chrome, Firefox)</li>
@@ -546,7 +542,7 @@
                         <li>✅ Conserviamo i dati solo per il tempo necessario</li>
                     </ul>
                     <p>
-                        Puoi leggere la nostra <a href="privacy.html" style="color: #9C27B0; font-weight: 600;">Privacy Policy completa qui</a>.
+                        Puoi leggere la nostra <a href="privacy.html" style="color: #1976D2; font-weight: 600;">Privacy Policy completa qui</a>.
                     </p>
                 </div>
             </div>
@@ -578,7 +574,7 @@
                         </li>
                     </ul>
                     <p>
-                        Puoi gestire i cookie in qualsiasi momento dalle <a href="privacy.html#cookies" style="color: #9C27B0; font-weight: 600;">impostazioni</a> 
+                        Puoi gestire i cookie in qualsiasi momento dalle <a href="privacy.html#cookies" style="color: #1976D2; font-weight: 600;">impostazioni</a> 
                         o cancellando i dati del browser.
                     </p>
                 </div>
@@ -630,7 +626,7 @@
                         </li>
                         <li><strong>Dati Google AdSense</strong>
                             <ul>
-                                <li>Visita <a href="https://adssettings.google.com/" target="_blank" style="color: #9C27B0;">adssettings.google.com</a></li>
+                                <li>Visita <a href="https://adssettings.google.com/" target="_blank" style="color: #1976D2;">adssettings.google.com</a></li>
                                 <li>Disattiva la personalizzazione degli annunci</li>
                             </ul>
                         </li>
@@ -652,14 +648,45 @@
                         <li>🔒 <strong>Nessun dato sensibile</strong> - Non chiediamo password o dati finanziari</li>
                         <li>🔒 <strong>Hosting sicuro</strong> - Netlify ha certificazioni di sicurezza avanzate</li>
                         <li>🔒 <strong>Aggiornamenti regolari</strong> - Aggiorniamo continuamente le librerie per risolvere vulnerabilità</li>
-                        <li>🔒 <strong>Open source mindset</strong> - Il codice è trasparente e verificabile</li>
                     </ul>
                     <p>
                         Puoi usare il sito in completa tranquillità!
-                    </p>
+                    </p> 
                 </div>
             </div>
         </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Navigatore</h4>
+                    <ul>
+                        <li><a href="about.html">Chi Siamo</a></li>
+                        <li><a href="faq.u6 html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Risorse</h4>
+                    <ul>
+                        <li><a href="come-funziona.html">Come Funziona</a></li>
+                        <li><a href="index.html">Cerca Negozio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Informazioni</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="privacy.html#cookies">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Trovalo. Tutti i diritti riservati.</p>
+                <p>Rendere lo shopping più facile, un percorso alla volta.</p>
+                <p style="font-size:12px; color:#aaa; margin-top:8px;">Trovalo è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno dei centri commerciali presenti nell'applicazione né dalle relative società di gestione.</p>
+            </div>
+        </footer>
     </div>
 
     <script>

@@ -1,4 +1,4 @@
-// Copyright (c) 2026 MallNav. All rights reserved. Unauthorized use prohibited.
+// Copyright (c) 2026 Trovalo. All rights reserved. Unauthorized use prohibited.
 // App principale — richiede data.js caricato prima (selectedMall, SHOPS_DATA, MALLS_DATA, MALLS_CONFIG)
 let navigationService = null;
 
@@ -375,14 +375,18 @@ document.addEventListener('click', (e) => {
 
 function addWaypoint(shop) {
     if (!shop) return;
-    if ((selectedStartShop && selectedStartShop.id === shop.id) || (selectedEndShop && selectedEndShop.id === shop.id)) {
-        showError('Le tappe di partenza e arrivo sono uguali');
+    if (selectedStartShop && selectedStartShop.id === shop.id) {
+        showError('Questo negozio è già la tua partenza');
         return;
     }
-    // evita duplicati consecutivi
-    const last = waypoints[waypoints.length - 1];
-    if (last && last.id === shop.id) return;
+    if (selectedEndShop && selectedEndShop.id === shop.id) {
+        showError('Questo negozio è già la tua destinazione');
+        return;
+    }
+    // evita duplicati (anche non consecutivi)
+    if (waypoints.some(w => w.id === shop.id)) return;
     waypoints.push(shop);
+    errorMessage.classList.remove('show'); // tappa valida → nascondi eventuale errore
     renderRouteBuilderPreview();
     checkCanCalculate();
 }
@@ -776,8 +780,18 @@ function createStairCard(instruction, isGoingUp) {
     const card = document.createElement('div');
     card.className = `stair-card ${isGoingUp ? 'up' : 'down'}`;
 
+    const svgUp = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32" aria-hidden="true">
+        <path d="M3 20h4v-4h4v-4h4v-4h4V4"/>
+        <polyline points="16 7 19 4 22 7"/>
+    </svg>`;
+
+    const svgDown = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="32" height="32" aria-hidden="true">
+        <path d="M3 4h4v4h4v4h4v4h4V20"/>
+        <polyline points="16 17 19 20 22 17"/>
+    </svg>`;
+
     card.innerHTML = `
-        <div class="stair-icon">${isGoingUp ? '🔼' : '🔽'}</div>
+        <div class="stair-icon">${isGoingUp ? svgUp : svgDown}</div>
         <div class="stair-instruction">${instruction}</div>
     `;
 
@@ -816,19 +830,18 @@ function initializeMallSelection() {
     mallsGrid.innerHTML = MALLS_CONFIG.map(mall => `
         <div class="mall-card ${mall.comingSoon ? 'coming-soon' : ''}" data-mall-id="${mall.id}">
             <div class="mall-logo">${mall.logo}</div>
-            <h3 class="mall-name">${mall.name}</h3>
-            <p class="mall-location">${mall.location}</p>
-            <p class="mall-description">${mall.description}</p>
-            ${!mall.comingSoon ? `
-                <div class="mall-stats-mini">
-                    <span>${MALLS_DATA[mall.id].length} negozi</span>
-                    <span>•</span>
-                    <span>${mall.floors} piani</span>
-                </div>
-                <button class="btn-select-mall">Seleziona</button>
-            ` : `
-                <div class="coming-soon-badge">Prossimamente</div>
-            `}
+            <div class="mall-info">
+                <h3 class="mall-name">${mall.name}</h3>
+                <p class="mall-location">${mall.location}</p>
+                ${!mall.comingSoon ? `
+                    <div class="mall-stats-mini">
+                        <span>${MALLS_DATA[mall.id].length} negozi</span>
+                        <span>•</span>
+                        <span>${mall.floors} piani</span>
+                    </div>
+                ` : `<span class="coming-soon-badge">Prossimamente</span>`}
+            </div>
+            ${!mall.comingSoon ? `<button class="btn-select-mall">Entra →</button>` : ''}
         </div>
     `).join('');
 
@@ -840,6 +853,56 @@ function initializeMallSelection() {
             selectMall(mallId);
         });
     });
+
+    // Filtro città — setup eseguito una sola volta
+    const cityBtn = document.getElementById('cityFilterBtn');
+    const cityMenu = document.getElementById('cityFilterMenu');
+
+    if (cityBtn && cityMenu && cityMenu.children.length === 0) {
+        const cities = [...new Set(
+            MALLS_CONFIG
+                .filter(m => !m.comingSoon)
+                .map(m => m.location.split(',')[0].trim())
+        )];
+
+        let activeCityFilter = 'all';
+
+        function renderCityMenu() {
+            const options = [{ value: 'all', label: 'Tutte le città' }, ...cities.map(c => ({ value: c, label: c }))];
+            cityMenu.innerHTML = options.map(opt => `
+                <div class="filter-option ${activeCityFilter === opt.value ? 'active' : ''}" data-city="${opt.value}">
+                    <span>${opt.label}</span>
+                    <span class="filter-check">✓</span>
+                </div>
+            `).join('');
+            cityMenu.querySelectorAll('.filter-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    activeCityFilter = option.dataset.city;
+                    cityBtn.innerHTML = `<svg class="filter-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h16l-6 8v6l-4 2v-8L4 4z"/></svg>${option.querySelector('span').textContent}`;
+                    renderCityMenu();
+                    closeCategoryMenu(cityBtn, cityMenu);
+                    document.querySelectorAll('#mallsGrid .mall-card').forEach(card => {
+                        const mall = MALLS_CONFIG.find(m => m.id === card.dataset.mallId);
+                        if (!mall) return;
+                        const cardCity = mall.location.split(',')[0].trim();
+                        card.style.display = (activeCityFilter === 'all' || mall.comingSoon || cardCity === activeCityFilter) ? '' : 'none';
+                    });
+                });
+            });
+        }
+
+        renderCityMenu();
+
+        cityBtn.addEventListener('click', () => {
+            toggleCategoryMenu(cityBtn, cityMenu);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!cityBtn.contains(e.target) && !cityMenu.contains(e.target)) {
+                closeCategoryMenu(cityBtn, cityMenu);
+            }
+        });
+    }
 }
 
 function selectMall(mallId) {

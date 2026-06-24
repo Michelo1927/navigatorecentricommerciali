@@ -1,4 +1,4 @@
-// Copyright (c) 2026 MallNav. All rights reserved. Unauthorized use prohibited.
+// Copyright (c) 2026 Trovalo. All rights reserved. Unauthorized use prohibited.
 // Mobile Navigation Menu Toggle
 document.addEventListener('DOMContentLoaded', function() {
     const navToggle = document.getElementById('navToggle');
