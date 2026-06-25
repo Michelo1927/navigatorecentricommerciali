@@ -41,6 +41,29 @@
         document.cookie = COOKIE_NAME + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     }
 
+    // Elimina i cookie first-party di Google Analytics quando l'utente revoca
+    // il consenso analitico. Il reload impedisce il ricaricamento dello script,
+    // ma i cookie _ga/_ga_* già scritti vanno rimossi a mano per applicare la revoca.
+    // (I cookie AdSense sono di terze parti su domini doubleclick → non eliminabili via JS.)
+    function clearAnalyticsCookies() {
+        var names = document.cookie.split(';')
+            .map(function (c) { return c.split('=')[0].trim(); })
+            .filter(function (n) {
+                return n === '_ga' || n === '_gid' ||
+                    n.indexOf('_ga_') === 0 || n.indexOf('_gat') === 0;
+            });
+        var host = location.hostname;
+        var domains = ['', host, '.' + host];
+        var parts = host.split('.');
+        if (parts.length > 2) domains.push('.' + parts.slice(-2).join('.'));
+        names.forEach(function (name) {
+            domains.forEach(function (d) {
+                document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/' +
+                    (d ? '; domain=' + d : '');
+            });
+        });
+    }
+
     function loadScript(src, attrs, useDefer) {
         var s = document.createElement('script');
         if (useDefer) { s.defer = true; } else { s.async = true; }
@@ -253,6 +276,7 @@
                 advertising: document.getElementById('toggleAdvertising').checked
             };
             storeConsent(prefs);
+            if (!prefs.analytics) clearAnalyticsCookies();
             backdrop.remove();
 
             if (isChange) {
@@ -299,6 +323,7 @@
         if (rejectBtn) {
             rejectBtn.addEventListener('click', function () {
                 storeConsent({ analytics: false, advertising: false });
+                clearAnalyticsCookies();
                 hideBanner();
                 addPreferencesButton();
             });

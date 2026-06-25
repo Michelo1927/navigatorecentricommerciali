@@ -16,17 +16,22 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
     
+# I file NON sono fingerprinted (nomi fissi, versionati solo via ?v= nell'HTML).
+# Niente "immutable": il browser deve rivalidare a ogni deploy, altrimenti i
+# visitatori di ritorno restano bloccati su JS/CSS vecchi (bug cache 2026).
+# Netlify serve ETag → file invariati = 304 leggero, file cambiati = 200 fresco.
 [[headers]]
   for = "/*.css"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-    
+    Cache-Control = "public, max-age=0, must-revalidate"
+
 [[headers]]
   for = "/*.js"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-    
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Immagini stabili (logo, favicon): cache breve, niente immutable.
 [[headers]]
   for = "/*.png"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=86400"
