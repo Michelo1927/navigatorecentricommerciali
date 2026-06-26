@@ -9,7 +9,7 @@ const MALLS_CONFIG = [
         floors: 2,
         escalators: 4,
         totalShops: 199,
-        logo: '🏛️'
+        logo: '<img src="PortaDiRomaIcona.png" alt="Porta di Roma" >'
     },
     {
         id: 'granroma',
@@ -19,7 +19,7 @@ const MALLS_CONFIG = [
         floors: 2,
         escalators: 2,
         totalShops: 93,
-        logo: '🏬'
+        logo: '<img src="GranRomaIcona.jpg" alt="GranRoma" >'
     },
     {
         id: 'altro_mall',

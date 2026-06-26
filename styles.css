@@ -259,6 +259,16 @@ body {
     font-size: 32px;
     flex-shrink: 0;
     line-height: 1;
+    width: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mall-logo img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
 }
 
 .mall-info {

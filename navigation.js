@@ -6,7 +6,7 @@ class NavigationService {
         this.WEIGHT_SAME_RING = 2;
         this.WEIGHT_ISLAND_RING = 2; // Stesso peso per isole (può essere conveniente)
         this.WEIGHT_CROSS_ISLAND = 3; // Peso per entrare/uscire dall'isola
-        this.WEIGHT_TO_STAIRS = 1;
+        this.WEIGHT_TO_STAIRS = 2;
         this.WEIGHT_STAIRS = 2;
         this.graph = this.buildGraph();
     }
@@ -454,14 +454,19 @@ class NavigationService {
                         }
                     }
 
-                    const isGoingUp = prevShop?.floor === 0 && nextShop?.floor === 1;
-                    const stairType = id.includes('left') ? 'Scale Mobili SINISTRA' : 'Scale Mobili DESTRA';
-                    const instruction = isGoingUp
-                        ? `🔼 Sali con le ${stairType} verso il Piano 1`
-                        : `🔽 Scendi con le ${stairType} verso il Piano 0`;
+                    // Stair node usato come shortcut sullo stesso piano: nessuna istruzione
+                    if (prevShop && nextShop && prevShop.floor === nextShop.floor) {
+                        // noop — percorso passa vicino alle scale senza cambio piano
+                    } else {
+                        const isGoingUp = prevShop?.floor === 0 && nextShop?.floor === 1;
+                        const stairType = id.includes('left') ? 'Scale Mobili SINISTRA' : 'Scale Mobili DESTRA';
+                        const instruction = isGoingUp
+                            ? `🔼 Sali con le ${stairType} verso il Piano 1`
+                            : `🔽 Scendi con le ${stairType} verso il Piano 0`;
 
-                    steps.push({ type: 'stair', instruction, isGoingUp });
-                    skipNextStair = true;
+                        steps.push({ type: 'stair', instruction, isGoingUp });
+                        skipNextStair = true;
+                    }
                 } else {
                     skipNextStair = false;
                 }
