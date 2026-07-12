@@ -591,43 +591,13 @@ function moveWaypoint(index, direction) {
     checkCanCalculate();
 }
 
-// Riga-hint "Piano · Zona" sotto i campi Partenza/Destinazione: sostituisce l'info che
-// prima veniva ripetuta nelle card di anteprima. In modalità Bagno la destinazione è
-// automatica, quindi il suo hint resta nascosto.
-function updateShopMetaHints() {
-    const startMeta = document.getElementById('startShopMeta');
-    const endMeta = document.getElementById('endShopMeta');
-
-    if (startMeta) {
-        if (selectedStartShop) {
-            startMeta.textContent = `Piano ${selectedStartShop.floor} · ${getZoneLabel(selectedStartShop.zone)}`;
-            startMeta.hidden = false;
-        } else {
-            startMeta.textContent = '';
-            startMeta.hidden = true;
-        }
-    }
-
-    if (endMeta) {
-        if (selectedEndShop && !bathroomQuickEnabled) {
-            endMeta.textContent = `Piano ${selectedEndShop.floor} · ${getZoneLabel(selectedEndShop.zone)}`;
-            endMeta.hidden = false;
-        } else {
-            endMeta.textContent = '';
-            endMeta.hidden = true;
-        }
-    }
-}
-
 function renderRouteBuilderPreview() {
     // Le tappe possono essere cambiate: riallinea la disponibilità dell'"Ottimizzazione percorso"
     updateEfficientRouteButton();
-    // Partenza/arrivo mostrano "Piano · Zona" direttamente sotto i campi (niente doppione)
-    updateShopMetaHints();
 
     if (!routeBuilderPreview) return;
 
-    // Partenza e arrivo sono già nei campi + hint sopra: qui mostriamo SOLO le tappe intermedie,
+    // Partenza e arrivo sono già nei campi: qui mostriamo SOLO le tappe intermedie,
     // in righe compatte (numero d'ordine · nome · "Piano · Zona" · rimuovi). Senza tappe la preview
     // resta nascosta (con sola partenza+arrivo duplicherebbe i campi).
     if (waypoints.length === 0) {

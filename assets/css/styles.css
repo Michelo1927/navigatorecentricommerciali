@@ -938,23 +938,6 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
     display: none;
 }
 
-/* Hint "Piano · Zona" sotto i campi Partenza/Destinazione (info fusa dalle vecchie card) */
-.input-shop-meta {
-    margin-top: 6px;
-    font-size: 13px;
-    color: var(--text-secondary);
-    padding-left: 2px;
-}
-
-/* Convenzione colori: partenza = arancione, arrivo = verde (varianti a11y per il contrasto) */
-.input-shop-meta--start {
-    color: var(--tertiary-color-a11y, #A34700);
-}
-
-.input-shop-meta--end {
-    color: var(--secondary-color-a11y, #256628);
-}
-
 .route-builder-empty {
     padding: 12px 14px;
     border: 1px dashed var(--border-color);
