@@ -402,11 +402,26 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Solo i filtri-categoria accanto ai campi di ricerca. Tetto = footprint del bottone
+   con "Tutto": un nome lungo si tronca, il campo di testo accanto non si restringe.
+   Il filtro città (#cityFilterBtn, fuori da .input-with-filter) non è vincolato. */
+.input-with-filter .filter-toggle {
+    max-width: 96px;
 }
 
 .filter-toggle:hover {
     border-color: var(--primary-color);
     color: var(--primary-color);
+}
+
+.filter-toggle-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .filter-icon-svg {
@@ -416,6 +431,7 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
     margin-right: 5px;
     position: relative;
     top: -1px;
+    flex-shrink: 0;
 }
 
 .filter-menu {

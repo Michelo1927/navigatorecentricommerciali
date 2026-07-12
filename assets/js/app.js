@@ -386,27 +386,38 @@ function renderCategoryFilterMenu(button, menu, activeCategory) {
     });
 }
 
+// Aggiorna solo l'etichetta del bottone filtro: scrivere button.textContent
+// distruggerebbe l'icona SVG interna. Il title dà il nome completo quando troncato.
+function setFilterButtonLabel(button, category) {
+    if (!button) return;
+    const label = button.querySelector('.filter-toggle-label');
+    if (label) {
+        label.textContent = category;
+    } else {
+        button.textContent = category;
+    }
+    if (category && category !== 'Tutto') {
+        button.title = category;
+    } else {
+        button.removeAttribute('title');
+    }
+}
+
 function setActiveStartCategoryFilter(category) {
     activeStartCategoryFilter = category;
-    if (startCategoryFilterBtn) {
-        startCategoryFilterBtn.textContent = category;
-    }
+    setFilterButtonLabel(startCategoryFilterBtn, category);
     renderCategoryFilterMenu(startCategoryFilterBtn, startCategoryFilterMenu, activeStartCategoryFilter);
 }
 
 function setActiveEndCategoryFilter(category) {
     activeEndCategoryFilter = category;
-    if (endCategoryFilterBtn) {
-        endCategoryFilterBtn.textContent = category;
-    }
+    setFilterButtonLabel(endCategoryFilterBtn, category);
     renderCategoryFilterMenu(endCategoryFilterBtn, endCategoryFilterMenu, activeEndCategoryFilter);
 }
 
 function setActiveWaypointCategoryFilter(category) {
     activeWaypointCategoryFilter = category;
-    if (waypointCategoryFilterBtn) {
-        waypointCategoryFilterBtn.textContent = category;
-    }
+    setFilterButtonLabel(waypointCategoryFilterBtn, category);
     renderCategoryFilterMenu(waypointCategoryFilterBtn, waypointCategoryFilterMenu, activeWaypointCategoryFilter);
 }
 
