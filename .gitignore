@@ -9,6 +9,9 @@ graphify-out/
 CLAUDE.md
 docs/
 
+# Strumenti di sviluppo/test locali (non fanno parte del sito)
+scripts/
+
 # OS
 Thumbs.db
 .DS_Store
