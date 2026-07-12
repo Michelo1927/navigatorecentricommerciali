@@ -322,25 +322,20 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
 
 .search-card {
     background: var(--card-background);
-    padding: 30px;
+    padding: 24px;
     border-radius: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
 }
 
-.search-card h2 {
-    margin-bottom: 24px;
-    color: var(--primary-color);
-}
-
 .input-group {
-    margin-bottom: 24px;
+    margin-bottom: 14px;
     position: relative;
 }
 
 .input-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-weight: 600;
     color: var(--text-primary);
 }
@@ -850,9 +845,9 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
     background: #FFFFFF;
     border: 1px solid #E2E8EE;
     border-radius: 16px;
-    padding: 14px 16px 16px;
+    padding: 12px 14px;
     box-shadow: 0 2px 8px rgba(20, 40, 50, 0.08);
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .route-options-header {
@@ -891,27 +886,18 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
     font-weight: 600;
 }
 
-.route-options-divider {
-    height: 1px;
-    background: #E6ECF1;
-    margin: 12px 0 14px;
-}
-
 .route-options-action {
     display: flex;
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
+    margin-top: 12px;
 }
 
 .route-options-action .btn-primary {
     flex: 1 1 220px;
     min-height: 48px;
     width: auto;
-}
-
-.route-options-action .route-mode-btn {
-    flex: 0 1 240px;
 }
 
 .route-options .route-mode-btn.active {
@@ -2017,9 +2003,20 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
     }
     
     .search-card {
-        padding: 20px;
+        padding: 16px;
     }
-    
+
+    /* CTA sticky: il bottone Calcola resta visibile anche se la card sfora il viewport */
+    .route-options-action {
+        position: sticky;
+        bottom: 10px;
+        z-index: 50;
+    }
+
+    .route-options-action .btn-primary {
+        box-shadow: 0 4px 14px rgba(20, 40, 50, 0.25);
+    }
+
     .stats-grid {
         grid-template-columns: 1fr;
         gap: 10px;
