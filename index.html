@@ -130,7 +130,10 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="endShop"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> Destinazione</label>
+                    <div class="label-row">
+                        <label for="endShop"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> Destinazione</label>
+                        <button id="bathroomQuickToggle" class="quick-chip" type="button" aria-pressed="false">🚻 Bagno più vicino</button>
+                    </div>
                     <div class="input-with-filter">
                         <input 
                             type="text" 
@@ -167,28 +170,15 @@
                     <div id="waypointSuggestions" class="suggestions" role="listbox" aria-label="Suggerimenti tappa intermedia"></div>
                 </div>
 
+                <div id="routeBuilderHeader" class="route-builder-header" hidden>
+                    <span class="route-builder-caption">Tappe intermedie (in ordine)</span>
+                    <button id="efficientRouteBtn" class="quick-chip" type="button" aria-pressed="false" hidden>
+                        ⇅ Ordina automaticamente
+                        <span class="info-hint-btn" id="efficientRouteInfoBtn" tabindex="0" aria-label="Informazioni su Ordina automaticamente">?</span>
+                    </button>
+                </div>
                 <div id="routeBuilderPreview" class="route-builder-preview"></div>
 
-                <div class="route-options">
-                    <div class="route-options-header">
-                        <span class="route-options-title">Opzioni percorso</span>
-                        <div class="route-options-toggles">
-                            <div class="route-options-group">
-                                <button id="efficientRouteBtn" class="route-mode-btn" type="button" aria-pressed="false">
-                                    <span class="route-btn-label">
-                                        Ottimizzazione percorso
-                                        <span class="info-hint-btn" id="efficientRouteInfoBtn" tabindex="0" aria-label="Informazioni su Ottimizzazione percorso">?</span>
-                                    </span>
-                                    <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
-                                </button>
-                                <button id="bathroomQuickToggle" class="route-mode-btn" type="button" aria-pressed="false">
-                                    <span class="route-btn-label">Destinazione rapida: Bagno</span>
-                                    <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="route-options-action">
                     <button id="calculateBtn" class="btn-primary">
                         Calcola Percorso
@@ -242,11 +232,11 @@
         <div id="efficientRouteModal" class="info-modal" role="dialog" aria-modal="true" aria-labelledby="efficientRouteModalTitle">
             <div class="info-modal-content">
                 <div class="info-modal-header">
-                    <h3 id="efficientRouteModalTitle">Ottimizzazione percorso</h3>
+                    <h3 id="efficientRouteModalTitle">Ordina automaticamente</h3>
                     <button class="info-modal-close" id="closeEfficientRouteModal" aria-label="Chiudi">×</button>
                 </div>
                 <div class="info-modal-body">
-                    <p>Con <strong>Ottimizzazione percorso</strong> attiva, l'ordine delle tappe intermedie viene riorganizzato automaticamente per minimizzare la distanza totale percorsa.</p>
+                    <p>L'ordinamento automatico riorganizza le tappe intermedie per minimizzare la distanza totale percorsa.</p>
                     <p>Invece di visitare i negozi nell'ordine in cui li hai inseriti, l'app calcola la sequenza ottimale così cammini di meno e arrivi prima alla destinazione finale.</p>
                     <p>Utile quando hai più negozi da visitare e non ti interessa l'ordine, ma vuoi il tragitto più breve possibile o per percorsi ad anello.</p>
                 </div>

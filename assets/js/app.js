@@ -18,6 +18,7 @@ const endSuggestions = document.getElementById('endSuggestions');
 const waypointInput = document.getElementById('waypointInput');
 const waypointSuggestions = document.getElementById('waypointSuggestions');
 const routeBuilderPreview = document.getElementById('routeBuilderPreview');
+const routeBuilderHeader = document.getElementById('routeBuilderHeader');
 const calculateBtn = document.getElementById('calculateBtn');
 const efficientRouteBtn = document.getElementById('efficientRouteBtn');
 const bathroomQuickToggle = document.getElementById('bathroomQuickToggle');
@@ -61,16 +62,11 @@ function updateEfficientRouteButton() {
     if (!available && efficientRouteEnabled) {
         efficientRouteEnabled = false;
     }
+    // Il chip vive nell'intestazione della lista tappe: compare solo quando è attivabile
+    efficientRouteBtn.hidden = !available;
     efficientRouteBtn.classList.toggle('active', efficientRouteEnabled);
-    efficientRouteBtn.classList.toggle('is-disabled', !available);
     if (typeof efficientRouteBtn.setAttribute === 'function') {
         efficientRouteBtn.setAttribute('aria-pressed', String(efficientRouteEnabled));
-        efficientRouteBtn.setAttribute('aria-disabled', String(!available));
-        if (available) {
-            efficientRouteBtn.removeAttribute('title');
-        } else {
-            efficientRouteBtn.setAttribute('title', 'Aggiungi almeno 2 tappe intermedie per usare questa opzione');
-        }
     }
 }
 
@@ -603,14 +599,15 @@ function renderRouteBuilderPreview() {
     if (waypoints.length === 0) {
         routeBuilderPreview.innerHTML = '';
         routeBuilderPreview.hidden = true;
+        if (routeBuilderHeader) routeBuilderHeader.hidden = true;
         return;
     }
     routeBuilderPreview.hidden = false;
+    if (routeBuilderHeader) routeBuilderHeader.hidden = false;
 
     const canReorder = waypoints.length > 1;
 
     routeBuilderPreview.innerHTML = `
-        <div class="route-builder-caption">Tappe intermedie (in ordine)</div>
         ${waypoints.map((shop, index) => `
             <div class="route-builder-stop route-builder-mid">
                 <span class="route-builder-num">${index + 1}</span>

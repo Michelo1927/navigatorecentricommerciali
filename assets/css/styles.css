@@ -318,6 +318,8 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
 /* Search Section */
 .search-section {
     animation: fadeIn 0.3s ease;
+    /* Come .mall-selection-section: il footer resta sotto la piega finché non si scorre */
+    min-height: calc(100vh - 70px);
 }
 
 .search-card {
@@ -329,7 +331,7 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
 }
 
 .input-group {
-    margin-bottom: 14px;
+    margin-bottom: 20px;
     position: relative;
 }
 
@@ -662,6 +664,8 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
 /* Route Section */
 .route-section {
     animation: fadeIn 0.3s ease;
+    /* Come .mall-selection-section: il footer resta sotto la piega finché non si scorre */
+    min-height: calc(100vh - 70px);
 }
 
 .route-header {
@@ -794,98 +798,6 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
     color: var(--text-secondary);
 }
 
-.route-mode-btn {
-    width: auto;
-    min-width: 0;
-    padding: 10px 14px;
-    margin: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 14px;
-    line-height: 1.2;
-    border-radius: 12px;
-    border: 1px solid #CBD5E1;
-    background: #F1F5F9;
-    color: #455A64;
-    box-shadow: none;
-}
-
-.route-btn-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    white-space: normal;
-}
-
-.toggle-track {
-    flex-shrink: 0;
-    width: 38px;
-    height: 20px;
-    border-radius: 999px;
-    background: #94A3B8;
-    transition: background 0.2s ease;
-    display: flex;
-    align-items: center;
-    padding: 3px;
-    box-sizing: border-box;
-}
-
-.toggle-thumb {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #FFFFFF;
-    transition: transform 0.2s ease;
-    flex-shrink: 0;
-}
-
-.route-options {
-    background: #FFFFFF;
-    border: 1px solid #E2E8EE;
-    border-radius: 16px;
-    padding: 12px 14px;
-    box-shadow: 0 2px 8px rgba(20, 40, 50, 0.08);
-    margin-top: 8px;
-}
-
-.route-options-header {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-}
-
-.route-options-toggles {
-    display: flex;
-    align-items: stretch;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.route-options-toggles .route-options-group {
-    flex: 1;
-}
-
-.route-options-group {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding: 6px;
-    background: #F5F7FA;
-    border: 1px solid #E6ECF1;
-    border-radius: 12px;
-}
-
-.route-options-title {
-    color: #2d3a40;
-    font-size: 14px;
-    font-weight: 600;
-}
-
 .route-options-action {
     display: flex;
     align-items: center;
@@ -900,37 +812,64 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
     width: auto;
 }
 
-.route-options .route-mode-btn.active {
+/* Riga label + chip contestuale (Destinazione ↔ Bagno più vicino) */
+.label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.label-row label {
+    margin-bottom: 0;
+}
+
+/* Chip azione compatto (Bagno più vicino, Ordina automaticamente) */
+.quick-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 999px;
+    background: #F1F5F9;
+    color: #455A64;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+
+.quick-chip[hidden] {
+    display: none;
+}
+
+.quick-chip.active {
     background: #E8F5E9;
     color: #1B5E20;
     border-color: #81C784;
-    box-shadow: 0 0 0 3px rgba(129, 199, 132, 0.28);
 }
 
-.action-row {
+/* Intestazione della lista tappe: caption + chip ordinamento */
+.route-builder-header {
     display: flex;
-    align-items: center;   /* allinea verticalmente al centro */
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-top: 8px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 14px 0 8px;
 }
 
-.action-row .btn-primary {
-    flex: 1 1 240px;
-    min-height: 48px;
-    width: auto;
-}
-
-.route-mode-wrap {
-    display: flex;
-    justify-content: center;
+.route-builder-header[hidden] {
+    display: none;
 }
 
 .route-builder-preview {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin: 14px 0 8px;
+    margin: 0 0 8px;
 }
 
 /* .route-builder-preview è display:flex, quindi serve la regola esplicita per [hidden] */
@@ -1076,37 +1015,6 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
 .route-builder-remove:hover {
     background: #FFEBEE;
     color: #C62828;
-}
-
-/* Lo stato .active del pulsante-toggle è definito una sola volta più su
-   (.route-options .route-mode-btn.active): qui restano solo track e thumb. */
-.route-mode-btn.active .toggle-track {
-    background: #81C784;
-}
-
-.route-mode-btn.active .toggle-thumb {
-    transform: translateX(18px);
-}
-
-.route-options .route-mode-btn:not(.active) {
-    background: #F1F5F9;
-    color: #64748B;
-    border-color: #E2E8EE;
-}
-
-.route-options .route-mode-btn:not(.active) .toggle-track {
-    background: #94A3B8;
-}
-
-/* Ottimizzazione percorso non attivabile: serve almeno 2 tappe intermedie */
-.route-options .route-mode-btn.is-disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-}
-
-/* Il "?" informativo resta cliccabile anche quando l'opzione è disabilitata */
-.route-options .route-mode-btn.is-disabled .info-hint-btn {
-    cursor: pointer;
 }
 
 .route-stats {
@@ -2073,30 +1981,6 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
     }
 
     .feedback-button {
-        width: 100%;
-    }
-
-    .action-row {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .route-mode-wrap {
-        order: -1;
-        justify-content: center;
-        width: 100%;
-    }
-
-    .route-mode-btn {
-        width: auto;
-    }
-
-    .route-options-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .route-options .route-mode-btn {
         width: 100%;
     }
 

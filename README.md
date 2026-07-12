@@ -17,7 +17,7 @@ Seleziona il centro in cui ti trovi da un elenco. Ogni centro ha i suoi negozi, 
 Indica da dove parti e dove vuoi arrivare: Trovalo ti mostra la strada più veloce, anche quando devi cambiare piano usando le scale mobili.
 
 ### 📍 Aggiungi più tappe
-Devi passare da più negozi? Inserisci tutte le tappe che vuoi. Con l'opzione **Ottimizzazione percorso**, l'app riordina automaticamente le fermate per farti camminare il meno possibile.
+Devi passare da più negozi? Inserisci tutte le tappe che vuoi. Con l'opzione **Ordina automaticamente**, l'app riordina automaticamente le fermate per farti camminare il meno possibile.
 
 ### 🚻 Trova il bagno più vicino
 Un tocco e Trovalo ti porta al bagno più vicino al punto in cui sei.
