@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-7840795594547987">
+    <title>Chi Siamo | Trovalo - La Tua Guida Allo Shopping</title>
+    <meta name="description" content="La missione di Trovalo: rendere lo shopping nei centri commerciali più facile e piacevole. Scopri chi siamo, i nostri valori e la roadmap futura con nuovi centri e funzionalità.">
+    <link rel="canonical" href="https://mallnav.netlify.app/about.html">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=3">
+    <link rel="shortcut icon" href="favicon.png?v=3">
+    <link rel="stylesheet" href="assets/css/fonts.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=3">
+    <style>
+        .about-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 7px 14px;
+            background: var(--card-background);
+            color: var(--primary-color);
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .back-btn:hover {
+            background: var(--background);
+            border-color: var(--primary-color);
+        }
+        .about-hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1565C0 100%);
+            color: white;
+            padding: 28px 28px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .about-hero h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .about-hero p {
+            font-size: 15px;
+            opacity: 0.95;
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        .about-content {
+            background: var(--card-background);
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 3px 14px rgba(26, 35, 50, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        .about-content h2 {
+            color: var(--text-primary);
+            font-size: 20px;
+            margin-top: 26px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .about-content h2:first-child {
+            margin-top: 0;
+        }
+        .about-content h3 {
+            color: var(--primary-color);
+            font-size: 16px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .about-content p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .about-content ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .about-content li {
+            margin-bottom: 6px;
+            line-height: 1.55;
+            font-size: 14px;
+        }
+        .about-content strong {
+            color: var(--text-primary);
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin: 22px 0;
+        }
+        .feature-card {
+            background: var(--background);
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .feature-icon {
+            font-size: 30px;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin: 8px 0 6px;
+            font-size: 15px;
+        }
+        .feature-card p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin: 22px 0;
+        }
+        .stat-card {
+            background: var(--background);
+            color: var(--text-primary);
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .stat-number {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--primary-color);
+        }
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Salta al contenuto</a>
+    <!-- Top Navigation Header -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html"><img src="assets/images/Logo Trovalo.png?v=3" alt="Trovalo" style="height: 40px;"></a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Apri il menu di navigazione" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Navigatore</a></li>
+                <li><a href="come-funziona.html" class="nav-link">Come Funziona</a></li>
+                <li><a href="faq.html" class="nav-link">Domande Frequenti</a></li>
+                <li><a href="about.html" class="nav-link active">Chi Siamo</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="about-container" id="main-content">
+        <a href="index.html" class="back-btn">← Torna al Navigatore</a>
+        
+        <div class="about-hero">
+            <h1><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Chi Siamo</h1>
+            <p>Rivoluzionare l'esperienza di shopping nei centri commerciali italiani, un percorso alla volta</p>
+        </div>
+
+        <div class="about-content">
+            <h2>La Nostra Missione</h2>
+            <p>
+                La nostra missione è rendere lo shopping nei centri commerciali un'esperienza più piacevole, efficiente e 
+                rilassante per tutti. Vogliamo eliminare lo stress di cercare negozi, ridurre il tempo speso a vagare per 
+                i corridoi e aiutare le persone a ottimizzare le loro visite al centro commerciale.
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg></div>
+                    <h3>Precisione</h3>
+                    <p>Ti mostriamo sempre il percorso più breve e veloce per arrivare a destinazione</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Velocità</h3>
+                    <p>Risultati istantanei, anche per percorsi complessi tra piani diversi</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌟</div>
+                    <h3>Semplicità</h3>
+                    <p>Interfaccia intuitiva che chiunque può usare senza difficoltà</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobilità</h3>
+                    <p>Perfettamente ottimizzato per smartphone e tablet</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Privacy</h3>
+                    <p>I tuoi dati rimangono sul tuo dispositivo, nessun tracking invasivo</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Innovazione</h3>
+                    <p>Costante miglioramento con nuove funzionalità e centri commerciali</p>
+                </div>
+            </div>
+
+            <h2>Come Funziona</h2>
+            <p>
+                Abbiamo mappato ogni centro commerciale nei minimi dettagli: tutti i negozi, i corridoi, 
+                le scale mobili e le diverse zone. Quando vuoi andare da un negozio all'altro, ti basta dirci 
+                dove ti trovi e dove vuoi arrivare.
+            </p>
+            <p>
+                Il navigatore analizza istantaneamente tutte le possibili strade e ti mostra quella più veloce, 
+                tenendo conto di:
+            </p>
+            <ul>
+                <li>Quanto devi camminare</li>
+                <li>Se devi cambiare piano usando le scale mobili</li>
+                <li>Le diverse zone del centro commerciale</li>
+                <li>Gli eventuali passaggi obbligati</li>
+            </ul>
+            <p>
+                Il risultato? Indicazioni chiare, passo dopo passo, che ti portano esattamente dove vuoi andare 
+                nel modo più rapido possibile. Proprio come un GPS per la tua auto, ma pensato per i centri commerciali.
+            </p>
+
+            <h2>I Nostri Valori</h2>
+            
+            <h3>🎓 Accessibilità</h3>
+            <p>
+                Crediamo che orientarsi in un centro commerciale debba essere facile per tutti: famiglie con bambini, 
+                anziani, persone con disabilità, turisti stranieri. Il nostro servizio è gratuito e accessibile a chiunque 
+                abbia uno smartphone o un computer.
+            </p>
+
+            <h3>🌱 Sostenibilità</h3>
+            <p>
+                Ridurre il tempo speso a cercare negozi significa anche ridurre consumi energetici inutili (aria condizionata, 
+                illuminazione) e migliorare l'efficienza complessiva dei centri commerciali. Un piccolo contributo all'ambiente 
+                attraverso l'ottimizzazione.
+            </p>
+
+            <h3>🔐 Privacy e Sicurezza</h3>
+            <p>
+                Rispettiamo la privacy dei nostri utenti. I dati delle ricerche vengono salvati solo localmente sul tuo 
+                dispositivo e non vengono mai trasmessi a server esterni. Siamo completamente conformi al GDPR e alle 
+                normative italiane sulla privacy.
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">292</div>
+                    <div class="stat-label">Negozi Mappati</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Centri Commerciali</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Percorsi Possibili</div>
+                </div>
+            </div>
+
+            <h2>Sviluppo Continuo e Roadmap</h2>
+            <p>
+                Trovalo è un progetto in continua evoluzione. Lavoriamo costantemente su nuove 
+                funzionalità e miglioramenti basandoci sul feedback degli utenti e sulle più recenti 
+                tecnologie disponibili:
+            </p>
+
+            <h3>💼 Benefici per i Commercianti</h3>
+            <p>
+                Trovalo non aiuta solo i clienti, ma offre vantaggi anche ai negozi:
+            </p>
+            <ul>
+                <li><strong>Maggiore visibilità</strong> - I negozi meno conosciuti o in posizioni "nascoste" 
+                diventano più facilmente raggiungibili</li>
+                <li><strong>Aumento del traffico</strong> - Percorsi ottimizzati portano più clienti anche in 
+                zone meno frequentate del centro</li>
+                <li><strong>Analytics aggregati</strong> - Dati anonimi sui percorsi più richiesti aiutano a capire 
+                i flussi di clienti (rispettando sempre la privacy)</li>
+                <li><strong>Promozioni mirate</strong> - Possibilità di raggiungere utenti interessati con offerte 
+                contestuali</li>
+            </ul>
+
+            <h3>🌍 Sostenibilità Ambientale</h3>
+            <p>
+                Ottimizzare i percorsi ha anche un impatto positivo sull'ambiente:
+            </p>
+            <ul>
+                <li>Riduzione del tempo di permanenza medio nel centro commerciale</li>
+                <li>Minore consumo energetico per climatizzazione e illuminazione</li>
+                <li>Riduzione dell'impronta di carbonio complessiva dello shopping</li>
+            </ul>
+
+            <h2>Contatti e Supporto</h2>
+            <p>
+                Siamo sempre disponibili per ascoltare feedback, suggerimenti e richieste:
+            </p>
+            <ul>
+                <li><strong>Supporto tecnico</strong> - Per problemi o bug nel servizio</li>
+                <li><strong>Suggerimenti</strong> - Idee per nuove funzionalità o miglioramenti</li>
+                <li><strong>Segnalazioni dati</strong> - Negozi chiusi, aperti o spostati</li>
+                <li><strong>Partnership</strong> - Proposte di collaborazione commerciale</li>
+                <li><strong>Centri commerciali</strong> - Richieste di aggiunta di nuovi mall</li>
+            </ul>
+            <p>
+                Rispondiamo tipicamente entro 24-48 ore a tutte le richieste.
+            </p>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Navigatore</h4>
+                    <ul>
+                        <li><a href="about.html">Chi Siamo</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Risorse</h4>
+                    <ul>
+                        <li><a href="come-funziona.html">Come Funziona</a></li>
+                        <li><a href="index.html">Cerca Negozio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Informazioni</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="privacy.html#cookies">Cookie Policy</a></li>
+                        <li><a href="tos.html">Termini di Servizio</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Trovalo. Tutti i diritti riservati.</p>
+                <p>Rendere lo shopping più facile, un percorso alla volta.</p>
+                <p style="font-size:12px; color:rgba(255,255,255,0.85); margin-top:8px;">Trovalo è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno dei centri commerciali presenti nell'applicazione né dalle relative società di gestione.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent" style="display:none;">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <strong>🍪 Utilizzo dei Cookie</strong>
+                <p>Questo sito utilizza cookie analitici (Google Analytics), cookie pubblicitari (Google AdSense) e Cloudflare Analytics per statistiche aggregate. Puoi accettare tutti i cookie o continuare solo con quelli tecnici necessari.</p>
+            </div>
+            <div class="cookie-buttons">
+                <button id="cookieAccept" class="cookie-btn accept">Accetta tutti</button>
+                <button id="cookieManage" class="cookie-btn manage">Gestisci opzioni</button>
+                <button id="cookieReject" class="cookie-btn reject">Solo necessari</button>
+                <a href="privacy.html#cookies" class="cookie-link">Maggiori info</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/nav-menu.js?v=3"></script>
+    <script src="assets/js/cookie-consent.js?v=3"></script>
+</body>
+</html>

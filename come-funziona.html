@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-7840795594547987">
+    <title>Come Funziona | Trovalo - Tecnologia e Dettagli del Navigatore</title>
+    <meta name="description" content="Scopri come funziona il navigatore Trovalo: algoritmo di Dijkstra, mappe dettagliate, tecnologia di calcolo percorsi ottimali. Guida completa passo dopo passo.">
+    <link rel="canonical" href="https://mallnav.netlify.app/come-funziona.html">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=3">
+    <link rel="shortcut icon" href="favicon.png?v=3">
+    <link rel="stylesheet" href="assets/css/fonts.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=3">
+    <style>
+        .how-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 7px 14px;
+            background: var(--card-background);
+            color: var(--primary-color);
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .back-btn:hover {
+            background: var(--background);
+            border-color: var(--primary-color);
+        }
+        .how-hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1565C0 100%);
+            color: white;
+            padding: 28px 28px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .how-hero h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .how-hero p {
+            font-size: 15px;
+            opacity: 0.95;
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        .how-content {
+            background: var(--card-background);
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 3px 14px rgba(26, 35, 50, 0.05);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        .how-content h2 {
+            color: var(--text-primary);
+            font-size: 20px;
+            margin-top: 26px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .how-content h2:first-child {
+            margin-top: 0;
+        }
+        .how-content h3 {
+            color: var(--primary-color);
+            font-size: 16px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .how-content p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .how-content ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+        .how-content li {
+            margin-bottom: 6px;
+            line-height: 1.55;
+            font-size: 14px;
+        }
+        .how-content strong {
+            color: var(--text-primary);
+        }
+        .features-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 14px 0;
+        }
+        .features-list li {
+            padding: 8px 0 8px 24px;
+            position: relative;
+            line-height: 1.6;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .cta-box {
+            background: var(--background);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 22px;
+            border-left: 4px solid var(--primary-color);
+        }
+        .cta-box p {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Salta al contenuto</a>
+    <!-- Top Navigation Header -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html"><img src="assets/images/Logo Trovalo.png?v=3" alt="Trovalo" style="height: 40px;"></a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Apri il menu di navigazione" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Navigatore</a></li>
+                <li><a href="come-funziona.html" class="nav-link active">Come Funziona</a></li>
+                <li><a href="faq.html" class="nav-link">Domande Frequenti</a></li>
+                <li><a href="about.html" class="nav-link">Chi Siamo</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="how-container" id="main-content">
+        <a href="index.html" class="back-btn">← Torna al Navigatore</a>
+        
+        <div class="how-hero">
+            <h1><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg> Come Funziona Trovalo</h1>
+            <p>Scopri la tecnologia e i dettagli dietro al navigatore intelligente per centri commerciali</p>
+        </div>
+
+        <div class="how-content">
+            <h2>Come Funziona il Navigatore Trovalo</h2>
+            <p>
+                Trovalo è un'applicazione web innovativa che rivoluziona l'esperienza di shopping nei grandi 
+                centri commerciali italiani. Ti aiuta a trovare rapidamente i negozi e ti mostra il percorso 
+                più veloce per raggiungerli, funzionando proprio come un GPS per la tua auto, ma pensato 
+                specificamente per guidarti all'interno dei complessi commerciali.
+            </p>
+            
+            <h3><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> Perché Usare Trovalo?</h3>
+            <p>
+                I moderni centri commerciali sono diventati vere e proprie città coperte, con centinaia di negozi 
+                distribuiti su più livelli, zone diverse e corridoi che sembrano labirinti. Trovare un negozio 
+                specifico e capire come raggiungerlo nel modo più rapido può essere frustrante e far perdere 
+                molto tempo prezioso.
+            </p>
+            <p>
+                Con Trovalo, questo problema è risolto: l'algoritmo di navigazione intelligente analizza 
+                istantaneamente tutte le possibili strade e calcola automaticamente il percorso ottimale, 
+                tenendo conto della distanza da percorrere, dei cambi di piano tramite scale mobili e delle 
+                diverse zone del centro commerciale.
+            </p>
+
+            <h3>📱 Come Si Usa - Guida Passo Passo</h3>
+            <p>
+                Usare il nostro navigatore è incredibilmente semplice e intuitivo. Ecco la procedura completa:
+            </p>
+            <ul>
+                <li>Scegli il centro commerciale</li>
+                <li>Indica dove ti trovi</li>
+                <li>Indica dove vuoi andare</li>
+                <li>Calcola il percorso</li>
+                <li>Segui le indicazioni</li>
+            </ul>
+
+            <h3>💡 Vantaggi Concreti per gli Utenti</h3>
+            <p>
+                Utilizzando Trovalo regolarmente, gli utenti riportano numerosi benefici tangibili:
+            </p>
+            <ul>
+                <li>Risparmio di tempo</li>
+                <li>Meno chilometri a piedi</li>
+                <li>Riduzione dello stress</li>
+                <li>Shopping più efficiente</li>
+                <li>Minore impatto ambientale</li>
+            </ul>
+
+            <h3>🔒 Privacy e Sicurezza dei Dati</h3>
+            <p>
+                La tua privacy è fondamentale per noi. A differenza di molte app di navigazione, Trovalo:
+            </p>
+            <ul>
+                <li>Non traccia la tua posizione GPS in tempo reale</li>
+                <li>Non richiede registrazione o account personali</li>
+                <li>Salva le ricerche solo localmente sul tuo dispositivo, mai sui nostri server</li>
+                <li>È completamente conforme al GDPR europeo e alle normative italiane sulla privacy</li>
+                <li>Utilizza connessione HTTPS crittografata per tutte le comunicazioni</li>
+                <li>Non vende dati a terze parti per scopi commerciali</li>
+            </ul>
+            <p>
+                Puoi consultare la nostra <a href="privacy.html" style="color: #1976D2; font-weight: 600;">Privacy Policy completa</a> 
+                per tutti i dettagli su come gestiamo i tuoi dati.
+            </p>
+
+            <h3>📞 Supporto e Feedback</h3>
+            <p>
+                Il tuo feedback è prezioso per aiutarci a migliorare continuamente il servizio. Se riscontri 
+                problemi, hai suggerimenti o vuoi segnalare informazioni non aggiornate su negozi, non esitare 
+                a contattarci. Leggi le nostre <a href="faq.html" style="color: #1976D2; font-weight: 600;">FAQ</a> 
+                per risposte immediate alle domande più comuni.
+            </p>
+
+            <div class="cta-box">
+                <p>
+                    <strong>Inizia subito a risparmiare tempo!</strong><br>
+                    Torna alla homepage e seleziona il tuo centro commerciale per scoprire quanto più semplice può essere 
+                    il tuo shopping con Trovalo. È gratuito, veloce e non richiede installazioni.
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Navigatore</h4>
+                    <ul>
+                        <li><a href="about.html">Chi Siamo</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Risorse</h4>
+                    <ul>
+                        <li><a href="come-funziona.html">Come Funziona</a></li>
+                        <li><a href="index.html">Cerca Negozio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Informazioni</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="privacy.html#cookies">Cookie Policy</a></li>
+                        <li><a href="tos.html">Termini di Servizio</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Trovalo. Tutti i diritti riservati.</p>
+                <p>Rendere lo shopping più facile, un percorso alla volta.</p>
+                <p style="font-size:12px; color:rgba(255,255,255,0.85); margin-top:8px;">Trovalo è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno dei centri commerciali presenti nell'applicazione né dalle relative società di gestione.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent" style="display:none;">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <strong>🍪 Utilizzo dei Cookie</strong>
+                <p>Questo sito utilizza cookie analitici (Google Analytics), cookie pubblicitari (Google AdSense) e Cloudflare Analytics per statistiche aggregate. Puoi accettare tutti i cookie o continuare solo con quelli tecnici necessari.</p>
+            </div>
+            <div class="cookie-buttons">
+                <button id="cookieAccept" class="cookie-btn accept">Accetta tutti</button>
+                <button id="cookieManage" class="cookie-btn manage">Gestisci opzioni</button>
+                <button id="cookieReject" class="cookie-btn reject">Solo necessari</button>
+                <a href="privacy.html#cookies" class="cookie-link">Maggiori info</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/nav-menu.js?v=3"></script>
+    <script src="assets/js/cookie-consent.js?v=3"></script>
+</body>
+</html>

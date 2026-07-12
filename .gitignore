@@ -1,0 +1,17 @@
+# Impostazioni locali / editor
+.claude/
+.vscode/
+
+# Output generati (knowledge graph)
+graphify-out/
+
+# Note interne di progetto (non pubblicare)
+CLAUDE.md
+docs/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Log e temporanei
+*.log

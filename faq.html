@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-7840795594547987">
+    <title>FAQ | Domande Frequenti - Trovalo</title>
+    <meta name="description" content="Domande frequenti su Trovalo: come funziona il navigatore, costi (gratuito), privacy GDPR, centri coperti, accuratezza delle mappe. Risposte complete e immediate.">
+    <link rel="canonical" href="https://mallnav.netlify.app/faq.html">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=3">
+    <link rel="shortcut icon" href="favicon.png?v=3">
+    <link rel="stylesheet" href="assets/css/fonts.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=3">
+    <style>
+        .faq-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 14px;
+            padding: 7px 14px;
+            background: var(--card-background);
+            color: var(--primary-color);
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .back-btn:hover {
+            background: var(--background);
+            border-color: var(--primary-color);
+        }
+        .faq-hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1565C0 100%);
+            color: white;
+            padding: 28px 28px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .faq-hero h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .faq-hero p {
+            font-size: 15px;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+        .faq-section {
+            background: var(--card-background);
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 3px 14px rgba(26, 35, 50, 0.05);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .faq-section h2 {
+            color: var(--text-primary);
+            font-size: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .faq-item {
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        .faq-question {
+            background: none;
+            border: none;
+            appearance: none;
+            -webkit-appearance: none;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+            transition: all 0.2s ease;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin: -10px -14px;
+        }
+        .faq-question:hover {
+            color: var(--primary-color);
+            background: var(--background);
+        }
+        .faq-question::after {
+            content: '+';
+            font-size: 24px;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+            font-weight: 300;
+            line-height: 1;
+        }
+        .faq-question.active::after {
+            transform: rotate(45deg);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease;
+            padding: 0 14px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        .faq-answer.active {
+            max-height: 2000px;
+            padding: 16px 14px 4px 14px;
+        }
+        .faq-answer ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        .faq-answer li {
+            margin-bottom: 8px;
+        }
+        .faq-answer strong {
+            color: var(--text-primary);
+        }
+        .faq-answer a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+        .faq-answer a:hover {
+            border-bottom-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Salta al contenuto</a>
+    <!-- Top Navigation Header -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html"><img src="assets/images/Logo Trovalo.png?v=3" alt="Trovalo" style="height: 40px;"></a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Apri il menu di navigazione" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Navigatore</a></li>
+                <li><a href="come-funziona.html" class="nav-link">Come Funziona</a></li>
+                <li><a href="faq.html" class="nav-link active">Domande Frequenti</a></li>
+                <li><a href="about.html" class="nav-link">Chi Siamo</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="faq-container" id="main-content">
+        <a href="index.html" class="back-btn">← Torna al Navigatore</a>
+        
+        <div class="faq-hero">
+            <h1><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg> Domande Frequenti</h1>
+            <p>Tutto quello che devi sapere su Trovalo</p>
+        </div>
+
+        <!-- SEZIONE GENERALE -->
+        <div class="faq-section" id="generale">
+            <h2>🏢 Informazioni Generali</h2>
+            
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-1">
+                    Cos'è Trovalo?
+                </button>
+                <div class="faq-answer" id="faq-answer-1">
+                    <p>
+                        Trovalo è un'applicazione web gratuita che ti aiuta a trovare il percorso 
+                        più breve tra due negozi all'interno dei grandi centri commerciali italiani. Utilizza algoritmi 
+                        avanzati per calcolare il percorso ottimale, considerando scale mobili, 
+                        piani diversi e zone multiple.
+                    </p>
+                    <p>
+                        È come avere un GPS personale per il centro commerciale: inserisci il negozio di partenza e quello 
+                        di destinazione, e ti viene mostrato passo dopo passo come arrivarci nel modo più veloce possibile.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-2">
+                    È davvero gratuito?
+                </button>
+                <div class="faq-answer" id="faq-answer-2">
+                    <p>
+                        Sì, il servizio è completamente gratuito per gli utenti. Non ci sono costi nascosti, abbonamenti 
+                        o acquisti in-app. Puoi usare il navigatore tutte le volte che vuoi senza limiti.
+                    </p>
+                    <p>
+                        Il servizio si sostiene attraverso pubblicità non invasive, che ci permettono 
+                        di mantenere l'app gratuita per tutti.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-3">
+                    Quali centri commerciali sono supportati?
+                </button>
+                <div class="faq-answer" id="faq-answer-3">
+                    <p>Attualmente supportiamo i seguenti centri commerciali:</p>
+                    <ul>
+                        <li><strong>Porta di Roma</strong> (Roma) - 202 negozi completamente mappati</li>
+                        <li><strong>GranRoma</strong> (Roma Est) - 89 negozi completamente mappati</li>
+                    </ul>
+                    <p>
+                        Stiamo lavorando per aggiungere rapidamente altri grandi centri commerciali italiani. 
+                        Puoi suggerire il tuo centro preferito contattandoci via email!
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-4">
+                    I dati dei negozi sono aggiornati?
+                </button>
+                <div class="faq-answer" id="faq-answer-4">
+                    <p>
+                        Sì! Aggiorniamo regolarmente il database dei negozi per riflettere:
+                    </p>
+                    <ul>
+                        <li>Nuove aperture</li>
+                        <li>Chiusure e trasferimenti</li>
+                        <li>Cambi di nome o insegna</li>
+                        <li>Modifiche nel layout del centro</li>
+                    </ul>
+                    <p>
+                        Se noti un errore, segnalacelo via email e lo correggeremo immediatamente!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE UTILIZZO -->
+        <div class="faq-section" id="utilizzo">
+            <h2><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Come Usare il Navigatore</h2>
+            
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-5">
+                    Come trovo il percorso tra due negozi?
+                </button>
+                <div class="faq-answer" id="faq-answer-5">
+                    <p>È semplicissimo! Segui questi passi:</p>
+                    <ol>
+                        <li><strong>Seleziona il centro commerciale</strong> dalla schermata iniziale</li>
+                        <li><strong>Scegli il negozio di partenza</strong> - Inizia a digitare il nome e selezionalo dai suggerimenti</li>
+                        <li><strong>Scegli il negozio di destinazione</strong> - Stessa procedura</li>
+                        <li><strong>Clicca "Calcola Percorso"</strong></li>
+                        <li><strong>Segui le indicazioni</strong> - Ti mostreremo passo dopo passo come arrivarci</li>
+                    </ol>
+                    <p>
+                        Il calcolo è istantaneo, anche per percorsi complessi che attraversano più piani!
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-6">
+                    Cosa significa "Anello Esterno" o "Isola Centrale"?
+                </button>
+                <div class="faq-answer" id="faq-answer-6">
+                    <p>
+                        Questi termini descrivono le diverse zone architettoniche dei centri commerciali:
+                    </p>
+                    <ul>
+                        <li><strong>Anello Esterno (OUTER)</strong> - Il corridoio principale circolare che percorre tutto il centro</li>
+                        <li><strong>Isola Centrale</strong> - Aree interne separate dall'anello, spesso al centro del mall</li>
+                        <li><strong>Isola Sinistra/Destra</strong> - Isole posizionate ai lati dell'anello principale</li>
+                    </ul>
+                    <p>
+                        Il navigatore considera automaticamente queste zone per calcolare il percorso ottimale, 
+                        includendo eventuali attraversamenti necessari.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-7">
+                    Come funzionano i percorsi tra piani diversi?
+                </button>
+                <div class="faq-answer" id="faq-answer-7">
+                    <p>
+                        Quando il negozio di partenza e quello di destinazione sono su piani diversi, il navigatore:
+                    </p>
+                    <ol>
+                        <li>Identifica la scala mobile più vicina al tuo percorso</li>
+                        <li>Ti guida verso quella scala mobile</li>
+                        <li>Ti indica di salire o scendere</li>
+                        <li>Ti guida dal piano superiore/inferiore al negozio di destinazione</li>
+                    </ol>
+                    <p>
+                        L'algoritmo considera il "costo" (tempo e distanza) di salire/scendere le scale nella 
+                        scelta del percorso ottimale.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-8">
+                    Posso usare il navigatore offline?
+                </button>
+                <div class="faq-answer" id="faq-answer-8">
+                    <p>
+                        Sì, parzialmente! Dopo aver caricato il sito la prima volta, il browser memorizza 
+                        automaticamente molti dati. Questo significa che:
+                    </p>
+                    <ul>
+                        <li>✅ Puoi calcolare percorsi anche senza connessione</li>
+                        <li>✅ I dati dei negozi sono salvati localmente</li>
+                        <li>❌ Non potrai vedere eventuali aggiornamenti recenti</li>
+                        <li>❌ Le pubblicità potrebbero non caricarsi</li>
+                    </ul>
+                    <p>
+                        È perfetto se ti trovi in zone del centro con segnale debole!
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-9">
+                    Il percorso suggerito è sempre il più breve?
+                </button>
+                <div class="faq-answer" id="faq-answer-9">
+                    <p>
+                        Sì! Utilizziamo l'algoritmo di Dijkstra, che è matematicamente garantito per trovare 
+                        il percorso più breve in un grafo pesato. Questo significa che:
+                    </p>
+                    <ul>
+                        <li>✅ Il percorso è sempre ottimale</li>
+                        <li>✅ Considera tutte le possibili alternative</li>
+                        <li>✅ Minimizza distanza e numero di cambi di piano</li>
+                        <li>✅ Evita detour inutili</li>
+                    </ul>
+                    <p>
+                        Nota: "più breve" considera sia la distanza fisica che la facilità del percorso 
+                        (es. attraversare un'isola ha un costo maggiore).
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-10">
+                    Posso salvare i miei percorsi preferiti?
+                </button>
+                <div class="faq-answer" id="faq-answer-10">
+                    <p>
+                        Attualmente questa funzionalità non è disponibile, ma è nella nostra roadmap! 
+                        In futuro potrai:
+                    </p>
+                    <ul>
+                        <li>Salvare percorsi frequenti</li>
+                        <li>Creare "tour" di più negozi</li>
+                        <li>Condividere percorsi con amici</li>
+                        <li>Ricevere notifiche su offerte nei tuoi negozi preferiti</li>
+                    </ul>
+                    <p>
+                        Resta sintonizzato per gli aggiornamenti!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE TECNICO -->
+        <div class="faq-section" id="tecnico">
+            <h2>⚙️ Aspetti Tecnici</h2>
+            
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-11">
+                    Su quali dispositivi funziona?
+                </button>
+                <div class="faq-answer" id="faq-answer-11">
+                    <p>
+                        Trovalo funziona su praticamente qualsiasi dispositivo moderno:
+                    </p>
+                    <ul>
+                        <li>📱 <strong>Smartphone</strong> - iOS (Safari) e Android (Chrome, Firefox)</li>
+                        <li>💻 <strong>Computer</strong> - Windows, Mac, Linux (tutti i browser moderni)</li>
+                        <li>📱 <strong>Tablet</strong> - iPad, tablet Android</li>
+                    </ul>
+                    <p>
+                        Il design è responsive e si adatta automaticamente alle dimensioni dello schermo. 
+                        Consigliamo l'uso su smartphone per portarlo con te mentre cammini nel centro commerciale!
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-12">
+                    Quali browser sono supportati?
+                </button>
+                <div class="faq-answer" id="faq-answer-12">
+                    <p>Supportiamo tutti i browser moderni:</p>
+                    <ul>
+                        <li>✅ Chrome (versione 90+)</li>
+                        <li>✅ Firefox (versione 88+)</li>
+                        <li>✅ Safari (versione 14+)</li>
+                        <li>✅ Edge (versione 90+)</li>
+                        <li>✅ Opera (versione 76+)</li>
+                    </ul>
+                    <p>
+                        Se usi un browser molto vecchio, alcune funzionalità potrebbero non funzionare. 
+                        Ti consigliamo di aggiornare il browser all'ultima versione disponibile.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-13">
+                    Devo installare un'app?
+                </button>
+                <div class="faq-answer" id="faq-answer-13">
+                    <p>
+                        No! Il Navigatore è un'applicazione web (Progressive Web App) che funziona direttamente 
+                        nel browser. Non devi scaricare o installare nulla.
+                    </p>
+                    <p>
+                        Tuttavia, puoi "aggiungerla alla home screen" del tuo smartphone per accedervi 
+                        rapidamente come se fosse un'app nativa:
+                    </p>
+                    <ul>
+                        <li><strong>iPhone/iPad</strong>: Apri in Safari → Tap su Condividi → "Aggiungi a Home"</li>
+                        <li><strong>Android</strong>: Apri in Chrome → Menu → "Aggiungi a schermata Home"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-14">
+                    Perché il sito è lento?
+                </button>
+                <div class="faq-answer" id="faq-answer-14">
+                    <p>
+                        Il sito è ottimizzato per essere velocissimo, ma potrebbero esserci alcuni motivi di rallentamento:
+                    </p>
+                    <ul>
+                        <li><strong>Connessione Internet lenta</strong> - Controlla il tuo WiFi o dati mobili</li>
+                        <li><strong>Primo caricamento</strong> - Il primo accesso richiede di scaricare tutti i dati</li>
+                        <li><strong>Browser sovraccarico</strong> - Chiudi altre schede non necessarie</li>
+                        <li><strong>Device vecchio</strong> - Smartphone o computer molto vecchi potrebbero essere lenti</li>
+                    </ul>
+                    <p>
+                        Se il problema persiste, prova a:
+                    </p>
+                    <ol>
+                        <li>Cancellare la cache del browser</li>
+                        <li>Usare un browser diverso</li>
+                        <li>Riavviare il dispositivo</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-15">
+                    Come vengono salvate le mie ricerche?
+                </button>
+                <div class="faq-answer" id="faq-answer-15">
+                    <p>
+                        Le tue ricerche e preferenze (come l'ultimo centro commerciale selezionato) vengono salvate 
+                        localmente sul tuo dispositivo usando il <strong>localStorage</strong> del browser.
+                    </p>
+                    <p>
+                        Questo significa che:
+                    </p>
+                    <ul>
+                        <li>✅ I dati rimangono solo sul tuo dispositivo</li>
+                        <li>✅ Non vengono mai inviati ai nostri server</li>
+                        <li>✅ Nessuno può vederli tranne te</li>
+                        <li>✅ Vengono cancellati se cancelli i dati del browser</li>
+                    </ul>
+                    <p>
+                        È il modo più sicuro e rispettoso della privacy per salvare le tue preferenze!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEZIONE PRIVACY -->
+        <div class="faq-section" id="privacy">
+            <h2>🔒 Privacy e Sicurezza</h2>
+            
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-16">
+                    Quali dati personali raccogliete?
+                </button>
+                <div class="faq-answer" id="faq-answer-16">
+                    <p>
+                        Raccogliamo pochissimi dati, e solo quelli necessari per far funzionare il servizio:
+                    </p>
+                    <ul>
+                        <li><strong>Dati tecnici automatici</strong> - Indirizzo IP, tipo di browser, sistema operativo (necessari per mostrare il sito)</li>
+                        <li><strong>Ricerche effettuate</strong> - Salvate SOLO localmente sul tuo dispositivo, mai inviate ai server</li>
+                        <li><strong>Cookie tecnici</strong> - Per ricordare le tue preferenze (centro commerciale scelto, consenso cookie)</li>
+                    </ul>
+                    <p>
+                        <strong>NON</strong> raccogliamo:
+                    </p>
+                    <ul>
+                        <li>❌ Nome, email o dati di contatto</li>
+                        <li>❌ Posizione GPS precisa</li>
+                        <li>❌ Informazioni finanziarie</li>
+                        <li>❌ Cronologia di navigazione al di fuori del sito</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-17">
+                    Siete conformi al GDPR?
+                </button>
+                <div class="faq-answer" id="faq-answer-17">
+                    <p>
+                        Sì, assolutamente! Siamo pienamente conformi al Regolamento Generale sulla Protezione dei Dati (GDPR) 
+                        europeo e alle normative italiane sulla privacy.
+                    </p>
+                    <p>
+                        Questo significa che:
+                    </p>
+                    <ul>
+                        <li>✅ Chiediamo il consenso prima di usare cookie non necessari</li>
+                        <li>✅ Rispettiamo tutti i tuoi diritti (accesso, cancellazione, portabilità, ecc.)</li>
+                        <li>✅ Abbiamo una Privacy Policy dettagliata e trasparente</li>
+                        <li>✅ Minimizziamo la raccolta dati al minimo indispensabile</li>
+                        <li>✅ Conserviamo i dati solo per il tempo necessario</li>
+                    </ul>
+                    <p>
+                        Puoi leggere la nostra <a href="privacy.html" style="color: #1976D2; font-weight: 600;">Privacy Policy completa qui</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-18">
+                    Cosa sono i cookie e come li usate?
+                </button>
+                <div class="faq-answer" id="faq-answer-18">
+                    <p>
+                        I cookie sono piccoli file di testo salvati dal browser. Usiamo due tipi di cookie:
+                    </p>
+                    <ul>
+                        <li><strong>Cookie Tecnici (Necessari)</strong>
+                            <ul>
+                                <li>Ricordano il centro commerciale che hai scelto</li>
+                                <li>Memorizzano la tua preferenza sui cookie</li>
+                                <li>Durata: 1 anno</li>
+                                <li>Non richiedono consenso (sono necessari per il funzionamento)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Cookie di Profilazione (Google AdSense)</strong>
+                            <ul>
+                                <li>Permettono di mostrare pubblicità pertinenti</li>
+                                <li>Gestiti da Google (terze parti)</li>
+                                <li>Durata: fino a 13 mesi</li>
+                                <li>Richiedono il tuo consenso esplicito</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p>
+                        Puoi gestire i cookie in qualsiasi momento dalle <a href="privacy.html#cookies" style="color: #1976D2; font-weight: 600;">impostazioni</a> 
+                        o cancellando i dati del browser.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-19">
+                    Vendete i miei dati a terze parti?
+                </button>
+                <div class="faq-answer" id="faq-answer-19">
+                    <p>
+                        <strong>No, assolutamente mai!</strong> Non vendiamo, cediamo o condividiamo i tuoi dati 
+                        personali con terze parti per scopi commerciali.
+                    </p>
+                    <p>
+                        I dati sono condivisi solo con fornitori di servizi essenziali:
+                    </p>
+                    <ul>
+                        <li><strong>Google AdSense</strong> - Solo se hai accettato i cookie di profilazione, per mostrare pubblicità</li>
+                        <li><strong>Netlify</strong> - Il nostro provider di hosting (riceve solo dati tecnici base come l'IP per servire il sito)</li>
+                    </ul>
+                    <p>
+                        Questi fornitori sono tenuti per contratto a proteggere i tuoi dati e usarli solo per fornire 
+                        il servizio richiesto.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-20">
+                    Come posso cancellare i miei dati?
+                </button>
+                <div class="faq-answer" id="faq-answer-20">
+                    <p>
+                        Puoi cancellare i tuoi dati in qualsiasi momento:
+                    </p>
+                    <ol>
+                        <li><strong>Dati locali (ricerche, preferenze)</strong>
+                            <ul>
+                                <li>Cancella i dati del sito dalle impostazioni del browser</li>
+                                <li>Oppure usa la modalità navigazione in incognito</li>
+                            </ul>
+                        </li>
+                        <li><strong>Cookie</strong>
+                            <ul>
+                                <li>Cancella i cookie dalle impostazioni del browser</li>
+                                <li>Imposta il browser per bloccare i cookie di terze parti</li>
+                            </ul>
+                        </li>
+                        <li><strong>Dati Google AdSense</strong>
+                            <ul>
+                                <li>Visita <a href="https://adssettings.google.com/" target="_blank" style="color: #1976D2;">adssettings.google.com</a></li>
+                                <li>Disattiva la personalizzazione degli annunci</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="faq-question" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq-answer-21">
+                    Il sito è sicuro?
+                </button>
+                <div class="faq-answer" id="faq-answer-21">
+                    <p>
+                        Sì! Prendiamo la sicurezza molto seriamente:
+                    </p>
+                    <ul>
+                        <li>🔒 <strong>HTTPS obbligatorio</strong> - Tutta la comunicazione è crittografata</li>
+                        <li>🔒 <strong>Nessun dato sensibile</strong> - Non chiediamo password o dati finanziari</li>
+                        <li>🔒 <strong>Hosting sicuro</strong> - Netlify ha certificazioni di sicurezza avanzate</li>
+                        <li>🔒 <strong>Aggiornamenti regolari</strong> - Aggiorniamo continuamente le librerie per risolvere vulnerabilità</li>
+                    </ul>
+                    <p>
+                        Puoi usare il sito in completa tranquillità!
+                    </p> 
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Navigatore</h4>
+                    <ul>
+                        <li><a href="about.html">Chi Siamo</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Risorse</h4>
+                    <ul>
+                        <li><a href="come-funziona.html">Come Funziona</a></li>
+                        <li><a href="index.html">Cerca Negozio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Informazioni</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="privacy.html#cookies">Cookie Policy</a></li>
+                        <li><a href="tos.html">Termini di Servizio</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Trovalo. Tutti i diritti riservati.</p>
+                <p>Rendere lo shopping più facile, un percorso alla volta.</p>
+                <p style="font-size:12px; color:rgba(255,255,255,0.85); margin-top:8px;">Trovalo è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno dei centri commerciali presenti nell'applicazione né dalle relative società di gestione.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function toggleFaq(element) {
+            const isActive = element.classList.toggle('active');
+            element.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+            const answer = element.nextElementSibling;
+            answer.classList.toggle('active');
+        }
+    </script>
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent" style="display:none;">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <strong>🍪 Utilizzo dei Cookie</strong>
+                <p>Questo sito utilizza cookie analitici (Google Analytics), cookie pubblicitari (Google AdSense) e Cloudflare Analytics per statistiche aggregate. Puoi accettare tutti i cookie o continuare solo con quelli tecnici necessari.</p>
+            </div>
+            <div class="cookie-buttons">
+                <button id="cookieAccept" class="cookie-btn accept">Accetta tutti</button>
+                <button id="cookieManage" class="cookie-btn manage">Gestisci opzioni</button>
+                <button id="cookieReject" class="cookie-btn reject">Solo necessari</button>
+                <a href="privacy.html#cookies" class="cookie-link">Maggiori info</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/nav-menu.js?v=3"></script>
+    <script src="assets/js/cookie-consent.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+# Netlify configuration file
+[build]
+  publish = "."
+
+# I redirect vivono SOLO in _redirects (fonte unica): la regola www→non-www
+# che stava qui era duplicata.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # HSTS: il sito è solo HTTPS (Netlify forza TLS). X-XSS-Protection rimosso: deprecato.
+    Strict-Transport-Security = "max-age=31536000"
+    
+# I file NON sono fingerprinted (nomi fissi, versionati solo via ?v= nell'HTML).
+# Niente "immutable": il browser deve rivalidare a ogni deploy, altrimenti i
+# visitatori di ritorno restano bloccati su JS/CSS vecchi (bug cache 2026).
+# Netlify serve ETag → file invariati = 304 leggero, file cambiati = 200 fresco.
+# Regole per prefisso di cartella (assets/css, assets/js): più affidabili
+# dei pattern per estensione con file annidati in sottocartelle.
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Font self-hostati: contenuto stabile, cache di un giorno come le immagini.
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Immagini stabili (logo, favicon): cache breve, niente immutable.
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/assets/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

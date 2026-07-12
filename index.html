@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-7840795594547987">
+    
+    <!-- SEO Meta Tags -->
+    <title>Trovalo | Trova il percorso tra i negozi</title>
+    <meta name="description" content="Naviga i centri commerciali Porta di Roma e GranRoma: il percorso più breve tra i negozi, con indicazioni passo-passo e tappe intermedie. Calcolo immediato, 100% gratuito.">
+    <meta name="keywords" content="centro commerciale, navigatore, mappa negozi, percorso negozi, shopping, Porta di Roma, GranRoma, Roma">
+    <meta name="author" content="Trovalo">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://mallnav.netlify.app/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mallnav.netlify.app/">
+    <meta property="og:title" content="Trovalo | Trova il percorso tra i negozi">
+    <meta property="og:description" content="Il percorso più breve tra i negozi del tuo centro commerciale, con indicazioni passo-passo. Oggi a Roma: Porta di Roma e GranRoma.">
+    <meta property="og:image" content="https://mallnav.netlify.app/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://mallnav.netlify.app/">
+    <meta property="twitter:title" content="Trovalo">
+    <meta property="twitter:description" content="Il percorso più breve tra i negozi del tuo centro commerciale, con indicazioni passo-passo. Oggi a Roma: Porta di Roma e GranRoma.">
+    <meta property="twitter:image" content="https://mallnav.netlify.app/og-image.jpg">
+    
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Trovalo",
+      "description": "Il percorso più breve tra i negozi del centro commerciale, con indicazioni passo-passo. Disponibile per Porta di Roma e GranRoma.",
+      "url": "https://mallnav.netlify.app/",
+      "applicationCategory": "NavigationApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    }
+    </script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=3">
+    <link rel="shortcut icon" href="favicon.png?v=3">
+    
+    <!-- Font self-hostato: nessuna richiesta a Google prima del consenso cookie -->
+    <link rel="stylesheet" href="assets/css/fonts.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=3">
+</head>
+<body data-screen="mall">
+    <a href="#main-content" class="skip-link">Salta al contenuto</a>
+    <!-- Top Navigation Header -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html"><img src="assets/images/Logo Trovalo.png?v=3" alt="Trovalo" style="height: 40px;"></a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Apri il menu di navigazione" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link active">Navigatore</a></li>
+                <li><a href="come-funziona.html" class="nav-link">Come Funziona</a></li>
+                <li><a href="faq.html" class="nav-link">Domande Frequenti</a></li>
+                <li><a href="about.html" class="nav-link">Chi Siamo</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" id="main-content">
+        <!-- Mall Selection Section -->
+        <section id="mallSelectionSection" class="mall-selection-section">
+            <h1 class="hero-title">Trova qualsiasi negozio in un attimo</h1>
+            <p class="seo-intro">Il percorso più breve tra due negozi del centro commerciale, in tempo reale.<br> Nessuna registrazione, <strong>100% gratuito</strong>.</p>
+
+            <h2 class="malls-grid-title">Scegli il centro commerciale</h2>
+            <div class="city-filter-wrapper">
+                <div class="filter-dropdown">
+                    <button class="filter-toggle city-filter-btn" id="cityFilterBtn" aria-expanded="false">
+                        <svg class="filter-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h16l-6 8v6l-4 2v-8L4 4z"/></svg>Tutte le città
+                    </button>
+                    <div class="filter-menu city-filter-menu" id="cityFilterMenu"></div>
+                </div>
+            </div>
+            <div class="malls-grid" id="mallsGrid">
+                <!-- Dinamically populated -->
+            </div>
+            <p class="coming-soon-note" id="comingSoonNote" hidden>Altri centri in arrivo…</p>
+        </section>
+
+        <!-- Header (hidden initially) -->
+        <header class="header" id="mainHeader" style="display: none;">
+            <div class="header-content">
+                <button id="changeMallBtn" class="change-mall-btn">← Cambia Centro</button>
+                <h2 id="mallTitle"></h2>
+            </div>
+        </header>
+
+        <!-- Search Section -->
+        <section id="searchSection" class="search-section" style="display: none;">
+            <div class="search-card">
+                <h2>Seleziona Percorso</h2>
+                
+                <div class="input-group">
+                    <label for="startShop"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg> Partenza</label>
+                    <div class="input-with-filter">
+                        <input 
+                            type="text" 
+                            id="startShop" 
+                            placeholder="Cerca negozio di partenza..."
+                            autocomplete="off"
+                        >
+                        <div class="filter-dropdown">
+                            <button id="startCategoryFilterBtn" class="filter-toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                <svg class="filter-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h16l-6 8v6l-4 2v-8L4 4z"/></svg>Tutto
+                            </button>
+                            <div id="startCategoryFilterMenu" class="filter-menu" role="listbox" aria-label="Filtri per categoria"></div>
+                        </div>
+                    </div>
+                    <div class="input-shop-meta input-shop-meta--start" id="startShopMeta" hidden></div>
+                    <div id="startSuggestions" class="suggestions" role="listbox" aria-label="Suggerimenti negozio di partenza"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="endShop"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> Destinazione</label>
+                    <div class="input-with-filter">
+                        <input 
+                            type="text" 
+                            id="endShop" 
+                            placeholder="Cerca negozio di destinazione..."
+                            autocomplete="off"
+                        >
+                        <div class="filter-dropdown">
+                            <button id="endCategoryFilterBtn" class="filter-toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                <svg class="filter-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h16l-6 8v6l-4 2v-8L4 4z"/></svg>Tutto
+                            </button>
+                            <div id="endCategoryFilterMenu" class="filter-menu" role="listbox" aria-label="Filtri per categoria"></div>
+                        </div>
+                    </div>
+                    <div class="input-shop-meta input-shop-meta--end" id="endShopMeta" hidden></div>
+                    <div id="endSuggestions" class="suggestions" role="listbox" aria-label="Suggerimenti negozio di destinazione"></div>
+                </div>
+
+                <div id="routeBuilderPreview" class="route-builder-preview"></div>
+
+                <div class="input-group">
+                    <label for="waypointInput"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> Aggiungi tappa</label>
+                    <div class="input-with-filter">
+                        <input
+                            type="text"
+                            id="waypointInput"
+                            placeholder="Aggiungi una tappa..."
+                            autocomplete="off"
+                        >
+                        <div class="filter-dropdown">
+                            <button id="waypointCategoryFilterBtn" class="filter-toggle" type="button" aria-haspopup="listbox" aria-expanded="false">
+                                <svg class="filter-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h16l-6 8v6l-4 2v-8L4 4z"/></svg>Tutto
+                            </button>
+                            <div id="waypointCategoryFilterMenu" class="filter-menu" role="listbox" aria-label="Filtri per categoria"></div>
+                        </div>
+                    </div>
+                    <div id="waypointSuggestions" class="suggestions" role="listbox" aria-label="Suggerimenti tappa intermedia"></div>
+                </div>
+
+                <div class="route-options">
+                    <div class="route-options-header">
+                        <span class="route-options-title">Opzioni percorso</span>
+                        <div class="route-options-toggles">
+                            <div class="route-options-group">
+                                <button id="efficientRouteBtn" class="route-mode-btn" type="button" aria-pressed="false">
+                                    <span class="route-btn-label">
+                                        Ottimizzazione percorso
+                                        <span class="info-hint-btn" id="efficientRouteInfoBtn" tabindex="0" aria-label="Informazioni su Ottimizzazione percorso">?</span>
+                                    </span>
+                                    <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+                                </button>
+                                <button id="bathroomQuickToggle" class="route-mode-btn" type="button" aria-pressed="false">
+                                    <span class="route-btn-label">Destinazione rapida: Bagno</span>
+                                    <span class="toggle-track" aria-hidden="true"><span class="toggle-thumb"></span></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="route-options-divider" aria-hidden="true"></div>
+                    <div class="route-options-action">
+                        <button id="calculateBtn" class="btn-primary">
+                            Calcola Percorso
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid" id="statsGrid">
+                <!-- Dinamically populated -->
+            </div>
+        </section>
+
+        <!-- Loading Section -->
+        <section id="loadingSection" class="loading-section" style="display: none;">
+            <div class="loader"></div>
+            <p>Calcolo del percorso in corso...</p>
+        </section>
+
+        <!-- Route Section -->
+        <section id="routeSection" class="route-section" style="display: none;">
+            <div class="route-header">
+                <button id="backBtn" class="btn-back">
+                    ← Nuova Ricerca
+                </button>
+                <div class="route-info">
+                    <div class="route-shops" id="routeStops"></div>
+                    <div class="route-stats">
+                        <span id="routeTime" class="route-stat"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="steps-container" id="stepsContainer">
+                <!-- Steps will be added here dynamically -->
+            </div>
+
+            <!-- Feedback Banner -->
+            <div class="feedback-banner" id="feedbackBanner" style="display: none;">
+                <div class="feedback-content">
+                    <span class="feedback-icon">💬</span>
+                    <span class="feedback-text">Il percorso è stato utile? <br> <strong>Lasciaci il tuo feedback!</strong></span>
+                </div>
+                <a href="https://forms.gle/tZ7ATs97f8qHxJUS8" class="feedback-button" target="_blank" rel="noopener noreferrer">
+                    Lascia Feedback
+                </a>
+            </div>
+        </section>
+
+        <!-- Efficient Route Info Modal -->
+        <div id="efficientRouteModal" class="info-modal" role="dialog" aria-modal="true" aria-labelledby="efficientRouteModalTitle">
+            <div class="info-modal-content">
+                <div class="info-modal-header">
+                    <h3 id="efficientRouteModalTitle">Ottimizzazione percorso</h3>
+                    <button class="info-modal-close" id="closeEfficientRouteModal" aria-label="Chiudi">×</button>
+                </div>
+                <div class="info-modal-body">
+                    <p>Con <strong>Ottimizzazione percorso</strong> attiva, l'ordine delle tappe intermedie viene riorganizzato automaticamente per minimizzare la distanza totale percorsa.</p>
+                    <p>Invece di visitare i negozi nell'ordine in cui li hai inseriti, l'app calcola la sequenza ottimale così cammini di meno e arrivi prima alla destinazione finale.</p>
+                    <p>Utile quando hai più negozi da visitare e non ti interessa l'ordine, ma vuoi il tragitto più breve possibile o per percorsi ad anello.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shops List Modal -->
+        <div id="shopsModal" class="shops-modal" role="dialog" aria-modal="true" aria-labelledby="shopsModalTitle">
+            <div class="shops-modal-content">
+                <div class="shops-modal-header">
+                    <h2 id="shopsModalTitle">📋 Lista Completa Negozi</h2>
+                    <button class="shops-modal-close" id="closeShopsModal" aria-label="Chiudi la lista negozi">×</button>
+                </div>
+                <div class="shops-modal-search">
+                    <input type="text" id="shopsSearchInput" placeholder="🔍 Cerca negozio..." aria-label="Cerca un negozio nella lista">
+                </div>
+                <div class="shops-modal-filters">
+                    <div class="filter-label">Filtra per piano:</div>
+                    <div class="filter-buttons" id="floorFilters">
+                        <button class="filter-btn active" data-floor="all">Tutti</button>
+                    </div>
+                </div>
+                <div class="shops-modal-body">
+                    <div id="shopsList" class="shops-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Navigatore</h4>
+                    <ul>
+                        <li><a href="about.html">Chi Siamo</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Risorse</h4>
+                    <ul>
+                        <li><a href="come-funziona.html">Come Funziona</a></li>
+                        <li><a href="index.html">Cerca Negozio</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Informazioni</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="privacy.html#cookies">Cookie Policy</a></li>
+                        <li><a href="tos.html">Termini di Servizio</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Trovalo. Tutti i diritti riservati.</p>
+                <p>Rendere lo shopping più facile, un percorso alla volta.</p>
+                <p style="font-size:12px; color:rgba(255,255,255,0.85); margin-top:8px;">Trovalo è un progetto indipendente e non è affiliato, sponsorizzato o approvato da alcuno dei centri commerciali presenti nell'applicazione né dalle relative società di gestione.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent" style="display:none;">
+        <div class="cookie-content">
+            <div class="cookie-text">
+                <strong>🍪 Utilizzo dei Cookie</strong>
+                <p>Questo sito utilizza cookie analitici (Google Analytics), cookie pubblicitari (Google AdSense) e Cloudflare Analytics per statistiche aggregate. Puoi accettare tutti i cookie o continuare solo con quelli tecnici necessari.</p>
+            </div>
+            <div class="cookie-buttons">
+                <button id="cookieAccept" class="cookie-btn accept">Accetta tutti</button>
+                <button id="cookieManage" class="cookie-btn manage">Gestisci opzioni</button>
+                <button id="cookieReject" class="cookie-btn reject">Solo necessari</button>
+                <a href="privacy.html#cookies" class="cookie-link">Maggiori info</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/data.js?v=3"></script>
+    <script src="assets/js/navigation.js?v=3"></script>
+    <script src="assets/js/app.js?v=3"></script>
+    <script src="assets/js/nav-menu.js?v=3"></script>
+    <script src="assets/js/cookie-consent.js?v=3"></script>
+</body>
+</html>

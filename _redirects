@@ -1,0 +1,6 @@
+# Redirect www to non-www
+https://www.mallnav.netlify.app/* https://mallnav.netlify.app/:splat 301!
+
+# Redirect HTTP to HTTPS
+http://mallnav.netlify.app/* https://mallnav.netlify.app/:splat 301!
+http://www.mallnav.netlify.app/* https://mallnav.netlify.app/:splat 301!
