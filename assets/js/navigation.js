@@ -34,10 +34,11 @@ class NavigationService {
         });
 
         // Inizializza nodi virtuali scale
-        graph['stairs_left_p0'] = {};
-        graph['stairs_left_p1'] = {};
-        graph['stairs_right_p0'] = {};
-        graph['stairs_right_p1'] = {};
+        graph['stairs_west_p0'] = {};
+        graph['stairs_west_p1'] = {};
+        graph['stairs_east_p0'] = {};
+        graph['stairs_east_p1'] = {};
+        // I nodi 'stairs_north_p0/p1' (solo Porta di Roma) sono creati lazy da addConnection
 
         // Helper per aggiungere connessioni bidirezionali
         const addConnection = (id1, id2, weight) => {
@@ -115,63 +116,80 @@ class NavigationService {
             const grScalaSxP0 = ['Dentalpro', 'Bluespirit Ingresso', 'La Casina Del Caffe'];
             grScalaSxP0.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 0);
-                if (shop) addConnection('stairs_left_p0', shop.id, this.WEIGHT_TO_STAIRS);
+                if (shop) addConnection('stairs_west_p0', shop.id, this.WEIGHT_TO_STAIRS);
             });
 
             // Scala SX Piano 1 (di fronte a BURGER KING, I BACCANALI)
             const grScalaSxP1 = ['Burger King', 'I Baccanali'];
             grScalaSxP1.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 1);
-                if (shop) addConnection('stairs_left_p1', shop.id, this.WEIGHT_TO_STAIRS);
+                if (shop) addConnection('stairs_west_p1', shop.id, this.WEIGHT_TO_STAIRS);
             });
 
             // Scala DX Piano 0 (di fronte a TRAMAS)
             const grScalaDxP0 = ['Tramas'];
             grScalaDxP0.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 0);
-                if (shop) addConnection('stairs_right_p0', shop.id, this.WEIGHT_TO_STAIRS);
+                if (shop) addConnection('stairs_east_p0', shop.id, this.WEIGHT_TO_STAIRS);
             });
 
             // Scala DX Piano 1 (di fronte a ZARA, DAN JHON)
             const grScalaDxP1 = ['Zara Piano 1', 'Dan Jhon'];
             grScalaDxP1.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 1);
-                if (shop) addConnection('stairs_right_p1', shop.id, this.WEIGHT_TO_STAIRS);
+                if (shop) addConnection('stairs_east_p1', shop.id, this.WEIGHT_TO_STAIRS);
             });
         } else {
             // Porta di Roma - Scale Mobili
-            // Scala SX Piano 0
-            const scalaSxP0Neighbors = ['Pull&Bear', 'MiRaggi', 'Nyx Professional Makeup', 'Liu-Jo'];
-            scalaSxP0Neighbors.forEach(name => {
+            // Scala OVEST Piano 0
+            const scalaOvestP0Neighbors = ['Pull&Bear', 'MiRaggi', 'Nyx Professional Makeup', 'Liu-Jo'];
+            scalaOvestP0Neighbors.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 0);
-                if (shop) addConnection('stairs_left_p0', shop.id, this.WEIGHT_TO_STAIRS);
+                if (shop) addConnection('stairs_west_p0', shop.id, this.WEIGHT_TO_STAIRS);
             });
 
-            // Scala SX Piano 1
-            const scalaSxP1Neighbors = ["McDonald's", 'Foot Locker', 'Jack & Jones', 'Dispensa Emilia'];
-            scalaSxP1Neighbors.forEach(name => {
+            // Scala OVEST Piano 1
+            const scalaOvestP1Neighbors = ["McDonald's", 'Foot Locker', 'Jack & Jones', 'Dispensa Emilia'];
+            scalaOvestP1Neighbors.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 1);
-                if (shop) addConnection('stairs_left_p1', shop.id, this.WEIGHT_TO_STAIRS);
+                if (shop) addConnection('stairs_west_p1', shop.id, this.WEIGHT_TO_STAIRS);
             });
 
-            // Scala DX Piano 0
-            const scalaDxP0Neighbors = ['Talco', 'Jean Louis David', 'Kasanova'];
-            scalaDxP0Neighbors.forEach(name => {
+            // Scala EST Piano 0
+            const scalaEstP0Neighbors = ['Talco', 'Jean Louis David', 'Kasanova'];
+            scalaEstP0Neighbors.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 0);
-                if (shop) addConnection('stairs_right_p0', shop.id, this.WEIGHT_TO_STAIRS);
+                if (shop) addConnection('stairs_east_p0', shop.id, this.WEIGHT_TO_STAIRS);
             });
 
-            // Scala DX Piano 1
-            const scalaDxP1Neighbors = ['Timberland', 'Oltre', 'The Bridge', 'Melluso'];
-            scalaDxP1Neighbors.forEach(name => {
+            // Scala EST Piano 1
+            const scalaEstP1Neighbors = ['Timberland', 'Oltre', 'The Bridge', 'Melluso'];
+            scalaEstP1Neighbors.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 1);
-                if (shop) addConnection('stairs_right_p1', shop.id, this.WEIGHT_TO_STAIRS);
+                if (shop) addConnection('stairs_east_p1', shop.id, this.WEIGHT_TO_STAIRS);
             });
+
+            // Scala NORD Piano 0 (di fronte a Yamamay e Yamamay uomo)
+            const scalaNordP0Neighbors = ['Yamamay', 'Yamamay uomo'];
+            scalaNordP0Neighbors.forEach(name => {
+                const shop = this.shops.find(s => s.name === name && s.floor === 0);
+                if (shop) addConnection('stairs_north_p0', shop.id, this.WEIGHT_TO_STAIRS);
+            });
+
+            // Scala NORD Piano 1 (di fronte a Desigual)
+            const scalaNordP1Neighbors = ['Desigual'];
+            scalaNordP1Neighbors.forEach(name => {
+                const shop = this.shops.find(s => s.name === name && s.floor === 1);
+                if (shop) addConnection('stairs_north_p1', shop.id, this.WEIGHT_TO_STAIRS);
+            });
+
+            // Connessione verticale scala NORD (solo Porta di Roma)
+            addConnection('stairs_north_p0', 'stairs_north_p1', this.WEIGHT_STAIRS);
         }
 
         // Connessioni verticali scale (uguali per tutti i mall)
-        addConnection('stairs_left_p0', 'stairs_left_p1', this.WEIGHT_STAIRS);
-        addConnection('stairs_right_p0', 'stairs_right_p1', this.WEIGHT_STAIRS);
+        addConnection('stairs_west_p0', 'stairs_west_p1', this.WEIGHT_STAIRS);
+        addConnection('stairs_east_p0', 'stairs_east_p1', this.WEIGHT_STAIRS);
 
         return graph;
     }

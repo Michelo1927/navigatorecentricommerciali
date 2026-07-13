@@ -7,7 +7,7 @@ const MALLS_CONFIG = [
         location: 'Roma, Italia',
         description: 'Il più grande centro commerciale di Roma',
         floors: 2,
-        escalators: 4,
+        escalators: 3,
         logo: '<img src="assets/images/PortaDiRomaIcona.png" alt="Porta di Roma" >'
     },
     {
