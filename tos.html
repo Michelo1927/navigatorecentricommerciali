@@ -18,17 +18,27 @@
             padding: 16px;
         }
         .back-btn {
-            display: inline-block;
+            position: sticky;
+            top: 82px; /* sotto la top-nav fissa (70px) */
+            z-index: 100;
+            width: 40px;
+            height: 40px;
             margin-bottom: 14px;
-            padding: 7px 14px;
             background: var(--card-background);
             color: var(--primary-color);
             text-decoration: none;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: background 0.2s, border-color 0.2s;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+        .back-btn .icon-svg {
+            width: 20px;
+            height: 20px;
+            vertical-align: unset;
         }
         .back-btn:hover {
             background: var(--background);
@@ -142,7 +152,7 @@
     </nav>
 
     <div class="privacy-container" id="main-content">
-        <a href="index.html" class="back-btn">← Torna al Navigatore</a>
+        <a href="index.html" class="back-btn" aria-label="Torna al Navigatore" title="Torna al Navigatore"><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></a>
 
         <div class="legal-hero">
             <h1><svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg> Termini di Servizio</h1>
