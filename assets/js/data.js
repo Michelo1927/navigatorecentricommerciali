@@ -48,7 +48,7 @@ const MALLS_DATA = {
     { id: 'p0_outer_wc_1', name: 'Bagno Sud P0', floor: 0, zone: 'OUTER', position: 11, type: 'Bagni' },
     { id: 'p0_outer_11', name: 'Starbucks', floor: 0, zone: 'OUTER', position: 12, type: 'Food e Ristoranti' },
     { id: 'p0_outer_12', name: 'Burger King', floor: 0, zone: 'OUTER', position: 13, type: 'Food e Ristoranti' },
-    { id: 'p0_outer_13', name: 'Conad', floor: 0, zone: 'OUTER', position: 14, type: 'Supermercati' },
+    { id: 'p0_outer_13', name: 'Conad', floor: 0, zone: 'OUTER', position: 14, type: 'Supermercati', width: 17 },
     { id: 'p0_outer_14', name: 'La Feltrinelli', floor: 0, zone: 'OUTER', position: 15, type: 'Cultura, Regali, Tempo Libero' },
     { id: 'p0_outer_15', name: 'Farinella', floor: 0, zone: 'OUTER', position: 16, type: 'Food e Ristoranti' },
     { id: 'p0_outer_16', name: 'Juneco', floor: 0, zone: 'OUTER', position: 17, type: 'Salute e Bellezza' },

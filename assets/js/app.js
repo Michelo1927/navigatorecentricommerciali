@@ -914,9 +914,17 @@ const SECONDS_PER_SHOP = 12;   // camminata lenta da galleria, ~12m di vetrina a
 const SECONDS_PER_STAIR = 30;  // avvicinamento + attesa + corsa scala mobile
 
 function estimateWalkTime(steps) {
-    const shopSteps = steps.filter(s => s.type === 'shop').length;
+    const shopSteps = steps.filter(s => s.type === 'shop');
     const stairCount = steps.filter(s => s.type === 'stair').length;
-    const totalSec = Math.max(0, shopSteps - 1) * SECONDS_PER_SHOP + stairCount * SECONDS_PER_STAIR;
+    // I negozi attraversati contano la loro larghezza (width, default 1): passare
+    // davanti a un fronte largo come Conad costa 17 vetrine di camminata, non una.
+    // Partenza e arrivo contano 1: di un negozio largo non si costeggia il fronte
+    // se ci si entra o se ne esce.
+    const walkUnits = shopSteps.reduce((n, s, i) => {
+        const isEndpoint = i === 0 || i === shopSteps.length - 1;
+        return n + (isEndpoint ? 1 : (s.shop.width || 1));
+    }, 0);
+    const totalSec = Math.max(0, walkUnits - 1) * SECONDS_PER_SHOP + stairCount * SECONDS_PER_STAIR;
     const lowMin = Math.max(1, Math.round((totalSec / 60) * 0.85));
     const highMin = Math.max(lowMin + 1, Math.round((totalSec / 60) * 1.15));
     return `~${lowMin}-${highMin} min`;

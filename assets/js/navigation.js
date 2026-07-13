@@ -64,16 +64,21 @@ class NavigationService {
             // Determina il peso: isole hanno peso maggiore per scoraggiare attraversamento
             const isIsland = sorted[0].zone.includes('ISLAND');
             const weight = isIsland ? this.WEIGHT_ISLAND_RING : this.WEIGHT_SAME_RING;
-            
+            // Negozi "larghi" (width > 1, es. il fronte Conad = 17 vetrine): ogni estremo
+            // contribuisce all'arco con metà della propria larghezza, così costeggiarli
+            // costa il loro prezzo fisico vero e Dijkstra preferisce i percorsi con
+            // landmark visibili (i negozi dell'isola parallela).
+            const pairWeight = (a, b) => weight * (((a.width || 1) + (b.width || 1)) / 2);
+
             // Le mini-isole NON devono essere collegate tra loro in sequenza
             const isMiniIsland = sorted[0].zone === 'ISLAND_MINI';
             if (!isMiniIsland) {
                 for (let i = 0; i < sorted.length - 1; i++) {
-                    addConnection(sorted[i].id, sorted[i + 1].id, weight);
+                    addConnection(sorted[i].id, sorted[i + 1].id, pairWeight(sorted[i], sorted[i + 1]));
                 }
                 // Chiudi l'anello
                 if (sorted.length > 2) {
-                    addConnection(sorted[0].id, sorted[sorted.length - 1].id, weight);
+                    addConnection(sorted[0].id, sorted[sorted.length - 1].id, pairWeight(sorted[0], sorted[sorted.length - 1]));
                 }
             }
         });
@@ -91,7 +96,13 @@ class NavigationService {
                 const outer = this.shops.find(s => s.name === outerName && s.floor === island.floor);
                 // Connetti solo se entrambi i negozi esistono in questo centro
                 if (outer) {
-                    addConnection(island.id, outer.id, this.WEIGHT_CROSS_ISLAND);
+                    // Il nodo di un negozio "largo" (es. Conad) rappresenta il CENTRO del suo
+                    // fronte: ogni arco che lo tocca sconta ~width/2 vetrine di camminata per
+                    // raggiungerlo, come già fanno gli archi d'anello (semisomma delle width).
+                    // Con meno (es. width/4) il nodo fa da scorciatoia: sia teletrasporto tra
+                    // le isole, sia zigzag anello→isola→Conad più economico del tratto diretto.
+                    const widthPenalty = (((island.width || 1) - 1) + ((outer.width || 1) - 1)) / 2 * this.WEIGHT_SAME_RING;
+                    addConnection(island.id, outer.id, this.WEIGHT_CROSS_ISLAND + widthPenalty);
                 }
             });
         });
