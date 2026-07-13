@@ -702,19 +702,30 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
 }
 
 .btn-back {
-    padding: 10px 20px;
-    background: var(--text-secondary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: var(--background);
+    color: var(--text-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     margin-bottom: 16px;
     transition: all 0.3s;
 }
 
+.btn-back .icon-svg {
+    width: 20px;
+    height: 20px;
+    vertical-align: unset;
+}
+
 .btn-back:hover {
-    background: #616161;
+    background: var(--border-color);
+    color: var(--text-primary);
 }
 
 .route-info {
