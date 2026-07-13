@@ -160,13 +160,22 @@ body {
     background: rgba(255, 255, 255, 0.2);
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.3);
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: all 0.3s;
     flex-shrink: 0;
+}
+
+.change-mall-btn .icon-svg {
+    width: 20px;
+    height: 20px;
+    vertical-align: unset;
 }
 
 .change-mall-btn:hover {
