@@ -1802,7 +1802,7 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
 }
 
 .screen-exit-zoom {
-    animation: screenExitZoom 0.22s ease-in forwards;
+    animation: screenExitZoom 0.15s ease-in forwards;
     /* la schermata sta uscendo: niente altri click sulle card */
     pointer-events: none;
 }
@@ -1819,7 +1819,7 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
 }
 
 .screen-enter-push {
-    animation: screenEnterPush 0.22s ease-out;
+    animation: screenEnterPush 0.1s ease-out;
 }
 
 .features-list {

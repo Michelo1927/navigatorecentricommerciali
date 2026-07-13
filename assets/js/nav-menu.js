@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!('vibrate' in navigator)) return;
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         if (event.target.closest('button, .mall-card, .step-card')) {
-            navigator.vibrate(10);
+            navigator.vibrate(4);
         }
     });
 });

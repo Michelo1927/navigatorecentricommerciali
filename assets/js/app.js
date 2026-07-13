@@ -1364,7 +1364,7 @@ function enterMallWithPush(card, mallId) {
         if (e.target === mallSelectionSection) proceed();
     }
     mallSelectionSection.addEventListener('animationend', onEnd);
-    setTimeout(proceed, 350);
+    setTimeout(proceed, 250);
 }
 
 // Transizioni di schermata. Ognuna fa solo il display + i side effect, NON tocca
