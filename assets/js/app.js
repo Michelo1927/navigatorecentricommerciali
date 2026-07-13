@@ -1367,7 +1367,7 @@ function initializeMallSelection() {
                     <span>${mall.floors} piani</span>
                 </div>
             </div>
-            <button class="btn-select-mall">Entra →</button>
+            <button class="btn-select-mall">Entra</button>
         </div>
     `).join('');
 
