@@ -924,6 +924,7 @@ function estimateWalkTime(steps) {
 
 // --- Stato "segna-progresso" del risultato (solo in memoria, azzerato a ogni calcolo) ---
 let currentRouteResult = null;   // { steps: [...] } dell'ultimo percorso mostrato
+let currentWaypointIds = [];     // ID delle tappe intermedie dell'ultimo percorso (per i badge TAPPA)
 let progressIndex = -1;          // indice step "fatto" più avanzato (-1 = niente superato)
 let passedCollapsed = true;      // sezione "Già passati" collassata di default
 let stopsExpanded = false;       // riepilogo: tappe intermedie collassate di default
@@ -935,6 +936,7 @@ function showRoute(result, routeStopsSequence) {
 
     // reset stato progresso a ogni nuovo percorso
     currentRouteResult = result;
+    currentWaypointIds = routeStopsSequence.slice(1, -1).map(s => s.id);
     progressIndex = -1;
     passedCollapsed = true;
     stopsExpanded = false;
@@ -985,13 +987,23 @@ function buildRouteItems(result) {
     const items = [];
     let lastSide = null;
     let shopNumber = 0;
+    // Tappa = prima occorrenza del suo ID negli step (la giunzione tra i leg);
+    // un eventuale ri-passaggio davanti allo stesso negozio resta riga compatta.
+    const pendingWaypoints = new Map(currentWaypointIds.map((id, i) => [id, i + 1]));
     result.steps.forEach((step, index) => {
         if (step.type === 'shop') {
             shopNumber++;
             const side = getWalkSide(step.shop.zone);
+            const isStart = index === 0;
+            const isEnd = index === result.steps.length - 1;
+            let waypointNum = null;
+            if (!isStart && !isEnd && pendingWaypoints.has(step.shop.id)) {
+                waypointNum = pendingWaypoints.get(step.shop.id);
+                pendingWaypoints.delete(step.shop.id);
+            }
             const shopItem = {
                 kind: 'shop', shop: step.shop, stepIndex: index, shopNumber,
-                isStart: index === 0, isEnd: index === result.steps.length - 1
+                isStart, isEnd, waypointNum
             };
             if (side !== lastSide) {
                 const sideItem = { kind: 'side', side, stepIndex: index };
@@ -1042,7 +1054,7 @@ function renderRouteSteps() {
         } else if (it.kind === 'stair') {
             stepsContainer.appendChild(createStairCard(it.instruction, it.isGoingUp));
         } else {
-            const card = createShopStepCard(it.shop, it.shopNumber, it.isStart, it.isEnd);
+            const card = createShopStepCard(it.shop, it.shopNumber, it.isStart, it.isEnd, it.waypointNum);
             card.classList.add('tappable');
             if (it.stepIndex === currentShopStepIndex) {
                 card.classList.remove('compact'); // il "prossimo" torna card piena, risalta
@@ -1101,7 +1113,7 @@ function createPassedSection(doneItems, doneShops, totalShops) {
             body.appendChild(el);
             return;
         }
-        const card = createShopStepCard(it.shop, it.shopNumber, it.isStart, it.isEnd);
+        const card = createShopStepCard(it.shop, it.shopNumber, it.isStart, it.isEnd, it.waypointNum);
         card.classList.add('done', 'tappable');
         card.title = 'Tocca per tornare qui';
         const num = card.querySelector('.step-number');
@@ -1185,11 +1197,12 @@ function renderRouteStops(routeStopsSequence) {
     }
 }
 
-function createShopStepCard(shop, stepNumber, isStart, isEnd) {
+function createShopStepCard(shop, stepNumber, isStart, isEnd, waypointNum) {
     const card = document.createElement('div');
     card.className = 'step-card';
     if (isStart) card.classList.add('start');
     if (isEnd) card.classList.add('end');
+    if (waypointNum) card.classList.add('waypoint');
     // Negozi intermedi = landmark: riga compatta (peso visivo ridotto) così partenza,
     // scale e arrivo risaltano come gli unici eventi "grandi" del percorso.
     if (!isStart && !isEnd) card.classList.add('compact');
@@ -1199,6 +1212,8 @@ function createShopStepCard(shop, stepNumber, isStart, isEnd) {
         badge = '<span class="step-badge badge-start">PARTENZA</span>';
     } else if (isEnd) {
         badge = '<span class="step-badge badge-end">ARRIVO</span>';
+    } else if (waypointNum) {
+        badge = `<span class="step-badge badge-waypoint">TAPPA ${waypointNum}</span>`;
     }
 
     card.innerHTML = `

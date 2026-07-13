@@ -1382,6 +1382,16 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
     color: var(--secondary-color-a11y);
 }
 
+.badge-waypoint {
+    background: rgba(25, 118, 210, 0.15);
+    color: var(--primary-color-a11y);
+}
+
+.step-card.compact.waypoint .step-number {
+    background: var(--primary-color);
+    color: #fff;
+}
+
 /* Stair Instruction Card */
 .stair-card {
     background: var(--card-background);
