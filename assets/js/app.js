@@ -926,6 +926,7 @@ function estimateWalkTime(steps) {
 let currentRouteResult = null;   // { steps: [...] } dell'ultimo percorso mostrato
 let progressIndex = -1;          // indice step "fatto" più avanzato (-1 = niente superato)
 let passedCollapsed = true;      // sezione "Già passati" collassata di default
+let stopsExpanded = false;       // riepilogo: tappe intermedie collassate di default
 let progressToastTimer = null;   // timer auto-dismiss del toast "tocca i negozi che superi"
 
 function showRoute(result, routeStopsSequence) {
@@ -936,6 +937,7 @@ function showRoute(result, routeStopsSequence) {
     currentRouteResult = result;
     progressIndex = -1;
     passedCollapsed = true;
+    stopsExpanded = false;
     renderRouteSteps();
 
     // Toast scopribilità del tap-per-superare: appare a ogni nuovo percorso con ≥3 negozi
@@ -1122,34 +1124,65 @@ function renderRouteStops(routeStopsSequence) {
     if (!routeStops) return;
 
     const stops = routeStopsSequence;
-    let markup = '<div class="route-timeline">';
+    const lastIndex = stops.length - 1;
+    const midCount = Math.max(0, stops.length - 2);
+    const collapsible = midCount >= 2;
 
-    stops.forEach((stop, index) => {
-        const isFirst = index === 0;
-        const isLast = index === stops.length - 1;
-        const isOnly = stops.length === 1;
-
-        let typeClass, label;
-        if (isFirst) { typeClass = 'tl-start'; label = 'PARTENZA'; }
-        else if (isLast) { typeClass = 'tl-end'; label = 'ARRIVO'; }
-        else { typeClass = 'tl-mid'; label = `TAPPA ${index}`; }
-
-        markup += `
+    function stopRow(stop, index, hasLineBelow) {
+        let typeClass;
+        if (index === 0) typeClass = 'tl-start';
+        else if (index === lastIndex) typeClass = 'tl-end';
+        else typeClass = 'tl-mid';
+        return `
         <div class="tl-stop ${typeClass}">
             <div class="tl-marker">
                 <div class="tl-dot"></div>
-                ${(!isLast && !isOnly) ? '<div class="tl-line"></div>' : ''}
+                ${hasLineBelow ? '<div class="tl-line"></div>' : ''}
             </div>
             <div class="tl-info">
-                <span class="tl-label">${label}</span>
                 <span class="tl-name">${escapeHtml(stop.name)}</span>
                 <span class="tl-floor">Piano ${stop.floor}</span>
             </div>
         </div>`;
-    });
+    }
+
+    let markup = '<div class="route-timeline">';
+
+    if (!collapsible) {
+        stops.forEach((stop, index) => {
+            markup += stopRow(stop, index, index !== lastIndex);
+        });
+    } else {
+        markup += stopRow(stops[0], 0, true);
+        markup += `
+        <button type="button" class="tl-toggle${stopsExpanded ? ' expanded' : ''}" aria-expanded="${stopsExpanded}">
+            <div class="tl-marker">
+                <div class="tl-dot tl-dot-more"></div>
+                <div class="tl-line"></div>
+            </div>
+            <div class="tl-toggle-body">
+                <span class="tl-toggle-text">${midCount} tappe intermedie</span>
+                <span class="tl-caret" aria-hidden="true">▾</span>
+            </div>
+        </button>`;
+        markup += `<div class="tl-mids"${stopsExpanded ? '' : ' hidden'}>`;
+        for (let i = 1; i <= midCount; i++) {
+            markup += stopRow(stops[i], i, true);
+        }
+        markup += '</div>';
+        markup += stopRow(stops[lastIndex], lastIndex, false);
+    }
 
     markup += '</div>';
     routeStops.innerHTML = markup;
+
+    const toggle = routeStops.querySelector('.tl-toggle');
+    if (toggle) {
+        toggle.addEventListener('click', () => {
+            stopsExpanded = !stopsExpanded;
+            renderRouteStops(routeStopsSequence);
+        });
+    }
 }
 
 function createShopStepCard(shop, stepNumber, isStart, isEnd) {
