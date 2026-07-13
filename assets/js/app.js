@@ -1014,14 +1014,25 @@ function buildRouteItems(result) {
                 isStart, isEnd, waypointNum
             };
             if (side !== lastSide) {
-                const sideItem = { kind: 'side', side, stepIndex: index };
-                // La primissima hint orienta l'uscita DALLA partenza: va dopo la card
-                // PARTENZA (prima leggi da dove parti, poi dove camminare). Nei cambi
-                // di lato successivi la hint precede il negozio a cui prepara.
-                if (index === 0) {
-                    items.push(shopItem, sideItem);
+                // La primissima hint (index 0) orienta l'uscita DALLA partenza e va dopo
+                // la card PARTENZA. Ma se il negozio successivo incrocia già lato, quella
+                // partenza non ha un tratto reale da descrivere: mostrarla produrrebbe
+                // "vai interno" seguito a zero negozi di distanza da "vai esterno" per il
+                // negozio successivo. In quel caso si salta la hint di apertura e resta
+                // solo quella corretta, prima del negozio a cui prepara.
+                const nextStep = result.steps[index + 1];
+                const opensWithImmediateCrossing = index === 0 &&
+                    nextStep?.type === 'shop' && getWalkSide(nextStep.shop.zone) !== side;
+
+                if (opensWithImmediateCrossing) {
+                    items.push(shopItem);
                 } else {
-                    items.push(sideItem, shopItem);
+                    const sideItem = { kind: 'side', side, stepIndex: index };
+                    if (index === 0) {
+                        items.push(shopItem, sideItem);
+                    } else {
+                        items.push(sideItem, shopItem);
+                    }
                 }
                 lastSide = side;
             } else {
