@@ -128,7 +128,7 @@
             'width:38px;height:38px;cursor:pointer;font-size:17px;' +
             'box-shadow:0 2px 6px rgba(0,0,0,0.25);';
         btn.addEventListener('click', function () {
-            showModal(getStoredConsent(), true);
+            showModal(getStoredConsent(), true, btn);
         });
         document.body.appendChild(btn);
     }
@@ -166,7 +166,9 @@
         return label;
     }
 
-    function showModal(currentPrefs, isChange) {
+    // originEl (opzionale): elemento da cui il pannello "cresce" all'apertura
+    // (il bottone 🍪 o il "Personalizza" del banner). Senza, cresce dal centro.
+    function showModal(currentPrefs, isChange, originEl) {
         if (document.getElementById('cookieModal')) return;
 
         // In assenza di consenso salvato i toggle partono OFF (niente pre-selezione,
@@ -283,12 +285,13 @@
             };
             storeConsent(prefs);
             if (!prefs.analytics) clearAnalyticsCookies();
-            closeModal();
 
             if (isChange) {
-                // Reload so previously active scripts are cleanly unloaded
-                window.location.reload();
+                // Reload so previously active scripts are cleanly unloaded.
+                // Parte a ritiro completato, così l'animazione di chiusura si vede.
+                closeModal(function () { window.location.reload(); });
             } else {
+                closeModal();
                 hideBanner();
                 activateTracking(prefs);
                 addPreferencesButton();
@@ -300,6 +303,28 @@
         box.appendChild(btnRow);
         backdrop.appendChild(box);
         document.body.appendChild(backdrop);
+
+        // Apertura animata: il pannello cresce (scale 0.15 -> 1) dal punto in cui
+        // sta il bottone che l'ha aperto, col backdrop in fade parallelo. Il rect
+        // del box va misurato PRIMA di applicare la scala iniziale (getBoundingClientRect
+        // restituisce il rect già trasformato). Transition inline: le azzera comunque
+        // il blocco prefers-reduced-motion di styles.css (linkato su tutte le pagine).
+        var boxRect = box.getBoundingClientRect();
+        if (originEl && originEl.getBoundingClientRect) {
+            var oRect = originEl.getBoundingClientRect();
+            box.style.transformOrigin =
+                (oRect.left + oRect.width / 2 - boxRect.left) + 'px ' +
+                (oRect.top + oRect.height / 2 - boxRect.top) + 'px';
+        }
+        backdrop.style.background = 'rgba(0,0,0,0)';
+        box.style.transform = 'scale(0.15)';
+        box.style.opacity = '0';
+        void box.offsetWidth; // reflow: fissa lo stato iniziale prima della transition
+        backdrop.style.transition = 'background 0.25s ease-out';
+        box.style.transition = 'transform 0.25s ease-out, opacity 0.2s ease-out';
+        backdrop.style.background = 'rgba(0,0,0,0.55)';
+        box.style.transform = 'scale(1)';
+        box.style.opacity = '1';
 
         // Focus trap semplice: Tab/Shift+Tab restano dentro al pannello finché è aperto;
         // Escape chiude; alla chiusura il focus torna all'elemento che ha aperto il pannello.
@@ -332,12 +357,36 @@
             }
         }
 
-        function closeModal() {
+        var closing = false;
+        // onClosed (opzionale): eseguito una volta sola, a rimozione avvenuta
+        // (usato dal Salva per posticipare il reload a fine animazione).
+        function closeModal(onClosed) {
+            if (closing) return; // Escape + click ravvicinati: una chiusura sola
+            closing = true;
             document.removeEventListener('keydown', handleKeydown);
-            backdrop.remove();
-            if (openerEl && typeof openerEl.focus === 'function') {
-                openerEl.focus();
+
+            function cleanup() {
+                if (!backdrop.parentNode) return;
+                backdrop.remove();
+                if (openerEl && typeof openerEl.focus === 'function') {
+                    openerEl.focus();
+                }
+                if (onClosed) onClosed();
             }
+
+            // Movimento inverso dell'apertura: il pannello si ritira nel bottone
+            // d'origine (il transform-origin impostato all'apertura resta valido),
+            // backdrop in fade-out. La rimozione dal DOM avviene a fine transition,
+            // col setTimeout come rete di sicurezza se transitionend non arrivasse.
+            box.style.transition = 'transform 0.2s ease-in, opacity 0.15s ease-in';
+            backdrop.style.transition = 'background 0.2s ease-in';
+            box.style.transform = 'scale(0.15)';
+            box.style.opacity = '0';
+            backdrop.style.background = 'rgba(0,0,0,0)';
+            box.addEventListener('transitionend', function (e) {
+                if (e.propertyName === 'transform') cleanup();
+            });
+            setTimeout(cleanup, 300);
         }
 
         document.addEventListener('keydown', handleKeydown);
@@ -381,7 +430,7 @@
 
         if (manageBtn) {
             manageBtn.addEventListener('click', function () {
-                showModal(null, false);
+                showModal(null, false, manageBtn);
             });
         }
     }

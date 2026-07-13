@@ -1315,6 +1315,58 @@ function resetRouteSelection() {
     hideError();
 }
 
+// Animazione di entrata della schermata: 'fwd' (avanzamento) scivola da destra,
+// 'back' (ritorno) da sinistra. Solo entrata: la schermata uscente sparisce col
+// display:none immediato, così niente timer né race con popstate/scrollTo.
+// Il reflow forzato fa ripartire l'animazione anche su transizioni ravvicinate.
+function animateScreenIn(el, direction) {
+    el.classList.remove('screen-enter-fwd', 'screen-enter-back', 'screen-enter-push');
+    void el.offsetWidth;
+    el.classList.add(
+        direction === 'back' ? 'screen-enter-back' :
+        direction === 'push' ? 'screen-enter-push' :
+        'screen-enter-fwd'
+    );
+}
+
+// "Ingresso nel centro", fase 1: la schermata di selezione si spinge in avanti
+// verso la card cliccata (scale-up + dissolvenza, transform-origin al centro
+// della card), poi selectMall fa il cambio schermata con l'entrata 'push' che
+// prosegue il movimento. Attesa su animationend + timeout di sicurezza; la
+// guardia (e il pointer-events:none della classe) evita doppi avvii durante
+// l'uscita. È l'unica transizione con fase di uscita: parte solo dal click
+// sulla card, mai da popstate, quindi non può correre contro la cronologia.
+let mallExitInProgress = false;
+function enterMallWithPush(card, mallId) {
+    if (mallExitInProgress) return;
+    mallExitInProgress = true;
+
+    const secRect = mallSelectionSection.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    mallSelectionSection.style.transformOrigin =
+        (cardRect.left + cardRect.width / 2 - secRect.left) + 'px ' +
+        (cardRect.top + cardRect.height / 2 - secRect.top) + 'px';
+    mallSelectionSection.classList.add('screen-exit-zoom');
+
+    let done = false;
+    function proceed() {
+        if (done) return;
+        done = true;
+        mallExitInProgress = false;
+        mallSelectionSection.removeEventListener('animationend', onEnd);
+        // Ripulisci PRIMA di selectMall: la sezione va lasciata presentabile
+        // per il prossimo goToMall (fill forwards la terrebbe a opacity 0).
+        mallSelectionSection.classList.remove('screen-exit-zoom');
+        mallSelectionSection.style.transformOrigin = '';
+        selectMall(mallId, { entering: true });
+    }
+    function onEnd(e) {
+        if (e.target === mallSelectionSection) proceed();
+    }
+    mallSelectionSection.addEventListener('animationend', onEnd);
+    setTimeout(proceed, 350);
+}
+
 // Transizioni di schermata. Ognuna fa solo il display + i side effect, NON tocca
 // la cronologia: quella la guidano i forward (pushState) e popstate.
 function goToSearch() {
@@ -1324,6 +1376,7 @@ function goToSearch() {
     mallSelectionSection.style.display = 'none';
     mainHeader.style.display = 'block';
     searchSection.style.display = 'block';
+    animateScreenIn(searchSection, 'back');
 
     // Reset form
     startShopInput.value = '';
@@ -1344,6 +1397,7 @@ function goToRoute() {
     mainHeader.style.display = 'none';
     loadingSection.style.display = 'none';
     routeSection.style.display = 'block';
+    animateScreenIn(routeSection, 'fwd');
     window.scrollTo(0, 0);
 }
 
@@ -1382,7 +1436,7 @@ function initializeMallSelection() {
         card.style.cursor = 'pointer';
         card.addEventListener('click', (e) => {
             const mallId = card.dataset.mallId;
-            selectMall(mallId);
+            enterMallWithPush(card, mallId);
         });
     });
 
@@ -1486,6 +1540,9 @@ function selectMall(mallId, options = {}) {
     mainHeader.style.display = 'block';
     searchSection.style.display = 'block';
     window.scrollTo(0, 0);
+    // 'push' prosegue il movimento della fase di uscita (enterMallWithPush);
+    // senza fase di uscita (es. ripristino da refresh) slide standard.
+    animateScreenIn(searchSection, options.entering ? 'push' : 'fwd');
 
     if (options.replaceHistory) {
         history.replaceState({ screen: 'search' }, '');
@@ -1536,6 +1593,7 @@ function goToMall() {
     routeSection.style.display = 'none';
     mainHeader.style.display = 'none';
     mallSelectionSection.style.display = 'block';
+    animateScreenIn(mallSelectionSection, 'back');
     window.scrollTo(0, 0);
 }
 

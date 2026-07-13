@@ -32,6 +32,10 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     padding-top: 70px;
+    /* Le schermate entrano con translateX (.screen-enter-*): clip taglia i 24px
+       di sporgenza senza creare uno scroll container — hidden romperebbe gli
+       elementi position:sticky (es. CTA Calcola su mobile). */
+    overflow-x: clip;
 }
 
 .icon-svg {
@@ -1745,6 +1749,77 @@ body[data-screen]:not([data-screen="mall"]) #cookiePrefsBtn {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* --- Transizioni tra schermate ---
+   Entrata direzionale: avanzamento = scivola da destra, ritorno = da sinistra.
+   Classi (ri)applicate da animateScreenIn() in app.js sulla sezione che entra;
+   la schermata uscente sparisce subito (display:none), niente animazione d'uscita.
+   Il blocco prefers-reduced-motion in fondo azzera anche queste. */
+@keyframes screenEnterFwd {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes screenEnterBack {
+    from {
+        opacity: 0;
+        transform: translateX(-24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.screen-enter-fwd {
+    animation: screenEnterFwd 0.22s ease-out;
+}
+
+.screen-enter-back {
+    animation: screenEnterBack 0.22s ease-out;
+}
+
+/* "Ingresso nel centro", in due tempi: la selezione centri si spinge in avanti
+   verso la card cliccata (screen-exit-zoom, transform-origin inline sulla card),
+   poi la ricerca prosegue il movimento entrando da appena più piccola
+   (screen-enter-push). Regia in enterMallWithPush() / selectMall() (app.js). */
+@keyframes screenExitZoom {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(1.25);
+    }
+}
+
+.screen-exit-zoom {
+    animation: screenExitZoom 0.22s ease-in forwards;
+    /* la schermata sta uscendo: niente altri click sulle card */
+    pointer-events: none;
+}
+
+@keyframes screenEnterPush {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.screen-enter-push {
+    animation: screenEnterPush 0.22s ease-out;
 }
 
 .features-list {

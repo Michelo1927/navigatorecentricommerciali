@@ -42,4 +42,18 @@ document.addEventListener('DOMContentLoaded', function() {
             sessionStorage.removeItem('selectedMall');
         });
     }
+
+    // Feedback aptico: vibrazione brevissima (10ms) al tap sui controlli
+    // principali — bottoni e card cliccabili. Delegato sul document, così copre
+    // anche gli elementi creati dopo (modale cookie, card dei centri, step del
+    // percorso). navigator.vibrate esiste solo su Android: iOS/Safari non ha
+    // l'API e il guard salta tutto in silenzio. Chi ha "riduci movimento"
+    // attivo non riceve nemmeno la vibrazione.
+    document.addEventListener('click', function(event) {
+        if (!('vibrate' in navigator)) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (event.target.closest('button, .mall-card, .step-card')) {
+            navigator.vibrate(10);
+        }
+    });
 });
