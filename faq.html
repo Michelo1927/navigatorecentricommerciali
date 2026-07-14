@@ -488,8 +488,10 @@
                 </button>
                 <div class="faq-answer" id="faq-answer-15">
                     <p>
-                        Le tue ricerche e preferenze (come l'ultimo centro commerciale selezionato) vengono salvate 
-                        localmente sul tuo dispositivo usando il <strong>localStorage</strong> del browser.
+                        Le tue ricerche <strong>non vengono salvate</strong>: ogni percorso viene calcolato al momento
+                        e dimenticato subito dopo. L'unica cosa memorizzata è il centro commerciale selezionato,
+                        salvato localmente sul tuo dispositivo usando il <strong>sessionStorage</strong> del browser
+                        per la durata della sessione.
                     </p>
                     <p>
                         Questo significa che:
@@ -498,7 +500,7 @@
                         <li>✅ I dati rimangono solo sul tuo dispositivo</li>
                         <li>✅ Non vengono mai inviati ai nostri server</li>
                         <li>✅ Nessuno può vederli tranne te</li>
-                        <li>✅ Vengono cancellati se cancelli i dati del browser</li>
+                        <li>✅ Vengono cancellati automaticamente alla chiusura della scheda del browser</li>
                     </ul>
                     <p>
                         È il modo più sicuro e rispettoso della privacy per salvare le tue preferenze!
