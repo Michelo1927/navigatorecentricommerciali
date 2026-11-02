@@ -694,8 +694,9 @@ function findNearestBathroom(startShop, legCache = new Map()) {
     bathrooms.forEach(bathroom => {
         const result = getLegResult(startShop, bathroom, cache);
         if (result.error) return;
-        if (!best || result.stepsCount < best.stepsCount) {
-            best = { shop: bathroom, stepsCount: result.stepsCount };
+        // cost = costo-grafo (metri se il centro ha coordinate): il bagno davvero più vicino
+        if (!best || result.cost < best.cost) {
+            best = { shop: bathroom, cost: result.cost };
         }
     });
 
@@ -720,13 +721,13 @@ function optimizeWaypoints(startShop, intermediateStops, endShop, legCache = new
             for (const stop of current) {
                 const leg = getLegResult(previous, stop, cache);
                 if (leg.error) return;
-                cost += leg.stepsCount;
+                cost += leg.cost;
                 previous = stop;
             }
 
             const finalLeg = getLegResult(previous, endShop, cache);
             if (finalLeg.error) return;
-            cost += finalLeg.stepsCount;
+            cost += finalLeg.cost;
 
             if (cost < bestCost) {
                 bestCost = cost;
@@ -766,8 +767,8 @@ function optimizeWaypoints(startShop, intermediateStops, endShop, legCache = new
         for (let i = 0; i < remaining.length; i++) {
             const leg = getLegResult(current, remaining[i], cache);
             if (leg.error) continue;
-            if (leg.stepsCount < bestScore) {
-                bestScore = leg.stepsCount;
+            if (leg.cost < bestScore) {
+                bestScore = leg.cost;
                 bestIndex = i;
             }
         }
@@ -830,7 +831,8 @@ calculateBtn.addEventListener('click', () => {
         startShop: null,
         endShop: null,
         steps: [],
-        stepsCount: 0
+        stepsCount: 0,
+        meters: 0
     };
 
     for (let i = 0; i < legs.length; i++) {
@@ -862,6 +864,8 @@ calculateBtn.addEventListener('click', () => {
 
         combined.endShop = res.endShop;
         combined.stepsCount += res.stepsCount;
+        // meters è null se il centro non ha coordinate: basta un tratto null per azzerarlo
+        combined.meters = (combined.meters === null || res.meters === null) ? null : combined.meters + res.meters;
     }
 
     if (combined.steps.length === 0) {
@@ -905,17 +909,24 @@ function hideError() {
     if (toast) toast.classList.remove('show');
 }
 
-// Stima tempo di percorrenza dal numero di step. Il grafo non ha metri: questi
-// due valori sono knob di calibrazione — vanno tarati confrontando l'output con
-// una stima reale (es. sito Porta di Roma), non ricavati dalla teoria.
-// ponytail: stima da conteggio step; passare a costo-grafo pesato solo se il
-// confronto mostra errori correlati agli attraversamenti isola/scale.
-const SECONDS_PER_SHOP = 12;   // camminata lenta da galleria, ~12m di vetrina a passo
-const SECONDS_PER_STAIR = 30;  // avvicinamento + attesa + corsa scala mobile
+// Stima tempo di percorrenza. Due modalità:
+// - centro con coordinate (meters != null): metri camminati / velocità a piedi, più
+//   il tempo di ogni scala mobile (i metri includono già l'avvicinamento alla scala);
+// - centro senza coordinate: conteggio negozi/scale, knob di calibrazione storici.
+const WALK_SPEED_MPS = 1.0;       // passo da galleria (vetrine, gente): ~1 m/s
+const SECONDS_STAIR_RIDE = 25;    // ingresso + corsa scala mobile
+const SECONDS_PER_SHOP = 12;      // (senza coordinate) camminata lenta, ~12m di vetrina a passo
+const SECONDS_PER_STAIR = 30;     // (senza coordinate) avvicinamento + attesa + corsa scala mobile
 
-function estimateWalkTime(steps) {
+function estimateWalkTime(steps, meters = null) {
     const shopSteps = steps.filter(s => s.type === 'shop');
     const stairCount = steps.filter(s => s.type === 'stair').length;
+    if (typeof meters === 'number') {
+        const sec = meters / WALK_SPEED_MPS + stairCount * SECONDS_STAIR_RIDE;
+        const low = Math.max(1, Math.round((sec / 60) * 0.85));
+        const high = Math.max(low + 1, Math.round((sec / 60) * 1.15));
+        return `~${low}-${high} min`;
+    }
     // I negozi attraversati contano la loro larghezza (width, default 1): passare
     // davanti a un fronte largo come Conad costa 17 vetrine di camminata, non una.
     // Partenza e arrivo contano 1: di un negozio largo non si costeggia il fronte
@@ -940,7 +951,7 @@ let progressToastTimer = null;   // timer auto-dismiss del toast "tocca i negozi
 
 function showRoute(result, routeStopsSequence) {
     renderRouteStops(routeStopsSequence);
-    routeTime.textContent = estimateWalkTime(result.steps);
+    routeTime.textContent = estimateWalkTime(result.steps, result.meters);
 
     // reset stato progresso a ogni nuovo percorso
     currentRouteResult = result;
