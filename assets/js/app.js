@@ -184,15 +184,51 @@ function escapeHtml(value) {
 }
 
 // Gestione autocomplete
+// Normalizzazione per la ricerca: via accenti, maiuscole, spazi e punteggiatura
+// ("Machapokè" ← "machapoke", "Levi's" ← "levis", "H&M" ← "hm").
+function normalizeSearch(text) {
+    return String(text)
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '');
+}
+
+// 0 = il nome inizia con la query, 1 = la contiene, -1 = nessun match.
+// "&" provato anche come " and " / " e " ("pull and bear" → Pull&Bear); vale il rank migliore.
+function shopMatchRank(shop, normalizedQuery) {
+    const variants = [
+        shop.name,
+        shop.name.replace(/&/g, ' and '),
+        shop.name.replace(/&/g, ' e ')
+    ];
+    let best = -1;
+    for (const variant of variants) {
+        const idx = normalizeSearch(variant).indexOf(normalizedQuery);
+        if (idx === -1) continue;
+        const rank = idx === 0 ? 0 : 1;
+        if (best === -1 || rank < best) best = rank;
+    }
+    return best;
+}
+
 function setupAutocomplete(input, suggestionsDiv, onSelect, getCategoryFilter) {
     const buildMatches = (query, showAll) => {
         const activeFilter = typeof getCategoryFilter === 'function' ? getCategoryFilter() : 'Tutto';
-        const normalizedQuery = query.trim().toLowerCase();
-        const matches = SHOPS_DATA.filter(shop => {
-            if (activeFilter !== 'Tutto' && shop.type !== activeFilter) return false;
-            if (!normalizedQuery) return true;
-            return shop.name.toLowerCase().includes(normalizedQuery);
-        }).sort((a, b) => a.name.localeCompare(b.name));
+        const rawQuery = query.trim();
+        const normalizedQuery = normalizeSearch(rawQuery);
+        const ranked = [];
+        SHOPS_DATA.forEach(shop => {
+            if (activeFilter !== 'Tutto' && shop.type !== activeFilter) return;
+            if (!rawQuery) { ranked.push({ shop, rank: 0 }); return; }
+            // Query fatta solo di simboli (es. "&&") → nessun risultato
+            if (!normalizedQuery) return;
+            const rank = shopMatchRank(shop, normalizedQuery);
+            if (rank >= 0) ranked.push({ shop, rank });
+        });
+        const matches = ranked
+            .sort((a, b) => a.rank - b.rank || a.shop.name.localeCompare(b.shop.name))
+            .map(r => r.shop);
 
         return showAll ? matches : matches.slice(0, 10);
     };
@@ -877,7 +913,7 @@ calculateBtn.addEventListener('click', () => {
 
     showRoute(combined, routeStopsSequence);
     goToRoute();
-    history.pushState({ screen: 'route' }, '');
+    history.pushState({ screen: 'route', mallId: selectedMall.id }, '');
 });
 
 // Toast errore volante (#errorToast), stesso pattern del progress-toast. Deve
@@ -943,6 +979,7 @@ function estimateWalkTime(steps, meters = null) {
 
 // --- Stato "segna-progresso" del risultato (solo in memoria, azzerato a ogni calcolo) ---
 let currentRouteResult = null;   // { steps: [...] } dell'ultimo percorso mostrato
+let currentRouteMallId = null;   // id del centro a cui appartiene currentRouteResult (per il popstate)
 let currentWaypointIds = [];     // ID delle tappe intermedie dell'ultimo percorso (per i badge TAPPA)
 let progressIndex = -1;          // indice step "fatto" più avanzato (-1 = niente superato)
 let passedCollapsed = true;      // sezione "Già passati" collassata di default
@@ -955,6 +992,7 @@ function showRoute(result, routeStopsSequence) {
 
     // reset stato progresso a ogni nuovo percorso
     currentRouteResult = result;
+    currentRouteMallId = selectedMall ? selectedMall.id : null;
     currentWaypointIds = routeStopsSequence.slice(1, -1).map(s => s.id);
     progressIndex = -1;
     passedCollapsed = true;
@@ -1518,9 +1556,11 @@ function initializeMallSelection() {
 // options.replaceHistory: al ripristino da refresh l'entry corrente è già 'search'
 // (history.state sopravvive al reload) → replace invece di push, per non
 // accumulare entry duplicate a ogni refresh.
-function selectMall(mallId, options = {}) {
+// Setup del contesto centro (dati, navigationService, filtri, titolo, stats), senza toccare
+// schermate né cronologia. Usata da selectMall e dal popstate (Avanti dopo "Cambia Centro").
+function activateMall(mallId) {
     const mall = MALLS_CONFIG.find(m => m.id === mallId);
-    if (!mall || mall.comingSoon) return;
+    if (!mall || mall.comingSoon) return false;
 
     // Salva la selezione
     selectedMall = mall;
@@ -1544,6 +1584,11 @@ function selectMall(mallId, options = {}) {
 
     // Aggiorna stats
     updateStats(mall);
+    return true;
+}
+
+function selectMall(mallId, options = {}) {
+    if (!activateMall(mallId)) return;
 
     // Mostra la sezione di ricerca
     document.body.dataset.screen = 'search';
@@ -1556,9 +1601,9 @@ function selectMall(mallId, options = {}) {
     animateScreenIn(searchSection, options.entering ? 'push' : 'fwd');
 
     if (options.replaceHistory) {
-        history.replaceState({ screen: 'search' }, '');
+        history.replaceState({ screen: 'search', mallId }, '');
     } else {
-        history.pushState({ screen: 'search' }, '');
+        history.pushState({ screen: 'search', mallId }, '');
     }
 }
 
@@ -1632,9 +1677,32 @@ function init() {
     }
     window.addEventListener('popstate', (e) => {
         const screen = e.state?.screen || 'mall';
-        if (screen === 'route') goToRoute();
-        else if (screen === 'search') goToSearch();
-        else goToMall();
+        const mallId = e.state?.mallId || null;
+        if (screen === 'mall') {
+            goToMall();
+            return;
+        }
+        // search/route richiedono il contesto centro: dopo "Cambia Centro" (goToMall lo
+        // azzera) il tasto Avanti arriva qui senza centro selezionato → lo riattiviamo
+        // dal mallId salvato nell'entry. Entry vecchie senza mallId: si torna alla selezione.
+        if (!navigationService || !selectedMall || selectedMall.id !== mallId) {
+            if (!mallId || !activateMall(mallId)) {
+                history.replaceState({ screen: 'mall' }, '');
+                goToMall();
+                return;
+            }
+        }
+        if (screen === 'route') {
+            if (currentRouteResult && currentRouteMallId === mallId) {
+                goToRoute();
+            } else {
+                // percorso non più disponibile (altro centro / stato perso): ripiega sulla ricerca
+                history.replaceState({ screen: 'search', mallId }, '');
+                goToSearch();
+            }
+        } else {
+            goToSearch();
+        }
     });
 
     // Controlla se c'è un mall salvato
@@ -1741,8 +1809,9 @@ function generateFloorFilters() {
 }
 
 function getFilteredShops() {
-    const query = shopsSearchInput.value.trim().toLowerCase();
-    
+    const rawQuery = shopsSearchInput.value.trim();
+    const query = normalizeSearch(rawQuery);
+
     let filtered = SHOPS_DATA;
     
     // Filtra per piano
@@ -1751,8 +1820,9 @@ function getFilteredShops() {
     }
     
     // Filtra per ricerca
-    if (query) {
-        filtered = filtered.filter(shop => shop.name.toLowerCase().includes(query));
+    // Query fatta solo di simboli (es. "&&") → nessun risultato, non "tutti".
+    if (rawQuery) {
+        filtered = query ? filtered.filter(shop => shopMatchRank(shop, query) >= 0) : [];
     }
     
     return filtered;
