@@ -947,8 +947,10 @@ function hideError() {
 
 // Stima tempo di percorrenza. Due modalità:
 // - centro con coordinate (meters != null): metri camminati / velocità a piedi, più
-//   il tempo di ogni scala mobile (i metri includono già l'avvicinamento alla scala);
-// - centro senza coordinate: conteggio negozi/scale, knob di calibrazione storici.
+//   il tempo della scala mobile per ogni piano percorso (i metri includono già
+//   l'avvicinamento alla scala);
+// - centro senza coordinate: conteggio negozi/piani in scala, knob di calibrazione storici.
+// Uno step scala può coprire più piani (step.floors, es. 0 → 2): il tempo scala è per piano.
 const WALK_SPEED_MPS = 1.0;       // passo da galleria (vetrine, gente): ~1 m/s
 const SECONDS_STAIR_RIDE = 25;    // ingresso + corsa scala mobile
 const SECONDS_PER_SHOP = 12;      // (senza coordinate) camminata lenta, ~12m di vetrina a passo
@@ -956,7 +958,7 @@ const SECONDS_PER_STAIR = 30;     // (senza coordinate) avvicinamento + attesa +
 
 function estimateWalkTime(steps, meters = null) {
     const shopSteps = steps.filter(s => s.type === 'shop');
-    const stairCount = steps.filter(s => s.type === 'stair').length;
+    const stairCount = steps.filter(s => s.type === 'stair').reduce((n, s) => n + (s.floors || 1), 0);
     if (typeof meters === 'number') {
         const sec = meters / WALK_SPEED_MPS + stairCount * SECONDS_STAIR_RIDE;
         const low = Math.max(1, Math.round((sec / 60) * 0.85));
@@ -1912,7 +1914,8 @@ const mallNavDebug = {
         renderRouteBuilderPreview();
     },
     getRouteStops,
-    optimizeWaypoints
+    optimizeWaypoints,
+    estimateWalkTime
 };
 
 // Efficient route info modal

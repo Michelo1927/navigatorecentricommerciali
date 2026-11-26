@@ -36,6 +36,7 @@ class NavigationService {
             this.detourMeters.set(a + '|' + b, meters);
             this.detourMeters.set(b + '|' + a, meters);
         });
+        this.stairsNodeFloor = new Map();   // nodo scala -> piano (riempita da buildGraph)
         this.graph = this.buildGraph();
     }
 
@@ -131,6 +132,7 @@ class NavigationService {
             floors.forEach(floor => {
                 const node = this.stairsNodeId(group.id, floor);
                 if (!graph[node]) graph[node] = {};
+                this.stairsNodeFloor.set(node, floor);
                 (floorsData[floor].near || []).forEach(id => {
                     const shop = this.shopById.get(id);
                     if (shop && shop.floor === floor) addConnection(node, shop.id, this.stairsWeight(floorsData[floor], shop));
@@ -230,45 +232,35 @@ class NavigationService {
 
     _pathToSteps(path) {
         const steps = [];
-        let skipNextStair = false;
 
         for (let i = 0; i < path.length; i++) {
             const id = path[i];
 
-            if (id.startsWith('stairs_')) {
-                if (!skipNextStair) {
-                    const prevShop = i > 0 && !path[i - 1].startsWith('stairs_')
-                        ? this.shopById.get(path[i - 1])
-                        : null;
-
-                    let nextShop = null;
-                    for (let j = i + 1; j < path.length; j++) {
-                        if (!path[j].startsWith('stairs_')) {
-                            nextShop = this.shopById.get(path[j]);
-                            break;
-                        }
-                    }
-
-                    // Stair node usato come shortcut sullo stesso piano: nessuna istruzione
-                    if (prevShop && nextShop && prevShop.floor === nextShop.floor) {
-                        // noop — percorso passa vicino alle scale senza cambio piano
-                    } else {
-                        const isGoingUp = prevShop?.floor === 0 && nextShop?.floor === 1;
-                        // Niente lato (DESTRA/SINISTRA): l'utente non sa quali siano "le scale di destra".
-                        const instruction = isGoingUp
-                            ? `Sali con le Scale Mobili verso il Piano 1`
-                            : `Scendi con le Scale Mobili verso il Piano 0`;
-
-                        steps.push({ type: 'stair', instruction, isGoingUp });
-                        skipNextStair = true;
-                    }
-                } else {
-                    skipNextStair = false;
-                }
-            } else {
+            if (!id.startsWith('stairs_')) {
                 const shop = this.shopById.get(id);
                 if (shop) steps.push({ type: 'shop', shop });
+                continue;
             }
+
+            // Tutti i nodi scala consecutivi sono un solo tratto in scala mobile, anche se
+            // attraversa più piani (es. 0 → 2 passando dal nodo del piano 1): una istruzione.
+            let j = i;
+            while (j + 1 < path.length && path[j + 1].startsWith('stairs_')) j++;
+            const prevShop = this.shopById.get(path[i - 1]) || null;
+            const nextShop = this.shopById.get(path[j + 1]) || null;
+            const fromFloor = this.stairsNodeFloor.get(path[i]);
+            const toFloor = this.stairsNodeFloor.get(path[j]);
+            i = j;
+
+            // Stair node usato come shortcut sullo stesso piano: nessuna istruzione
+            if (prevShop && nextShop && prevShop.floor === nextShop.floor) continue;
+
+            const isGoingUp = toFloor > fromFloor;
+            // Niente lato (DESTRA/SINISTRA): l'utente non sa quali siano "le scale di destra".
+            const instruction = isGoingUp
+                ? `Sali con le Scale Mobili verso il Piano ${toFloor}`
+                : `Scendi con le Scale Mobili verso il Piano ${toFloor}`;
+            steps.push({ type: 'stair', instruction, isGoingUp, floors: Math.abs(toFloor - fromFloor) });
         }
 
         return steps;
