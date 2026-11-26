@@ -128,8 +128,8 @@ class NavigationService {
         // Il centro determina quali negozi sono adiacenti a ciascuna scala
         if (this.mallId === 'granroma') {
             // GranRoma - Scale Mobili
-            // Scala SX Piano 0 (di fronte a DENTALPRO, BLUESPIRIT 2, LA CASINA DEL CAFFE)
-            const grScalaSxP0 = ['Dentalpro', 'Bluespirit Ingresso', 'La Casina Del Caffe'];
+            // Scala SX Piano 0 (di fronte a BLUESPIRIT 2, LA CASINA DEL CAFFÈ; Dentalpro chiuso nel 2026)
+            const grScalaSxP0 = ['Bluespirit Ingresso', 'La Casina del Caffè'];
             grScalaSxP0.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 0);
                 if (shop) addConnection('stairs_west_p0', shop.id, this.stairsWeight('stairs_west_p0', shop));
@@ -149,8 +149,8 @@ class NavigationService {
                 if (shop) addConnection('stairs_east_p0', shop.id, this.stairsWeight('stairs_east_p0', shop));
             });
 
-            // Scala DX Piano 1 (di fronte a ZARA, DAN JHON)
-            const grScalaDxP1 = ['Zara Piano 1', 'Dan Jhon'];
+            // Scala DX Piano 1 (di fronte a ZARA, DAN JOHN)
+            const grScalaDxP1 = ['Zara Piano 1', 'Dan John'];
             grScalaDxP1.forEach(name => {
                 const shop = this.shops.find(s => s.name === name && s.floor === 1);
                 if (shop) addConnection('stairs_east_p1', shop.id, this.stairsWeight('stairs_east_p1', shop));
@@ -465,7 +465,7 @@ class NavigationService {
         // Connessioni isola-anello per GranRoma
         return [
             // Piano 0 - Isola Centrale (21 negozi)
-            { islandShop: 'Stroili', outerShops: ['Maisons Du Monde', 'Douglas', 'Skechers'] },
+            { islandShop: 'Stroili', outerShops: ['Maisons du Monde', 'Douglas', 'Skechers'] },
             { islandShop: 'Carpisa', outerShops: ["Deco'"] },
             { islandShop: 'Lama Optical', outerShops: ["Deco'"] },
             { islandShop: 'Zuiki', outerShops: ['Cisalfa Sport'] },
@@ -476,41 +476,49 @@ class NavigationService {
             { islandShop: 'Talco', outerShops: ['Mango'] },
             { islandShop: 'Kamalion', outerShops: ['Nuvolari'] },
             { islandShop: 'Grandvision', outerShops: ['Flying Tiger Copenhagen'] },
-            { islandShop: 'Calzedonia', outerShops: ['Zara', 'Jdsports', 'Gelateria Cremilla'] },
+            { islandShop: 'Calzedonia', outerShops: ['Zara', 'JD Sports', 'Gelateria Cremilla'] },
             { islandShop: 'Bluespirit', outerShops: ['Zara'] },
-            //{ islandShop: 'Satur', outerShops: ['Tramas'] },
-            //{ islandShop: 'Bata', outerShops: ['Tramas'] },
-            { islandShop: 'Intimissimi', outerShops: ['Ovs', 'Tezenis'] },
+            { islandShop: 'Two Way', outerShops: ['Tramas'] },
+            { islandShop: 'Normal', outerShops: ['Tramas', 'Amore Store'] },
+            { islandShop: 'Intimissimi', outerShops: ['OVS', 'Tezenis'] },
             { islandShop: 'Vodafone', outerShops: ['Punt Roma', 'Sorbino'] },
-            { islandShop: 'Originalmarines', outerShops: ['Sorbino', 'Primadonna Collection'] },
-            { islandShop: 'Medimarket', outerShops: ['Primadonna Collection', 'Yvesrocher'] },
-            { islandShop: 'Snipes', outerShops: ['Yvesrocher', 'Cex'] },
+            { islandShop: 'Original Marines', outerShops: ['Sorbino', 'Primadonna Collection'] },
+            { islandShop: 'Medimarket', outerShops: ['Primadonna Collection', 'Yves Rocher'] },
+            { islandShop: 'Snipes', outerShops: ['Yves Rocher', 'CeX'] },
+
+            // Piano 0 - Mini Isole (4 chioschi nei corridoi, posizioni dalla mappa ufficiale)
+            { islandShop: 'Wycon', outerShops: ['Intimissimi', 'Tezenis', 'Amore Store'] },
+            { islandShop: 'La Yogurteria Joy Bubble Tea', outerShops: ['Stroili', 'Skechers', 'Douglas'] },
+            { islandShop: 'Caffè Vergnano 1882 Piano 0', outerShops: ['Bluespirit Ingresso', 'La Casina del Caffè', 'Cisalfa Sport'] },
+            { islandShop: 'Wind Tre Piano 0', outerShops: ['Kamalion', 'Talco', 'Nuvolari', 'Flying Tiger Copenhagen'] },
 
             // Piano 1 - Isola Centrale (19 negozi)
             { islandShop: 'Caffè Vergnano 1882', outerShops: ['I Baccanali', 'Burger King', "Hamerica's"] },
             { islandShop: 'Tabaccheria', outerShops: ["Hamerica's", 'Kitikate'] },
             { islandShop: 'Queen Helena', outerShops: ['Kitikate', 'Mister Games'] },
             { islandShop: 'Rinascimento', outerShops: ['Mister Games', 'Estasi Profumerie'] },
-            { islandShop: 'Sartoria Italiana', outerShops: ['Odstore'] },
+            // Odstore (anello, tra Estasi e Jack & Jones) è chiuso: lo spazio è vuoto
+            { islandShop: 'Sartoria Italiana', outerShops: ['Estasi Profumerie', 'Jack & Jones'] },
             { islandShop: 'Pink Gioielli', outerShops: ['Jack & Jones'] },
-            { islandShop: 'Brend Atelier', outerShops: ['Jack & Jones', 'Stradivarius'] },
-            { islandShop: 'Dan Jhon', outerShops: ['Zara Piano 1', 'Stradivarius'] },
-            { islandShop: 'Guess', outerShops: ['Muy Mucho'] },
-            { islandShop: "D'S Damat", outerShops: ['Pull & Bear', 'Action', 'Bershka'] },
-            { islandShop: 'Dly', outerShops: ['Pepco'] },
-            { islandShop: 'Dverso', outerShops: ['Live978', 'Pepco'] },
-            { islandShop: 'Gioiellivalenza', outerShops: ['Live978'] },
-            { islandShop: 'Wind Tre', outerShops: ['Live978'] },
-            { islandShop: 'Findomestic', outerShops: ['Mediaworld'] },
-            { islandShop: 'Marlù', outerShops: ['Mediaworld'] },
-            { islandShop: 'Giunti Al Punto', outerShops: ["Villabebe'"] },
+            { islandShop: 'Facis', outerShops: ['Jack & Jones', 'Stradivarius'] },
+            { islandShop: 'Dan John', outerShops: ['Zara Piano 1', 'Stradivarius'] },
+            // Muy Mucho (anello, tra Zara e Pull & Bear) è chiuso: lo spazio di fronte a Guess è vuoto
+            { islandShop: 'Guess', outerShops: ['Pull & Bear', 'Zara Piano 1'] },
+            { islandShop: 'Valigeria Roncato', outerShops: ['Pull & Bear', 'Action', 'Bershka'] },
+            { islandShop: 'Heikos', outerShops: ['Pepco'] },
+            { islandShop: 'Dverso', outerShops: ['Live 978', 'Pepco'] },
+            { islandShop: 'Gioielli di Valenza', outerShops: ['Live 978'] },
+            { islandShop: 'Wind Tre', outerShops: ['Live 978'] },
+            { islandShop: 'Findomestic', outerShops: ['MediaWorld'] },
+            { islandShop: 'Marlù', outerShops: ['MediaWorld'] },
+            { islandShop: 'Giunti al Punto', outerShops: ['Villabebè'] },
             { islandShop: 'Machapokè', outerShops: ['Billy Tacos'] },
-            { islandShop: 'Minipizza 22C M2', outerShops: ['Billy Tacos'] },
+            { islandShop: 'Minipizza 22 cm', outerShops: ['Billy Tacos'] },
 
             // Piano 1 - Mini Isole (3 negozi speciali)
             { islandShop: 'I Baccanali', outerShops: ['Burger King', 'Billy Tacos', 'La Piadineria','Caffè Vergnano 1882'] },
-            { islandShop: 'Capatoast Toasteria', outerShops: ['Billy Tacos', 'Minipizza 22C M2', 'Machapokè'] },
-            { islandShop: 'Equivalenza', outerShops: ["D'S Damat", 'Pull & Bear', 'Bershka', 'Action'] }
+            { islandShop: 'Capatoast Toasteria', outerShops: ['Billy Tacos', 'Minipizza 22 cm', 'Machapokè'] },
+            { islandShop: 'Equivalenza', outerShops: ['Valigeria Roncato', 'Pull & Bear', 'Bershka', 'Action'] }
         ];
     }
 
