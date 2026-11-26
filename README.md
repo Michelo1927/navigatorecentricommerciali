@@ -31,8 +31,8 @@ Inizia a scrivere il nome di un negozio e l'app te lo suggerisce. Puoi anche fil
 
 | Centro | Città | Negozi |
 |---|---|---|
-| **Porta di Roma** | Roma | 199 |
-| **GranRoma** | Roma | 93 |
+| **Porta di Roma** | Roma | 204 |
+| **GranRoma** | Roma | 92 |
 
 Altri centri in arrivo! 🔜
 
