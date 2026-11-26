@@ -1,11 +1,19 @@
 // Copyright (c) 2026 Trovalo. All rights reserved. Unauthorized use prohibited.
 // Algoritmo di navigazione con Dijkstra
 class NavigationService {
-    // mallId esplicito ('porta_di_roma' | 'granroma'); se omesso si ricade sulla
-    // vecchia detection per prefisso ID, mantenuta per retrocompatibilità (test/script).
-    constructor(shops, mallId = null) {
+    // mallData = MALLS_DATA[id]: { shops, stairs, links, detours } (vedi data.js).
+    // Un solo argomento: negozi e dati del grafo arrivano insieme dallo stesso oggetto,
+    // quindi non si possono abbinare per errore i negozi di un centro alle scale di un altro.
+    // Il codice è uguale per tutti i centri: ogni differenza sta nei dati.
+    constructor(mallData) {
+        if (!mallData || !Array.isArray(mallData.shops)) {
+            throw new Error('NavigationService: serve l\'oggetto del centro { shops, stairs, links, detours }');
+        }
+        const shops = mallData.shops;
         this.shops = shops;
-        this.mallId = mallId || this.detectMallId();
+        this.stairs = mallData.stairs || [];
+        this.links = mallData.links || [];
+        this.detours = mallData.detours || [];
         // Indice per id: evita i .find() lineari ripetuti in _pathToSteps/findShortestPathById
         this.shopById = new Map(shops.map(s => [s.id, s]));
         this.WEIGHT_SAME_RING = 2;
@@ -22,16 +30,19 @@ class NavigationService {
         this.METERS_CROSS_PENALTY = 5;  // per ogni cambio di zona: evita lo zig-zag anello↔isola
         this.METERS_STAIRS_RIDE = 40;   // scala mobile: con 40 nessun percorso sullo stesso piano
                                         // scende e risale per accorciare (con 20 erano ~300)
+        // Deviazioni (detours) per coppia di id, in entrambe le direzioni
+        this.detourMeters = new Map();
+        this.detours.forEach(({ a, b, meters }) => {
+            this.detourMeters.set(a + '|' + b, meters);
+            this.detourMeters.set(b + '|' + a, meters);
+        });
         this.graph = this.buildGraph();
     }
 
-    // Fallback storico: riconosce il centro dal prefisso dell'ID del primo negozio.
-    // Fragile con mall futuri dal prefisso simile: preferire sempre il mallId esplicito.
-    detectMallId() {
-        const firstShopId = this.shops[0]?.id || '';
-        if (firstShopId.startsWith('gr_')) return 'granroma';
-        if (firstShopId.startsWith('p0_') || firstShopId.startsWith('p1_')) return 'porta_di_roma';
-        return null;
+    // Nodo virtuale di una scala mobile a un piano: `stairs_<id scala>_p<piano>`.
+    // _pathToSteps e validate_graph riconoscono le scale dal prefisso `stairs_`.
+    stairsNodeId(stairsId, floor) {
+        return `stairs_${stairsId}_p${floor}`;
     }
 
     buildGraph() {
@@ -42,18 +53,11 @@ class NavigationService {
             graph[shop.id] = {};
         });
 
-        // Inizializza nodi virtuali scale
-        graph['stairs_west_p0'] = {};
-        graph['stairs_west_p1'] = {};
-        graph['stairs_east_p0'] = {};
-        graph['stairs_east_p1'] = {};
-        // I nodi 'stairs_north_p0/p1' (solo Porta di Roma) sono creati lazy da addConnection
-
         // Helper per aggiungere connessioni bidirezionali
         const addConnection = (id1, id2, weight) => {
             if (!graph[id1]) graph[id1] = {};
             if (!graph[id2]) graph[id2] = {};
-            
+
             const currentWeight = graph[id1][id2] || Infinity;
             if (weight < currentWeight) {
                 graph[id1][id2] = weight;
@@ -95,431 +99,66 @@ class NavigationService {
             }
         });
 
-        // 2. ISOLE - Attraversamenti verso anello esterno
-        const islandConnections = this.getIslandConnections();
-        islandConnections.forEach(({ islandShop, outerShops }) => {
-            // Cerca il negozio isola solo tra i negozi correnti
-            const island = this.shops.find(s => s.name === islandShop);
-            // Se il negozio isola non esiste in questo centro, salta questa connessione
-            if (!island) return;
-            
-            outerShops.forEach(outerName => {
-                // Cerca il negozio esterno solo tra i negozi correnti dello stesso piano
-                const outer = this.shops.find(s => s.name === outerName && s.floor === island.floor);
-                // Connetti solo se entrambi i negozi esistono in questo centro
-                if (outer) {
-                    // Il nodo di un negozio "largo" (es. Conad) rappresenta il CENTRO del suo
-                    // fronte: ogni arco che lo tocca sconta ~width/2 vetrine di camminata per
-                    // raggiungerlo, come già fanno gli archi d'anello (semisomma delle width).
-                    // Con meno (es. width/4) il nodo fa da scorciatoia: sia teletrasporto tra
-                    // le isole, sia zigzag anello→isola→Conad più economico del tratto diretto.
-                    if (this.isMetric) {
-                        const penalty = island.zone !== outer.zone ? this.METERS_CROSS_PENALTY : 0;
-                        addConnection(island.id, outer.id, this.walkMeters(island, outer) + penalty);
-                        return;
-                    }
-                    const widthPenalty = (((island.width || 1) - 1) + ((outer.width || 1) - 1)) / 2 * this.WEIGHT_SAME_RING;
-                    addConnection(island.id, outer.id, this.WEIGHT_CROSS_ISLAND + widthPenalty);
-                }
-            });
+        // 2. COLLEGAMENTI (links): coppie di negozi senza verso, per id, fisicamente di fronte
+        // (isola↔anello, isola↔isola attraverso il corridoio, scorciatoie anello↔anello).
+        // Un id inesistente o due piani diversi: il collegamento si salta senza rompere il
+        // calcolo (lo segnala validate_graph.js).
+        this.links.forEach(({ a: idA, b: idB }) => {
+            const a = this.shopById.get(idA);
+            const b = this.shopById.get(idB);
+            if (!a || !b || a === b || a.floor !== b.floor) return;
+            // Il nodo di un negozio "largo" (es. Conad) rappresenta il CENTRO del suo
+            // fronte: ogni arco che lo tocca sconta ~width/2 vetrine di camminata per
+            // raggiungerlo, come già fanno gli archi d'anello (semisomma delle width).
+            // Con meno (es. width/4) il nodo fa da scorciatoia: sia teletrasporto tra
+            // le isole, sia zigzag anello→isola→Conad più economico del tratto diretto.
+            if (this.isMetric) {
+                const penalty = a.zone !== b.zone ? this.METERS_CROSS_PENALTY : 0;
+                addConnection(a.id, b.id, this.walkMeters(a, b) + penalty);
+                return;
+            }
+            const widthPenalty = (((a.width || 1) - 1) + ((b.width || 1) - 1)) / 2 * this.WEIGHT_SAME_RING;
+            addConnection(a.id, b.id, this.WEIGHT_CROSS_ISLAND + widthPenalty);
         });
 
-        // 3. SCALE MOBILI
-        // Il centro determina quali negozi sono adiacenti a ciascuna scala
-        if (this.mallId === 'granroma') {
-            // GranRoma - Scale Mobili
-            // Scala SX Piano 0 (di fronte a BLUESPIRIT 2, LA CASINA DEL CAFFÈ; Dentalpro chiuso nel 2026)
-            const grScalaSxP0 = ['Bluespirit Ingresso', 'La Casina del Caffè'];
-            grScalaSxP0.forEach(name => {
-                const shop = this.shops.find(s => s.name === name && s.floor === 0);
-                if (shop) addConnection('stairs_west_p0', shop.id, this.stairsWeight('stairs_west_p0', shop));
+        // 3. SCALE MOBILI: un nodo per ogni piano dichiarato di ogni scala, collegato ai
+        // negozi in `near` (solo quelli di quel piano). Gli archi verticali uniscono i piani
+        // dichiarati della stessa scala, in ordine, a coppie consecutive.
+        const ride = this.isMetric ? this.METERS_STAIRS_RIDE : this.WEIGHT_STAIRS;
+        this.stairs.forEach(group => {
+            const floorsData = group.floors || {};
+            const floors = Object.keys(floorsData).map(Number).sort((x, y) => x - y);
+            floors.forEach(floor => {
+                const node = this.stairsNodeId(group.id, floor);
+                if (!graph[node]) graph[node] = {};
+                (floorsData[floor].near || []).forEach(id => {
+                    const shop = this.shopById.get(id);
+                    if (shop && shop.floor === floor) addConnection(node, shop.id, this.stairsWeight(floorsData[floor], shop));
+                });
             });
-
-            // Scala SX Piano 1 (di fronte a BURGER KING, I BACCANALI)
-            const grScalaSxP1 = ['Burger King', 'I Baccanali'];
-            grScalaSxP1.forEach(name => {
-                const shop = this.shops.find(s => s.name === name && s.floor === 1);
-                if (shop) addConnection('stairs_west_p1', shop.id, this.stairsWeight('stairs_west_p1', shop));
-            });
-
-            // Scala DX Piano 0 (di fronte a TRAMAS)
-            const grScalaDxP0 = ['Tramas'];
-            grScalaDxP0.forEach(name => {
-                const shop = this.shops.find(s => s.name === name && s.floor === 0);
-                if (shop) addConnection('stairs_east_p0', shop.id, this.stairsWeight('stairs_east_p0', shop));
-            });
-
-            // Scala DX Piano 1 (di fronte a ZARA, DAN JOHN)
-            const grScalaDxP1 = ['Zara Piano 1', 'Dan John'];
-            grScalaDxP1.forEach(name => {
-                const shop = this.shops.find(s => s.name === name && s.floor === 1);
-                if (shop) addConnection('stairs_east_p1', shop.id, this.stairsWeight('stairs_east_p1', shop));
-            });
-        } else {
-            // Porta di Roma - Scale Mobili
-            // Scala OVEST Piano 0
-            const scalaOvestP0Neighbors = ['Pull&Bear', 'MiRaggi', 'Nyx Professional Makeup', 'Liu-Jo'];
-            scalaOvestP0Neighbors.forEach(name => {
-                const shop = this.shops.find(s => s.name === name && s.floor === 0);
-                if (shop) addConnection('stairs_west_p0', shop.id, this.stairsWeight('stairs_west_p0', shop));
-            });
-
-            // Scala OVEST Piano 1
-            const scalaOvestP1Neighbors = ["McDonald's", 'Foot Locker', 'Jack & Jones', 'Dispensa Emilia'];
-            scalaOvestP1Neighbors.forEach(name => {
-                const shop = this.shops.find(s => s.name === name && s.floor === 1);
-                if (shop) addConnection('stairs_west_p1', shop.id, this.stairsWeight('stairs_west_p1', shop));
-            });
-
-            // Scala EST Piano 0
-            const scalaEstP0Neighbors = ['Talco', 'Jean Louis David', 'Kasanova'];
-            scalaEstP0Neighbors.forEach(name => {
-                const shop = this.shops.find(s => s.name === name && s.floor === 0);
-                if (shop) addConnection('stairs_east_p0', shop.id, this.stairsWeight('stairs_east_p0', shop));
-            });
-
-            // Scala EST Piano 1
-            const scalaEstP1Neighbors = ['Timberland', 'Oltre', 'Melluso'];
-            scalaEstP1Neighbors.forEach(name => {
-                const shop = this.shops.find(s => s.name === name && s.floor === 1);
-                if (shop) addConnection('stairs_east_p1', shop.id, this.stairsWeight('stairs_east_p1', shop));
-            });
-
-            // Scala NORD Piano 0 (di fronte a Yamamay e Yamamay uomo)
-            const scalaNordP0Neighbors = ['Yamamay', 'Yamamay uomo'];
-            scalaNordP0Neighbors.forEach(name => {
-                const shop = this.shops.find(s => s.name === name && s.floor === 0);
-                if (shop) addConnection('stairs_north_p0', shop.id, this.stairsWeight('stairs_north_p0', shop));
-            });
-
-            // Scala NORD Piano 1 (di fronte a Desigual)
-            const scalaNordP1Neighbors = ['Desigual'];
-            scalaNordP1Neighbors.forEach(name => {
-                const shop = this.shops.find(s => s.name === name && s.floor === 1);
-                if (shop) addConnection('stairs_north_p1', shop.id, this.stairsWeight('stairs_north_p1', shop));
-            });
-
-            // Connessione verticale scala NORD (solo Porta di Roma)
-            addConnection('stairs_north_p0', 'stairs_north_p1', this.isMetric ? this.METERS_STAIRS_RIDE : this.WEIGHT_STAIRS);
-        }
-
-        // Connessioni verticali scale (uguali per tutti i mall)
-        addConnection('stairs_west_p0', 'stairs_west_p1', this.isMetric ? this.METERS_STAIRS_RIDE : this.WEIGHT_STAIRS);
-        addConnection('stairs_east_p0', 'stairs_east_p1', this.isMetric ? this.METERS_STAIRS_RIDE : this.WEIGHT_STAIRS);
+            for (let i = 1; i < floors.length; i++) {
+                addConnection(this.stairsNodeId(group.id, floors[i - 1]), this.stairsNodeId(group.id, floors[i]), ride);
+            }
+        });
 
         return graph;
     }
 
     // --- Pesi in metri (solo centri con coordinate x/y su tutti i negozi) ---
 
-    // Metri a piedi tra gli ingressi di due negozi: linea d'aria, salvo le coppie
-    // in getWalkDetours() dove un muro/angolo/fine isola allunga il cammino reale.
+    // Metri a piedi tra gli ingressi di due negozi: linea d'aria, salvo le coppie in
+    // `detours` dove un muro/angolo/fine isola allunga il cammino reale.
     walkMeters(a, b) {
-        if (!this._detours) {
-            this._detours = new Map();
-            this.getWalkDetours().forEach(({ a: na, b: nb, meters }) => {
-                this._detours.set(na + '|' + nb, meters);
-                this._detours.set(nb + '|' + na, meters);
-            });
-        }
-        const detour = this._detours.get(a.name + '|' + b.name);
+        const detour = this.detourMeters.get(a.id + '|' + b.id);
         return detour !== undefined ? detour : Math.hypot(a.x - b.x, a.y - b.y);
     }
 
-    // Metri da un negozio all'arrivo più vicino di quella scala mobile.
+    // Metri da un negozio all'arrivo più vicino di quella scala a quel piano (`landings`).
     // Senza coordinate (o arrivi non definiti) torna il peso astratto storico.
-    stairsWeight(stairsId, shop) {
-        const landings = this.isMetric ? this.getStairsLandings()[stairsId] : null;
+    stairsWeight(floorData, shop) {
+        const landings = this.isMetric ? floorData.landings : null;
         if (!landings || !landings.length) return this.WEIGHT_TO_STAIRS;
         return Math.min(...landings.map(([x, y]) => Math.hypot(shop.x - x, shop.y - y)));
-    }
-
-    // Coppie collegate dove il cammino reale supera la linea d'aria di oltre 5 m.
-    // Ricavate dalla rete pedonale della mappa ufficiale (Mappedin, 2026-11-02).
-    // Accoppiate per NOME esatto come getIslandConnections(): se rinomini un negozio
-    // in data.js aggiorna anche qui (validate_graph.js segnala i nomi irrisolti).
-    getWalkDetours() {
-        if (this.mallId !== 'porta_di_roma') return [];
-        return [
-            { a: "MAC", b: "MiRaggi", meters: 32 },
-            { a: "MAC", b: "Piquadro", meters: 27 },
-            { a: "Pull&Bear", b: "Liu-Jo", meters: 33 },
-            { a: "Pull&Bear", b: "Motivi", meters: 39 },
-            { a: "AppleStore", b: "Clayton", meters: 53 },
-            { a: "AppleStore", b: "Bata", meters: 46 },
-            { a: "Alcott", b: "Bershka", meters: 22 },
-            { a: "Bagno Sud P0", b: "Starbucks", meters: 28 },
-            { a: "Farinella", b: "Jean Louis David", meters: 37 },
-            { a: "È qui Parafarmacia", b: "Kasanova", meters: 43 },
-            { a: "Chic Accent Samsonite Group", b: "Medi Market", meters: 58 },
-            { a: "1A Clean Lavasecco", b: "Stroili piano 0", meters: 51 },
-            { a: "Bialetti", b: "Heikos", meters: 36 },
-            { a: "Flying Tiger", b: "Raggi", meters: 25 },
-            { a: "Levi's", b: "Bagno Nord P0", meters: 55 },
-            { a: "Bagno Nord P0", b: "Pop Mart", meters: 52 },
-            { a: "Decathlon", b: "Franck Provost", meters: 25 },
-            { a: "Piquadro", b: "GIOVANNI RASPINI", meters: 27 },
-            { a: "Nyx Professional Makeup", b: "Liu-Jo", meters: 18 },
-            { a: "Okaidi", b: "Vicolo", meters: 14 },
-            { a: "Vicolo", b: "Bottega Verde", meters: 30 },
-            { a: "Yves Rocher", b: "Calzedonia", meters: 22 },
-            { a: "Nuvolari", b: "Yamamay uomo", meters: 29 },
-            { a: "Nuvolari", b: "illy Caffè", meters: 25 },
-            { a: "illy Caffè", b: "O Mai", meters: 25 },
-            { a: "Nashi", b: "Pandora", meters: 28 },
-            { a: "Raggi", b: "Machapokè", meters: 43 },
-            { a: "Talco", b: "Douglas Est", meters: 18 },
-            { a: "Marlù", b: "Primadonna Collection", meters: 25 },
-            { a: "Gamelife", b: "Doppelganger piano 0", meters: 16 },
-            { a: "D'Amante", b: "IUMAN-Intimissimi Uomo", meters: 25 },
-            { a: "Popeyes", b: "Fradiavolo", meters: 32 },
-            { a: "Fradiavolo", b: "Poke House", meters: 22 },
-            { a: "Poke House", b: "Guess Accessories", meters: 30 },
-            { a: "Toast House", b: "Nike", meters: 40 },
-            { a: "Menodiciotto", b: "New Balance", meters: 58 },
-            { a: "McDonald's", b: "Foot Locker", meters: 41 },
-            { a: "Dispensa Emilia", b: "Flunch", meters: 19 },
-            { a: "Flunch", b: "Wiener Haus", meters: 33 },
-            { a: "Wiener Haus", b: "Hollywood Game Planet", meters: 23 },
-            { a: "Bagno Sud P1", b: "Alice Pizza Point", meters: 25 },
-            { a: "Chicco", b: "Tommy Hilfiger", meters: 20 },
-            { a: "Alviero Martini 1A Classe", b: "Calvin Klein Jeans", meters: 37 },
-            { a: "Fiorella Rubino", b: "The North Face", meters: 54 },
-            { a: "Two Way", b: "Geox", meters: 50 },
-            { a: "Oltre", b: "Toys con te", meters: 22 },
-            { a: "Oltre", b: "Timberland", meters: 29 },
-            { a: "Toys con te", b: "Gioielli di Valenza", meters: 22 },
-            { a: "Caffè Napoli", b: "Old Wild West", meters: 12 },
-            { a: "Guess Accessories", b: "Braccialini", meters: 39 },
-            { a: "Braccialini", b: "Solaris", meters: 16 },
-            { a: "Jack & Jones", b: "La Piadineria", meters: 20 },
-            { a: "La Piadineria", b: "Grom", meters: 35 },
-            { a: "GrandVision by Optissimo", b: "Funside", meters: 16 },
-            { a: "Caporiccio", b: "Equivalenza", meters: 22 },
-            { a: "Cotton&Silk", b: "Harmont & Blaine", meters: 8 },
-            { a: "Melluso", b: "Gioielli di Valenza", meters: 36 },
-            { a: "Pennyblack", b: "Victoria's Secret", meters: 26 },
-            { a: "Stradivarius", b: "Coccinelle", meters: 27 },
-        ];
-    }
-
-    // Arrivi delle scale mobili (metri, stesso sistema di x/y dei negozi).
-    // Le scale sono "a forbice": ogni gruppo ha due punti di arrivo per piano.
-    getStairsLandings() {
-        if (this.mallId !== 'porta_di_roma') return {};
-        return {
-            stairs_west_p0: [[57.8, 148.5], [54, 142.4], [85.8, 128.4], [84.4, 126.4]],
-            stairs_west_p1: [[86.5, 130.7], [82.7, 124.6], [56.6, 146.5], [55, 143.9]],
-            stairs_east_p0: [[14.6, 16.2], [10.5, 9.5], [-14.7, 30.8], [-15.6, 29.2]],
-            stairs_east_p1: [[-13.1, 33.3], [-17.2, 26.7], [12, 14.2], [10.7, 12.2]],
-            stairs_north_p0: [[70.2, 52.5], [68.6, 53.4], [71.2, 64.3], [72.6, 64.4]],
-            stairs_north_p1: [[62.8, 40.7], [61.3, 41.7], [73.2, 50.3], [74.6, 50.4]],
-        };
-    }
-
-    getIslandConnections() {
-        if (this.mallId === 'granroma') {
-            return this.getGranRomaConnections();
-        }
-        if (this.mallId === 'porta_di_roma') {
-            return this.getPortaDiRomaConnections();
-        }
-
-        console.warn('⚠️ Centro commerciale non riconosciuto');
-        return [];
-    }
-
-    getPortaDiRomaConnections() {
-        // Connessioni isola-anello per Porta di Roma
-        return [
-            // Piano 0 - Isola SX
-            { islandShop: 'Piquadro', outerShops: ['Tezenis', 'MAC', "Levi's"] },
-            { islandShop: 'GIOVANNI RASPINI', outerShops: ['MAC', 'MiRaggi'] },
-            { islandShop: 'Nyx Professional Makeup', outerShops: ['MiRaggi'] },
-            { islandShop: 'Liu-Jo', outerShops: ['Pull&Bear'] },
-            { islandShop: 'Motivi', outerShops: ['Pull&Bear'] },
-            { islandShop: 'Clayton', outerShops: ['AppleStore'] },
-            { islandShop: 'Bata', outerShops: ['AppleStore'] },
-            { islandShop: 'Nuna Lie', outerShops: ['Alcott'] },
-            { islandShop: 'Okaidi', outerShops: ['Alcott', 'Bershka'] },
-            { islandShop: 'Vicolo', outerShops: ['Bershka'] },
-            { islandShop: 'Bottega Verde', outerShops: ['JD', 'Starbucks'] },
-            { islandShop: 'Wycon', outerShops: ['Burger King'] },
-            { islandShop: 'Goldenpoint', outerShops: ['Burger King'] },
-            { islandShop: 'Thun', outerShops: ['Burger King', 'Conad'] },
-            { islandShop: 'La Casa de las Carcasas', outerShops: ['Conad'] },
-            { islandShop: 'Centri Unico', outerShops: ['Conad'] },
-            { islandShop: 'Via Condotti', outerShops: ['Conad'] },
-            { islandShop: 'Solo Tempo', outerShops: ['Conad'] },
-            { islandShop: 'Windtre', outerShops: ['Conad'] },
-            { islandShop: '7 Camicie', outerShops: ['Conad'] },
-            { islandShop: 'Yves Rocher', outerShops: ['Conad', "D'Amante"] },
-            { islandShop: 'Calzedonia', outerShops: ['IUMAN-Intimissimi Uomo'] },
-            { islandShop: 'Intimissimi', outerShops: ['Lush'] },
-            { islandShop: 'KIKO Milano', outerShops: ['GrandVision by Avanzi'] },
-            { islandShop: 'Douglas Ovest', outerShops: ['Miriade'] },
-            { islandShop: 'Sandro Ferrone', outerShops: ['Carpisa'] },
-            { islandShop: 'Zuiki', outerShops: ['Artigli'] },
-            { islandShop: 'Nuvolari', outerShops: ['O Mai'] },
-            { islandShop: 'Yamamay uomo', outerShops: ['illy Caffè', 'Dr. Martens', 'United Colors of Benetton'] },
-            { islandShop: 'Yamamay', outerShops: ['Dr. Martens'] },
-            { islandShop: 'Original Marines', outerShops: ['H&M'] },
-            { islandShop: 'Parfois', outerShops: ['H&M'] },
-            { islandShop: 'Lovable', outerShops: ['H&M'] },
-            { islandShop: 'Bluespirit', outerShops: ['H&M', 'Just Design'] },
-            { islandShop: 'Fielmann', outerShops: ['Lego'] },
-            { islandShop: 'Vestopazzo', outerShops: ['Lego', 'Tezenis'] },
-
-            // Piano 0 - Isola DX
-            { islandShop: 'illy Caffè', outerShops: ['Yamamay uomo', 'Rituals', 'Nuvolari'] },
-            { islandShop: 'Bijou Brigitte', outerShops: ['Rituals'] },
-            { islandShop: 'Pandora', outerShops: ['Zara'] },
-            { islandShop: 'Nespresso', outerShops: ['Barca'] },
-            { islandShop: 'Swatch', outerShops: ['Snipes'] },
-            { islandShop: 'Raggi', outerShops: ['Normal', 'Mediaworld', 'Flying Tiger'] },
-            { islandShop: 'Machapokè', outerShops: ['Flying Tiger', 'Pasticceria Bellavia'] },
-            { islandShop: 'Heikos', outerShops: ['Bialetti'] },
-            { islandShop: 'Stroili piano 0', outerShops: ['1A Clean Lavasecco'] },
-            { islandShop: 'Medi Market', outerShops: ['Chic Accent Samsonite Group'] },
-            { islandShop: 'Kasanova', outerShops: ['È qui Parafarmacia'] },
-            { islandShop: 'Talco', outerShops: ['Jean Louis David'] },
-            { islandShop: 'Douglas Est', outerShops: ['Jean Louis David'] },
-            { islandShop: 'La Casa del Tabacco', outerShops: ['Jean Louis David', 'Farinella'] },
-            { islandShop: 'Marlù', outerShops: ['Farinella'] },
-            { islandShop: 'Primadonna Collection', outerShops: ['Conad', 'La Feltrinelli'] },
-            { islandShop: 'Vodafone', outerShops: ['Conad'] },
-            { islandShop: 'Gamelife', outerShops: ['Conad'] },
-            { islandShop: 'Doppelganger piano 0', outerShops: ['Conad'] },
-            { islandShop: 'TIM Gruppo Distribuzione Spa (piano 0)', outerShops: ['Conad'] },
-            { islandShop: 'Iliad', outerShops: ['Conad'] },
-            { islandShop: 'Capello point', outerShops: ['Conad'] },
-            { islandShop: "D'Amante", outerShops: ['Conad', 'Yves Rocher'] },
-            { islandShop: 'IUMAN-Intimissimi Uomo', outerShops: ['Calzedonia'] },
-            { islandShop: 'Lush', outerShops: ['Intimissimi'] },
-            { islandShop: 'GrandVision by Avanzi', outerShops: ['KIKO Milano'] },
-            { islandShop: 'Miriade', outerShops: ['Douglas Ovest'] },
-            { islandShop: 'Carpisa', outerShops: ['Sandro Ferrone'] },
-            { islandShop: 'Artigli', outerShops: ['Zuiki'] },
-            { islandShop: 'O Mai', outerShops: ['Nuvolari'] },
-
-            // Piano 0 - Scorciatoie anello↔anello (shortcut: true = due negozi OUTER, voluto).
-            // Verificate sulla rete pedonale ufficiale (2026-11-02). I bagni sono in corridoi
-            // laterali: senza questi archi l'anello obbligava a passare dal bagno tra
-            // JD↔Starbucks e Levi's↔Pop Mart.
-            { islandShop: 'JD', outerShops: ['Starbucks'], shortcut: true },
-            { islandShop: "Levi's", outerShops: ['Pop Mart'], shortcut: true },
-            { islandShop: 'Franck Provost', outerShops: ['Salmoiraghi & Viganò'], shortcut: true },
-
-            // Piano 1 - Isola Center
-            { islandShop: 'Guess Accessories', outerShops: ['Michael Kors', 'Poke House'] },
-            { islandShop: 'Braccialini', outerShops: ['Kebhouze'] },
-            { islandShop: 'Solaris', outerShops: ['Kebhouze'] },
-            { islandShop: 'Nike', outerShops: ['Milos Greek Food', 'Toast House'] },
-            { islandShop: 'New Balance', outerShops: ['Menodiciotto'] },
-            { islandShop: 'Foot Locker', outerShops: ["McDonald's"] },
-            { islandShop: 'Jack & Jones', outerShops: ['Dispensa Emilia'] },
-            { islandShop: 'La Piadineria', outerShops: ['Flunch'] },
-            { islandShop: 'Grom', outerShops: ['Flunch', 'Foodie', 'Alice Pizza Point'] },
-            // Scorciatoia anello↔anello davanti al Bagno Sud P1 (verificata sulla mappa ufficiale)
-            { islandShop: 'Alice Pizza Point', outerShops: ['Flunch'], shortcut: true },
-            { islandShop: 'Camicissima', outerShops: ['Visionottica'] },
-            { islandShop: 'Legami', outerShops: ['Cisalfa Sport'] },
-            { islandShop: 'Dyson', outerShops: ['Cisalfa Sport', 'Upim'] },
-            { islandShop: 'Primor', outerShops: ['Upim'] },
-            { islandShop: 'Stroili', outerShops: ['Upim', 'Ovs'] },
-            { islandShop: 'Imperial', outerShops: ['Ovs'] },
-            { islandShop: 'GrandVision by Optissimo', outerShops: ['Ovs'] },
-            { islandShop: 'Funside', outerShops: ['Ovs'] },
-            { islandShop: 'AS Roma', outerShops: ['Unieuro'] },
-            { islandShop: 'Sottotono', outerShops: ['Unieuro'] },
-            { islandShop: 'Tim piano 1', outerShops: ['Unieuro'] },
-            { islandShop: 'Caporiccio', outerShops: ['Unieuro', 'Skechers', 'Prénatal'] },
-            { islandShop: 'Equivalenza', outerShops: ['Prénatal', 'Chicco'] },
-            { islandShop: 'Panfuwa', outerShops: ['Chicco'] },
-            { islandShop: "L'Erbolario", outerShops: ['Chicco'] },
-            { islandShop: 'Cotton&Silk', outerShops: ['Chicco'] },
-            { islandShop: 'Harmont & Blaine', outerShops: ['Tommy Hilfiger'] },
-            { islandShop: 'Calvin Klein Jeans', outerShops: ['Alviero Martini 1A Classe'] },
-            { islandShop: 'The North Face', outerShops: ['Fiorella Rubino'] },
-            { islandShop: 'Geox', outerShops: ['Two Way'] },
-            { islandShop: 'Timberland', outerShops: ['Oltre'] },
-            { islandShop: 'Melluso', outerShops: ['Oltre'] },
-            { islandShop: 'Gioielli di Valenza', outerShops: ['Toys con te', 'MediaWorld piano 1', 'Zara Home'] },
-            { islandShop: 'Dan John', outerShops: ['Oysho'] },
-            { islandShop: 'Noikika', outerShops: ['Nike Store'] },
-            { islandShop: 'Pennyblack', outerShops: ['Nike Store'] },
-            { islandShop: "Victoria's Secret", outerShops: ['Zara Man'] },
-            { islandShop: 'Armani Exchange', outerShops: [] },
-            { islandShop: 'Stradivarius', outerShops: [] },
-            { islandShop: 'Coccinelle', outerShops: ['Pellizzari', 'Luisa Spagnoli'] },
-            { islandShop: 'Lacoste', outerShops: ['Pellizzari'] },
-            { islandShop: 'Marella', outerShops: ['Pellizzari'] },
-            { islandShop: 'Camper', outerShops: ['Guess'] },
-            { islandShop: 'David Naman', outerShops: ['Paul Taylor'] },
-            { islandShop: 'Doppelganger piano 1', outerShops: ['Mango', 'Paul Taylor'] },
-            { islandShop: 'Windtre (piano 1)', outerShops: ['Mango'] }
-        ];
-    }
-
-    getGranRomaConnections() {
-        // Connessioni isola-anello per GranRoma
-        return [
-            // Piano 0 - Isola Centrale (21 negozi)
-            { islandShop: 'Stroili', outerShops: ['Maisons du Monde', 'Douglas', 'Skechers'] },
-            { islandShop: 'Carpisa', outerShops: ["Deco'"] },
-            { islandShop: 'Lama Optical', outerShops: ["Deco'"] },
-            { islandShop: 'Zuiki', outerShops: ['Cisalfa Sport'] },
-            { islandShop: 'Parfois', outerShops: ['Cisalfa Sport'] },
-            { islandShop: 'Bluespirit Ingresso', outerShops: ['Kasanova+', 'Cisalfa Sport'] },
-            { islandShop: 'Mondovista', outerShops: ['Mayoral'] },
-            { islandShop: 'Omai', outerShops: ['Mango'] },
-            { islandShop: 'Talco', outerShops: ['Mango'] },
-            { islandShop: 'Kamalion', outerShops: ['Nuvolari'] },
-            { islandShop: 'Grandvision', outerShops: ['Flying Tiger Copenhagen'] },
-            { islandShop: 'Calzedonia', outerShops: ['Zara', 'JD Sports', 'Gelateria Cremilla'] },
-            { islandShop: 'Bluespirit', outerShops: ['Zara'] },
-            { islandShop: 'Two Way', outerShops: ['Tramas'] },
-            { islandShop: 'Normal', outerShops: ['Tramas', 'Amore Store'] },
-            { islandShop: 'Intimissimi', outerShops: ['OVS', 'Tezenis'] },
-            { islandShop: 'Vodafone', outerShops: ['Punt Roma', 'Sorbino'] },
-            { islandShop: 'Original Marines', outerShops: ['Sorbino', 'Primadonna Collection'] },
-            { islandShop: 'Medimarket', outerShops: ['Primadonna Collection', 'Yves Rocher'] },
-            { islandShop: 'Snipes', outerShops: ['Yves Rocher', 'CeX'] },
-
-            // Piano 0 - Mini Isole (4 chioschi nei corridoi, posizioni dalla mappa ufficiale)
-            { islandShop: 'Wycon', outerShops: ['Intimissimi', 'Tezenis', 'Amore Store'] },
-            { islandShop: 'La Yogurteria Joy Bubble Tea', outerShops: ['Stroili', 'Skechers', 'Douglas'] },
-            { islandShop: 'Caffè Vergnano 1882 Piano 0', outerShops: ['Bluespirit Ingresso', 'La Casina del Caffè', 'Cisalfa Sport'] },
-            { islandShop: 'Wind Tre Piano 0', outerShops: ['Kamalion', 'Talco', 'Nuvolari', 'Flying Tiger Copenhagen'] },
-
-            // Piano 1 - Isola Centrale (19 negozi)
-            { islandShop: 'Caffè Vergnano 1882', outerShops: ['I Baccanali', 'Burger King', "Hamerica's"] },
-            { islandShop: 'Tabaccheria', outerShops: ["Hamerica's", 'Kitikate'] },
-            { islandShop: 'Queen Helena', outerShops: ['Kitikate', 'Mister Games'] },
-            { islandShop: 'Rinascimento', outerShops: ['Mister Games', 'Estasi Profumerie'] },
-            // Odstore (anello, tra Estasi e Jack & Jones) è chiuso: lo spazio è vuoto
-            { islandShop: 'Sartoria Italiana', outerShops: ['Estasi Profumerie', 'Jack & Jones'] },
-            { islandShop: 'Pink Gioielli', outerShops: ['Jack & Jones'] },
-            { islandShop: 'Facis', outerShops: ['Jack & Jones', 'Stradivarius'] },
-            { islandShop: 'Dan John', outerShops: ['Zara Piano 1', 'Stradivarius'] },
-            // Muy Mucho (anello, tra Zara e Pull & Bear) è chiuso: lo spazio di fronte a Guess è vuoto
-            { islandShop: 'Guess', outerShops: ['Pull & Bear', 'Zara Piano 1'] },
-            { islandShop: 'Valigeria Roncato', outerShops: ['Pull & Bear', 'Action', 'Bershka'] },
-            { islandShop: 'Heikos', outerShops: ['Pepco'] },
-            { islandShop: 'Dverso', outerShops: ['Live 978', 'Pepco'] },
-            { islandShop: 'Gioielli di Valenza', outerShops: ['Live 978'] },
-            { islandShop: 'Wind Tre', outerShops: ['Live 978'] },
-            { islandShop: 'Findomestic', outerShops: ['MediaWorld'] },
-            { islandShop: 'Marlù', outerShops: ['MediaWorld'] },
-            { islandShop: 'Giunti al Punto', outerShops: ['Villabebè'] },
-            { islandShop: 'Machapokè', outerShops: ['Billy Tacos'] },
-            { islandShop: 'Minipizza 22 cm', outerShops: ['Billy Tacos'] },
-
-            // Piano 1 - Mini Isole (3 negozi speciali)
-            { islandShop: 'I Baccanali', outerShops: ['Burger King', 'Billy Tacos', 'La Piadineria','Caffè Vergnano 1882'] },
-            { islandShop: 'Capatoast Toasteria', outerShops: ['Billy Tacos', 'Minipizza 22 cm', 'Machapokè'] },
-            { islandShop: 'Equivalenza', outerShops: ['Valigeria Roncato', 'Pull & Bear', 'Bershka', 'Action'] }
-        ];
     }
 
     dijkstra(startId, endId, graph) {

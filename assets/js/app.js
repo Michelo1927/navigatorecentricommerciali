@@ -1465,7 +1465,7 @@ function initializeMallSelection() {
                 <h3 class="mall-name">${escapeHtml(mall.name)}</h3>
                 <p class="mall-location">${escapeHtml(mall.location)}</p>
                 <div class="mall-stats-mini">
-                    <span>${MALLS_DATA[mall.id].length} negozi</span>
+                    <span>${MALLS_DATA[mall.id].shops.length} negozi</span>
                     <span>•</span>
                     <span>${mall.floors} piani</span>
                 </div>
@@ -1564,13 +1564,13 @@ function activateMall(mallId) {
 
     // Salva la selezione
     selectedMall = mall;
-    SHOPS_DATA = MALLS_DATA[mallId] || [];
+    SHOPS_DATA = MALLS_DATA[mallId] ? MALLS_DATA[mallId].shops : [];
     
     // Salva in sessionStorage (ripristinato al refresh della stessa scheda)
     sessionStorage.setItem('selectedMall', mallId);
 
-    // Inizializza il servizio di navigazione col mall esplicito (niente detection da prefisso ID)
-    navigationService = new NavigationService(SHOPS_DATA, mallId);
+    // Servizio di navigazione: negozi, scale, collegamenti e deviazioni del centro
+    navigationService = new NavigationService(MALLS_DATA[mallId]);
     activeStartCategoryFilter = 'Tutto';
     activeEndCategoryFilter = 'Tutto';
     activeWaypointCategoryFilter = 'Tutto';
@@ -1905,9 +1905,8 @@ const mallNavDebug = {
         waypoints = intermediateWaypoints.slice();
         efficientRouteEnabled = efficient;
         if (startShop && typeof MALLS_DATA !== 'undefined') {
-            const isGranRoma = startShop.id && startShop.id.startsWith('gr_');
-            const mallKey = isGranRoma ? 'granroma' : 'porta_di_roma';
-            navigationService = new NavigationService(MALLS_DATA[mallKey] || [], mallKey);
+            const mallKey = Object.keys(MALLS_DATA).find(id => MALLS_DATA[id].shops.some(s => s.id === startShop.id));
+            if (mallKey) navigationService = new NavigationService(MALLS_DATA[mallKey]);
         }
         updateEfficientRouteButton();
         renderRouteBuilderPreview();
