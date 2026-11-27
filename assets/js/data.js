@@ -20,6 +20,15 @@ const MALLS_CONFIG = [
         logo: '<img src="assets/images/GranRomaIcona.jpg" alt="GranRoma" >'
     },
     {
+        id: 'roma_est',
+        name: 'RomaEst',
+        location: 'Roma, Italia',
+        description: 'Centro commerciale su via Collatina, zona Lunghezza',
+        floors: 2,
+        escalators: 4,
+        logo: '<img src="assets/images/RomaEstIcona.jpg" alt="RomaEst" >'
+    },
+    {
         id: 'altro_mall',
         name: 'Altri Centri Commerciali',
         location: 'In arrivo...',
